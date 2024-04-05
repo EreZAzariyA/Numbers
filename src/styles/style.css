@@ -1,0 +1,62 @@
+.dark-theme .text,
+.dark-theme p,
+.dark-theme span {
+  color: var(--default-white);
+}
+
+.logo {
+  cursor: pointer;
+}
+
+.btn-18 {
+  font-size: 18px;
+  height: auto;
+}
+.dark-theme .btn-18 {
+  background: #252525;
+  box-shadow: 0 2px 0 rgb(0 0 0 / 25%);
+}
+.dark-theme .ant-btn.btn-18:hover,
+.ant-btn.btn-18.home:hover {
+  background: #3a3939;
+}
+
+.ant-btn.btn-18.home {
+  border-radius: 30px;
+  width: 100px;
+  background: #252525;
+}
+
+.page-container {
+  box-sizing: border-box;
+}
+
+.page-container .title-container {
+  display: flex;
+  align-items: top;
+  justify-content: space-between;
+}
+
+.page-container .page-title {
+  font-size: 26px;
+  font-weight: 600;
+  text-align: left;
+  color: darkblue;
+}
+.page-container .page-inner-container {
+  padding: 10px 0;
+}
+
+.dark-theme .page-container .page-title {
+  color: var(--default-white);
+}
+
+.inner-page .inner-page-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.dark-theme .editable .ant-table-thead,
+.dark-theme .editable .ant-table-tbody {
+  background: rgb(251, 3, 3) !important;
+}

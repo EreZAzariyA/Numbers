@@ -1,0 +1,26 @@
+{
+  "pages": {
+    "dashboard": "Dashboard",
+    "invoices": "Invoices",
+    "categories": "Categories",
+    "account": [
+      "Account",
+      "Profile",
+      "Favorites",
+      "Sign-In",
+      "Sign-Up",
+      "Sign-Out"
+    ]
+  },
+  "homePage": {
+    "firstPage": [
+      "Feel The Unreal",
+      "AIR MAX DN",
+      "The next generation of Air technology is here."
+    ]
+  },
+  "placeholders": [
+    "Search by category",
+    "Search For Category"
+  ]
+}
