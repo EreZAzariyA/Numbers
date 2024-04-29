@@ -6,30 +6,38 @@ import store from "../redux/store";
 import { loginAction, logoutAction, registerAction } from "../redux/slicers/auth-slicer";
 import { categoriesOnLogoutAction } from "../redux/slicers/categories";
 import { invoicesOnLogoutAction } from "../redux/slicers/invoices";
-import { ThemeColors, fetchUserThemeAction, themeLogoutAction } from "../redux/slicers/theme-slicer";
-import { fetchUserLangAction, langLogoutAction } from "../redux/slicers/lang-slicer";
-import { jwtDecode } from "jwt-decode";
-import { Languages } from "../utils/helpers";
+import { themeLogoutAction } from "../redux/slicers/theme-slicer";
+import { langLogoutAction } from "../redux/slicers/lang-slicer";
+import { TokenResponse } from "@react-oauth/google";
 
 class AuthServices {
-  signup = async (user: UserModel) => {
+  signup = async (user: UserModel): Promise<string> => {
     const response = await axios.post<string>(config.urls.auth.signUp, user);
     const token = response.data;
-    store.dispatch(registerAction({token}));
-    return token;
+    if (token) {
+      store.dispatch(registerAction({token}));
+      return token;
+    }
+    return null;
   };
 
-  signin = async (credentials: CredentialsModel) => {
+  signin = async (credentials: CredentialsModel): Promise<string> => {
     if (!(credentials.email || credentials.password)) {
       throw new Error('Some fields are missing');
     }
     const response = await axios.post<string>(config.urls.auth.signIn, credentials);
     const token = response.data;
-    store.dispatch(loginAction({token}));
+    if (token) {
+      store.dispatch(loginAction({token}));
+      return token;
+    }
+    return null;
+  };
 
-    const user: UserModel = jwtDecode(token);
-    store.dispatch(fetchUserLangAction(user.config?.lang || Languages.English));
-    store.dispatch(fetchUserThemeAction(user.config?.["theme-color"] || ThemeColors.LIGHT));
+  googleSignIn = async (tokenResponse: TokenResponse): Promise<string> => {
+    const response = await axios.post<string>(config.urls.auth.googleSignIn, tokenResponse);
+    const token = response.data;
+    store.dispatch(loginAction({token}));
     return token;
   };
 

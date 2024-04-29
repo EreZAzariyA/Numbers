@@ -4,7 +4,6 @@ import config from "../utils/config";
 import store from "../redux/store";
 import { addNewInvoiceAction, fetchInvoicesAction, removeInvoiceAction, updateInvoiceAction } from "../redux/slicers/invoices";
 
-
 class InvoicesServices {
   async fetchInvoicesByUserId(user_id: string): Promise<InvoiceModel[]> {
     const response = await axios.get<InvoiceModel[]>(config.urls.invoices + `/${user_id}`);

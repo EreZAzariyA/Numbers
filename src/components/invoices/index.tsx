@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Filters } from "../components/Filters";
 import dayjs, { Dayjs } from "dayjs";
 import TotalAmountInput from "../components/TotalAmount";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 enum Steps {
   New_Invoice = "New_Invoice",
@@ -20,13 +20,14 @@ enum Steps {
 };
 
 const Invoices = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
-  const [selectedInvoice, setSelectedInvoice] = useState<InvoiceModel>(null);
+  const { hash } = useLocation();
   const user = useSelector((state: RootState) => state.auth.user);
   const invoices = useSelector((state: RootState) => (state.invoices));
   const categories = useSelector((state: RootState) => (state.categories));
   const [dataSource, setDataSource] = useState<InvoiceModel[]>([]);
-  const { hash } = useLocation();
+  const [selectedInvoice, setSelectedInvoice] = useState<InvoiceModel>(null);
   const newInvoiceWithCategory_idFromCategories = hash.split('#')?.[1];
   const [step, setStep] = useState<string>(hash ? Steps.New_Invoice : null);
   const [filterState, setFilterState] = useState({
@@ -75,6 +76,9 @@ const Invoices = () => {
 
       if (res) {
         message.success(msg);
+        if (newInvoiceWithCategory_idFromCategories) {
+          navigate('/invoices');
+        }
         onBack();
       }
     } catch (error: any) {
@@ -118,7 +122,7 @@ const Invoices = () => {
         <span>{new Date(text).toLocaleDateString()}</span>
       ),
       sorter: (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      defaultSortOrder: 'descend'
+      defaultSortOrder: 'ascend'
     },
     {
       title: 'Category',
@@ -175,10 +179,12 @@ const Invoices = () => {
               rowKey="_id"
               scrollAble
               type="invoices"
-              handleAdd={() => setStep(Steps.New_Invoice)}
               onEditMode={onEdit}
               removeHandler={onRemove}
             />
+            <Button className="btn-18" onClick={() => setStep(Steps.New_Invoice)}>
+              Add Invoice
+            </Button>
           </Space>
         )}
         {(step && step === Steps.New_Invoice) && (

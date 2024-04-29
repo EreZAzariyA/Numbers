@@ -109,7 +109,7 @@ const CategoriesPage = () => {
         {!step && (
           <Space direction="vertical" className="w-100">
             <div className="filter">
-              <Row align={'middle'} justify={'start'}>
+              <Row gutter={[10, 10]} wrap={false}>
                 <Col>
                   <Input
                     type="text"
@@ -120,7 +120,7 @@ const CategoriesPage = () => {
                   />
                 </Col>
                 <Col>
-                  <Button onClick={resetFilters} danger type="text">Reset</Button>
+                  <Button className="reset-btn" onClick={resetFilters}>Reset</Button>
                 </Col>
               </Row>
             </div>
@@ -130,9 +130,14 @@ const CategoriesPage = () => {
               type="categories"
               rowKey="_id"
               onEditMode={onEdit}
-              handleAdd={() => setStep(Steps.New_Category)}
               removeHandler={onRemove}
             />
+            <Button
+              className="btn-18"
+              onClick={() => setStep(Steps.New_Category)}
+            >
+              Add Category
+            </Button>
           </Space>
         )}
         {(step && step === Steps.New_Category) && (

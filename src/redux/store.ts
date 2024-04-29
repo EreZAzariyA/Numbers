@@ -4,7 +4,7 @@ import themeSlicer from "./slicers/theme-slicer";
 import invoicesSlicer from "./slicers/invoices";
 import categoriesSlicer from "./slicers/categories";
 import langSlicer from "./slicers/lang-slicer";
-
+import authMiddleWare from "./middlewares/auth.mw";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +14,7 @@ const store = configureStore({
     invoices: invoicesSlicer,
     language: langSlicer
   },
+  middleware: (defaultMiddleware) => (defaultMiddleware().concat(authMiddleWare)),
 });
 
 export default store;

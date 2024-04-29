@@ -7,7 +7,7 @@ import { RootState } from "../../../redux/store";
 import { ThemeColors } from "../../../redux/slicers/theme-slicer";
 
 
-export const Logo = () => {
+const Logo = () => {
   const navigate = useNavigate();
   const theme = useSelector((state: RootState) => state.theme.themeColor);
 
@@ -21,4 +21,6 @@ export const Logo = () => {
       )}
     </div>
   );
-}
+};
+
+export default Logo;

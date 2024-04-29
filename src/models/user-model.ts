@@ -1,18 +1,15 @@
+import { TokenResponse } from "@react-oauth/google";
 import Role from "./role";
-
-interface Email {
-  email: string,
-  isValid: boolean,
-  isActive: boolean
-};
 
 export class EmailModel {
   email: string;
-  isValid: boolean = false;
-  isActive: boolean = false;
+  isValidate?: boolean = false;
+  isActive?: boolean = false;
 
-  constructor(email: string) {
-    this.email = email;
+  constructor(email: EmailModel) {
+    this.email = email.email;
+    this.isValidate = email.isValidate;
+    this.isActive = email.isActive;
   }
 };
 
@@ -22,14 +19,21 @@ class UserModel {
     first_name: string;
     last_name: string;
   };
-  emails: Email[];
+  emails: EmailModel[];
   services: {
-    password: string
+    password: string;
+    google?: TokenResponse;
   };
   config?: {
     lang?: string,
     'theme-color'?: string
-  }
+  };
+  bank?: [{
+    bankName: string
+    credentials: string,
+    details: object,
+    lastConnection: number
+  }];
   role: Role = Role.User;
 
   constructor(user: UserModel) {

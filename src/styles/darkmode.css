@@ -1,0 +1,38 @@
+.dark-theme b,
+.dark-theme p,
+.dark-theme span,
+.dark-theme div,
+.dark-theme .ant-form-item-label label[title],
+.dark-theme .ant-select .ant-select-selector span,
+.dark-theme .ant-input:disabled {
+  color: var(--default-white);
+}
+.dark-theme .ant-picker-input input::placeholder,
+.dark-theme .ant-input:disabled,
+.dark-theme .ant-input::placeholder {
+  color: rgba(211, 211, 211, 0.7);
+}
+
+.dark-theme .ant-picker,
+.dark-theme .ant-select .ant-select-selector,
+.dark-theme .ant-input-affix-wrapper {
+  background: var(--bg-dark);
+}
+
+.dark-theme .ant-table-wrapper .ant-table .ant-table-container {
+  border: 1px solid var(--ant-default-dark);
+}
+.dark-theme .ant-table .ant-table-thead .ant-table-cell {
+  background: var(--ant-default-dark);
+  color: var(--default-white);
+}
+.dark-theme .ant-table .ant-table-tbody .ant-table-cell {
+  background: var(--bg-dark);
+}
+
+.dark-theme .ant-table-wrapper .ant-table-tbody>tr.ant-table-placeholder:hover > td {
+  background: var(--ant-default-dark);
+}
+.dark-theme .ant-table-wrapper .ant-table-tbody>tr.ant-table-placeholder > td .ant-empty-description {
+  color: white;
+}

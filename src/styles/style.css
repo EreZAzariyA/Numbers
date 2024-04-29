@@ -16,6 +16,13 @@
   background: #252525;
   box-shadow: 0 2px 0 rgb(0 0 0 / 25%);
 }
+.dark-theme .ant-btn:not(:disabled).reset-btn {
+  background: #f9615e;
+  border: none;
+}
+.dark-theme .ant-btn:not(:disabled).reset-btn:hover {
+  background: #fb4d4a;
+}
 .dark-theme .ant-btn.btn-18:hover,
 .ant-btn.btn-18.home:hover {
   background: #3a3939;

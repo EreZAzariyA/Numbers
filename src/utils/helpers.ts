@@ -109,7 +109,15 @@ export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], monthToDisp
 };
 
 export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): number => {
-  const total = invoices.reduce((a, b) => (a + b.amount), 0);
+  let total = 0;
+  let myAmount
+  invoices.forEach((i) => {
+    if (i.amount > 0) {
+      myAmount =+ i.amount;
+    } else {
+      total =- i.amount;
+    }
+  })
   return asNumber(total);
 };
 

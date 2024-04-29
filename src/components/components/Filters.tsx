@@ -71,7 +71,7 @@ export const Filters = (props: FiltersProps) => {
         </Col>
       )}
       <Col>
-        <Button type="text" danger onClick={props.resetFilters}>Reset</Button>
+        <Button className="reset-btn" onClick={props.resetFilters}>Reset</Button>
       </Col>
     </Row>
   )

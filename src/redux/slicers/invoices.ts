@@ -31,9 +31,13 @@ const invoicesSlicer = createSlice({
     },
     invoicesOnLogoutAction(state, action: PayloadAction) {
       return initialState;
+    },
+    addManyInvoices(state, action: PayloadAction<InvoiceModel[]>) {
+      action.payload.forEach((t) => state.push(t));
+      return state;
     }
   }
 });
 
-export const { fetchInvoicesAction, addNewInvoiceAction, updateInvoiceAction, removeInvoiceAction, invoicesOnLogoutAction } = invoicesSlicer.actions;
+export const { fetchInvoicesAction, addNewInvoiceAction, updateInvoiceAction, removeInvoiceAction, invoicesOnLogoutAction, addManyInvoices } = invoicesSlicer.actions;
 export default invoicesSlicer.reducer

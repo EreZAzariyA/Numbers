@@ -7,6 +7,7 @@ export const getMenuItem = (
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: 'group',
+  value?: string
 ): MenuItem  => {
   return {
     key,
@@ -14,6 +15,7 @@ export const getMenuItem = (
     children,
     label,
     type,
+    value
   } as MenuItem;
 };
 

@@ -1,4 +1,4 @@
-import { Form, Table, Typography, Popconfirm, Row, Col, Divider, Button, TableProps } from "antd";
+import { Form, Table, Typography, Popconfirm, Row, Col, Divider, TableProps } from "antd";
 import { DataType, InvoiceDataType } from "../../utils/types";
 import { useNavigate } from "react-router-dom";
 
@@ -16,10 +16,7 @@ interface EditTableProps<T> {
 
 export const EditTable = <T extends DataType | InvoiceDataType>(props: EditTableProps<T>) => {
   const [ form ] = Form.useForm();
-  const isCategoriesList = props.type === 'categories';
-  const componentName = isCategoriesList ? 'Category' : 'Invoice';
   const navigate = useNavigate();
-
 
   props.columns.push({
     title: 'Actions',
@@ -67,9 +64,6 @@ export const EditTable = <T extends DataType | InvoiceDataType>(props: EditTable
         rootClassName="editable-row"
         scroll={props.scrollAble ? {x: 600} : {}}
       />
-      <Form.Item>
-        <Button onClick={props.handleAdd}>Add {componentName}</Button>
-      </Form.Item>
     </Form>
   );
 };

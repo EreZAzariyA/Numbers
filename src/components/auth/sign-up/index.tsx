@@ -12,13 +12,13 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [initialValues, setInitialValues] = useState<UserModel>({
     _id: null,
-    emails:[],
+    emails: [],
     profile: {
       first_name: '',
       last_name: ''
     },
     services: {
-      password: ''
+      password: '',
     },
     role: Role.User
   });
@@ -38,7 +38,7 @@ const SignUp = () => {
 
   const handleChange = (field: string, value: string) => {
     if (field === 'email') {
-      const emailObj = new EmailModel(value);
+      const emailObj = new EmailModel({email: value});
       setInitialValues({...initialValues, emails: [emailObj]});
     }
     if (['first_name', 'last_name'].includes(field)) {
@@ -63,7 +63,18 @@ const SignUp = () => {
   return (
     <div className="auth-form-main-container">
       <div className="auth-form-inner-container">
-        <Form onFinish={onFinish} initialValues={initialValues}>
+        <Form
+          onFinish={onFinish}
+          initialValues={initialValues}
+          className='auth-form sign-up'
+          layout="horizontal"
+          labelAlign='left'
+          labelCol={{
+            sm: { span: 6 },
+            lg: { span: 4 },
+          }}
+          wrapperCol={{ span: 24 }}
+        >
             <Form.Item
               label={'First-name'}
               name={'first_name'}

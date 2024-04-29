@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export type ThemeType =  string;
-
 export enum ThemeColors {
   DARK = "dark",
   LIGHT = "light"
 };
+
+export type ThemeType = string;
 
 export interface ThemeState {
   themeColor: ThemeType

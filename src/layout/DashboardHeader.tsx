@@ -1,20 +1,19 @@
-import { Button, Col, Dropdown, Layout, MenuProps, Row, message } from "antd";
-import { CiSearch } from "react-icons/ci";
-import { Colors, Sizes, getError, useResize } from "../utils/helpers";
+import i18n from "i18next";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import DarkModeButton from "../components/components/Darkmode-button";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import categoriesServices from "../services/categories";
-import { useEffect, useState } from "react";
-import invoicesServices from "../services/invoices";
-import { MenuOutlined } from "@ant-design/icons";
-import { MenuItem } from "../utils/types";
-import authServices from "../services/authentication";
-import { Logo } from "../components/components/logo/logo";
-import i18n from "i18next";
 import { LanguageType, Languages } from "../redux/slicers/lang-slicer";
+import DarkModeButton from "../components/components/Darkmode-button";
+import Logo from "../components/components/logo/logo";
 import userServices from "../services/user-services";
+import categoriesServices from "../services/categories";
+import invoicesServices from "../services/invoices";
+import authServices from "../services/authentication";
+import { MenuItem } from "../utils/types";
+import { getError, useResize } from "../utils/helpers";
+import { Button, Col, Dropdown, Layout, MenuProps, Row, message } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
 
 interface DashboardHeaderProps {
   changeTheme?: () => void;
@@ -43,12 +42,8 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
       }
     };
 
-    if (user) {
-      if (user?._id) {
-        fetchUserData();
-      } else {
-        message.info('No User id');
-      }
+    if (user && user._id) {
+      fetchUserData();
     }
   }, [user]);
 
@@ -117,11 +112,6 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
         <div className="right-container">
           <div className="right-inner-container">
             <Row align={'middle'} gutter={!isMobile ? [10, 0] : [0, 0]}>
-              <Col>
-                <Button type="link" size="small" onClick={() => navigate('search')}>
-                  <CiSearch color={Colors.ICON} size={Sizes.MENU_ICON} />
-                </Button>
-              </Col>
               <Col>
                 <Dropdown
                   menu={{

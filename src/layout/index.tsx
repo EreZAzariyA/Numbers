@@ -1,21 +1,21 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import DashboardHeader from "./DashboardHeader";
-import { Layout, Menu, MenuProps, message } from "antd";
 import { useEffect, useState } from "react";
-import { AiOutlineLogout, AiOutlineProfile, AiOutlineShoppingCart } from "react-icons/ai";
-import { VscAccount } from "react-icons/vsc";
-import { Colors, Sizes, useResize } from "../utils/helpers";
-import { BiLogInCircle } from "react-icons/bi";
-import { FaAddressCard } from "react-icons/fa";
-import { LiaShippingFastSolid } from "react-icons/lia";
-import { GoHome } from "react-icons/go";
 import { useSelector } from "react-redux";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { RootState } from "../redux/store";
 import { ThemeColors } from "../redux/slicers/theme-slicer";
-import { MenuItem, getMenuItem } from "../utils/types";
+import DashboardHeader from "./DashboardHeader";
 import authServices from "../services/authentication";
-import { useTranslation } from "react-i18next";
 import userServices from "../services/user-services";
+import { Colors, Sizes, useResize } from "../utils/helpers";
+import { MenuItem, getMenuItem } from "../utils/types";
+import { Layout, Menu, MenuProps, message } from "antd";
+import { AiOutlineLogout, AiOutlineProfile, AiOutlineShoppingCart } from "react-icons/ai";
+import { BiLogInCircle } from "react-icons/bi";
+import { FaAddressCard } from "react-icons/fa";
+import { GoHome } from "react-icons/go";
+import { LiaShippingFastSolid } from "react-icons/lia";
+import { VscAccount } from "react-icons/vsc";
 
 const { Sider, Content } = Layout;
 
@@ -47,12 +47,6 @@ const DashboardView = () => {
   useEffect(() => {
     setIsCollapsed(width <= 500);
   }, [width]);
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth/sign-in');
-    }
-  }, [user, navigate]);
 
   const accountItems = user ? [
     getMenuItem(

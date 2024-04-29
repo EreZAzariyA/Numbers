@@ -1,38 +1,59 @@
-import { Button, Form, Input, message } from "antd";
-import CredentialsModel from "../../../models/credentials-model";
+import { Link } from "react-router-dom";
 import authServices from "../../../services/authentication";
-import { Link, useNavigate } from "react-router-dom";
+import CredentialsModel from "../../../models/credentials-model";
+import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { getError } from "../../../utils/helpers";
-
-// const formLayout = {
-//   className: 'auth-form login',
-//   layout: "horizontal",
-//   labelAlign: 'left',
-//   labelCol: {
-//     sm: { span: 6 },
-//     lg: { span: 4 },
-//   },
-//   wrapperCol: {span: 24},
-// };
+import { Button, Form, Input, message } from "antd";
+import "../auth.css";
 
 const SignIn = () => {
-  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const onFinish = async (credentials: CredentialsModel) => {
     try {
-      await authServices.signin(credentials);
-      message.success("Logged-in successfully");
-      navigate('/');
+      const res = await authServices.signin(credentials);
+      if (res) {
+        message.success("Logged-in successfully");
+      }
     } catch (err: any) {
       message.error(getError(err));
     }
   };
 
+  const onSuccess = async (tokenResponse: TokenResponse) => {
+    try {
+      await authServices.googleSignIn(tokenResponse);
+      message.success("Logged-in successfully");
+    } catch (err: any) {
+      message.error(err.message);
+    }
+  }
+
+  const onError = (errResponse: any) => {
+    console.log(errResponse);
+  };
+
+  const login = useGoogleLogin({
+    flow: 'implicit',
+    onSuccess,
+    onError
+  });
+
   return (
     <div className="auth-form-main-container">
       <div className="auth-form-inner-container">
-        <Form form={form} onFinish={onFinish}>
+        <Form
+          form={form}
+          onFinish={onFinish}
+          className='auth-form sign-in'
+          layout="horizontal"
+          labelAlign='left'
+          labelCol={{
+            sm: { span: 6 },
+            lg: { span: 4 },
+          }}
+          wrapperCol={{ span: 24 }}
+        >
           <Form.Item
             label={'Email'}
             name={'email'}
@@ -56,6 +77,10 @@ const SignIn = () => {
 
           <Button htmlType="submit">Sign-in</Button>
           <p>D`ont have account? <Link to={'/auth/sign-up'}>Sign-Up</Link></p>
+
+          <Form.Item style={{ width: '200px', margin: 'auto' }}>
+            <Button onClick={() => login()}>Google</Button>
+          </Form.Item>
         </Form>
       </div>
     </div>
