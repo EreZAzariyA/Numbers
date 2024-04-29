@@ -12,6 +12,8 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import Profile from "../components/profile";
+import PageNotFound from "../components/components/PageNotFound";
+import BankPage from "../components/bank-page";
 
 const UserRouter = () => (
   <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
@@ -23,9 +25,10 @@ const UserRouter = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/invoices" element={<Invoices />} />
             <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/bank" element={<BankPage />} />
             <Route path="/profile" element={<Profile />} />
 
-            <Route path="page-not-found" element={<p>Page not found</p>} />
+            <Route path="page-not-found" element={<PageNotFound />} />
             <Route path="*" element={<Navigate to={'page-not-found'} replace />} />
           </Route>
 

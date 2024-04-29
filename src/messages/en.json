@@ -3,6 +3,7 @@
     "dashboard": "Dashboard",
     "invoices": "Invoices",
     "categories": "Categories",
+    "bankAccount": "Bank-Account",
     "profile": "Profile",
     "account": [
       "Account",

@@ -4,7 +4,7 @@ import { Col, Divider, Row } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import InvoiceModel from "../../../models/invoice";
 import CategoryModel from "../../../models/category-model";
-import { asNumber, findCategoryWithLargestAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../../utils/helpers";
+import { findCategoryWithLargestAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../../utils/helpers";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -33,31 +33,27 @@ const DashboardFirst = (props: DashboardFirstProps) => {
             </Col>
 
             <Col span={12}><b>Total Spent:</b></Col>
-            <Col span={12}>{asNumber(totalSpent)}</Col>
+            <Col span={12}>{totalSpent?.spent}</Col>
             <Divider style={{ margin: 0 }} />
-            {(maxSpent?.amount > 0 || minSpent?.amount  > 0) ? (
+            {(maxSpent?.amount > 0) && (
               <>
-                {(asNumber(maxSpent?.amount) > 0) && (
-                  <>
-                    <Col span={12}><b>Largest Spent:</b></Col>
-                    <Col span={12}>{`${maxSpent?.category}: ${maxSpent?.amount}`}</Col>
-                    <Divider style={{ margin: 0 }} />
-                  </>
-                )}
-                {asNumber(minSpent?.amount) > 0 && (
-                  <>
-                    <Col span={12}><b>Lowest Spent:</b></Col>
-                    <Col span={12}>{`${minSpent?.category}: ${minSpent?.amount}`}</Col>
-                    <Divider style={{ margin: 0 }} />
-                  </>
-                )}
+                <Col span={12}><b>Largest Spent:</b></Col>
+                <Col span={12}>{`${maxSpent?.category}: ${maxSpent?.amount}`}</Col>
+                <Divider style={{ margin: 0 }} />
               </>
-            ) : (
+            )}
+            {minSpent?.amount > 0 && (
+              <>
+                <Col span={12}><b>Lowest Spent:</b></Col>
+                <Col span={12}>{`${minSpent?.category}: ${minSpent?.amount}`}</Col>
+                <Divider style={{ margin: 0 }} />
+              </>
+            )}
+            {(maxSpent?.amount > 0 && minSpent?.amount  > 0) && (
               <Col span={24}>
                 <b>No Data</b>
               </Col>
             )}
-
           </Row>
         </Col>
       </Row>

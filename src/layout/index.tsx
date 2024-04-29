@@ -10,11 +10,13 @@ import userServices from "../services/user-services";
 import { Colors, Sizes, useResize } from "../utils/helpers";
 import { MenuItem, getMenuItem } from "../utils/types";
 import { Layout, Menu, MenuProps, message } from "antd";
-import { AiOutlineLogout, AiOutlineProfile, AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlineProfile } from "react-icons/ai";
 import { BiLogInCircle } from "react-icons/bi";
+import { CiCircleList } from "react-icons/ci";
+import { BsReceipt } from "react-icons/bs";
+import { CiBank } from "react-icons/ci";
 import { FaAddressCard } from "react-icons/fa";
-import { GoHome } from "react-icons/go";
-import { LiaShippingFastSolid } from "react-icons/lia";
+import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
 
 const { Sider, Content } = Layout;
@@ -76,17 +78,22 @@ const DashboardView = () => {
     getMenuItem(
       t('pages.dashboard'),
       'dashboard',
-      <GoHome size={Sizes.MENU_ICON} />
+      <RxDashboard size={Sizes.MENU_ICON} />
     ),
     getMenuItem(
       t('pages.invoices'),
       'invoices',
-      <AiOutlineShoppingCart size={Sizes.MENU_ICON} />
+      <BsReceipt size={Sizes.MENU_ICON} />
     ),
     getMenuItem(
       t('pages.categories'),
       'categories',
-      <LiaShippingFastSolid size={Sizes.MENU_ICON} />
+      <CiCircleList size={Sizes.MENU_ICON} />
+    ),
+    getMenuItem(
+      t('pages.bankAccount'),
+      'bank',
+      <CiBank size={Sizes.MENU_ICON} />
     ),
     getMenuItem(
       t('pages.account.0'),

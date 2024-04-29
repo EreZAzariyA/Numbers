@@ -7,7 +7,7 @@ import { addNewInvoiceAction, fetchInvoicesAction, removeInvoiceAction, updateIn
 class InvoicesServices {
   async fetchInvoicesByUserId(user_id: string): Promise<InvoiceModel[]> {
     const response = await axios.get<InvoiceModel[]>(config.urls.invoices + `/${user_id}`);
-    const userInvoices = response.data;
+    let userInvoices = response.data;
     store.dispatch(fetchInvoicesAction(userInvoices));
     return userInvoices;
   };

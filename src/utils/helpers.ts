@@ -108,17 +108,28 @@ export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], monthToDisp
   return monthInvoices;
 };
 
-export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): number => {
-  let total = 0;
-  let myAmount
+export const getTotals = (arr: number[]): number => {
+  const total = arr?.reduce((a, b) => a + b, 0);
+  return asNumber(total);
+};
+
+
+export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): {spent: number, income: number } => {
+  let totals: number[] = [];
+  let incomes: number[] = [];
+
   invoices.forEach((i) => {
     if (i.amount > 0) {
-      myAmount =+ i.amount;
+      incomes.push(i.amount);
     } else {
-      total =- i.amount;
+      totals.push(i.amount);
     }
   })
-  return asNumber(total);
+
+  return {
+    spent: getTotals(totals),
+    income: getTotals(incomes)
+  };
 };
 
 export const getInvoicesPricePerCategory = (invoices: InvoiceModel[]) => {
@@ -140,16 +151,19 @@ export const getInvoicesPricePerCategory = (invoices: InvoiceModel[]) => {
 };
 
 interface CategoryData {
-  [category: string]: number;
+  [category: string]: {
+    spent: number,
+    income: number
+  };
 }
 
-export const findCategoryWithLargestAmount = (data: CategoryData): { category: string, amount: number } | null => {
+export const findCategoryWithLargestAmount = (data: CategoryData): { category: string, amount: number } => {
   let maxCategory: string | null = null;
   let maxValue: number = -Infinity;
 
-  Object.entries(data).forEach(([category, amount]) => {
-    if (amount > maxValue) {
-      maxValue = amount;
+  Object.entries(data).forEach(([category, amounts]) => {
+    if (Math.abs(amounts.spent) > maxValue) {
+      maxValue = Math.abs(amounts.spent);
       maxCategory = category;
     }
   });
@@ -163,11 +177,11 @@ export const findCategoryWithLowestAmount = (data: CategoryData): { category: st
   let minCategory: string | null = null;
   let minValue: number = Infinity;
 
-  Object.entries(data).forEach(([category, amount]) => {
-    if (amount === 0) return;
+  Object.entries(data).forEach(([category, amounts]) => {
+    if (Math.abs(amounts.spent) === 0) return;
 
-    if (amount < minValue) {
-      minValue = amount;
+    if (Math.abs(amounts.spent) < minValue) {
+      minValue = Math.abs(amounts.spent);
       minCategory = category;
     }
   });

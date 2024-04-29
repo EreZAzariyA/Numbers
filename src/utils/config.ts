@@ -35,6 +35,8 @@ abstract class Config {
 class DevelopmentConfig extends Config {
   public constructor() {
     // super("https://ea-numbers-server.vercel.app/api/");
+    // super("https://ea-numbers-server-test.vercel.app/api/");
+    // super("https://t2obu15q2h.execute-api.eu-central-1.amazonaws.com/");
     super("http://127.0.0.1:5001/api/");
   };
 };

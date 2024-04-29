@@ -9,12 +9,11 @@ class InterceptorsService {
     axios.interceptors.request.use((request) => {
       const token = (store.getState() as RootState).auth.token;
       if (token) {
-        request.headers.set('authorization', "Bearer " + token);
+        request.headers['Authorization'] = `Bearer ${token}`;
       }
+
       return request;
-    }, ((err) => {
-      console.log(err);
-    }));
+    }, ((err) => console.log(err)));
 
     axios.interceptors.response.use((response) => {
       return response;
