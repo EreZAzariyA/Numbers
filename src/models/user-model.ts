@@ -45,6 +45,7 @@ class UserModel {
     this.emails = user.emails;
     this.services = user.services;
     this.config = user.config;
+    this.bank = user.bank;
     this.role = user.role;
   }
 };

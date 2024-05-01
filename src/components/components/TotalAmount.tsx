@@ -4,13 +4,12 @@ import InvoiceModel from "../../models/invoice";
 
 interface TotalAmountInputProps {
   invoices: InvoiceModel[];
-}
+};
 
 const TotalAmountInput = (props: TotalAmountInputProps) => {
-
   const totalAmount = getInvoicesTotalsPrice(props.invoices);
   return (
-    <Input style={{maxWidth: '350px'}} disabled value={asNumber(totalAmount.spent)} />
+    <Input disabled style={{ maxWidth: '350px' }} value={asNumber(totalAmount.spent)} />
   )
 };
 

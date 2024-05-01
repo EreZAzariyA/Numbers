@@ -1,9 +1,9 @@
 {
-  "pages": {
+  "menu": {
     "dashboard": "Dashboard",
     "invoices": "Invoices",
     "categories": "Categories",
-    "bankAccount": "Bank-Account",
+    "bankAccount": "Bank Account",
     "profile": "Profile",
     "account": [
       "Account",
@@ -13,6 +13,13 @@
       "Sign-Up",
       "Sign-Out"
     ]
+  },
+  "pages": {
+    "dashboard": "Dashboard",
+    "invoices": "Invoices",
+    "categories": "Categories",
+    "bankAccount": "Bank Account",
+    "profile": "Profile"
   },
   "homePage": {
     "firstPage": [

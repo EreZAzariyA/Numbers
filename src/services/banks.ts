@@ -1,14 +1,19 @@
 import axios from "axios";
 import config from "../utils/config";
 import store from "../redux/store";
-import { addManyInvoices, addNewInvoiceAction } from "../redux/slicers/invoices";
-import InvoiceModel from "../models/invoice";
+import { addManyInvoices } from "../redux/slicers/invoices";
+import { updateUserFields } from "../redux/slicers/auth-slicer";
 
 class BankServices {
   fetchBankData = async (details: any, user_id: string): Promise<any> => {
     const response = await axios.post(config.urls.bank.fetchBankData + `/${user_id}`, details);
     const bankDetails = response.data;
-    return bankDetails;
+    if (bankDetails) {
+      console.log(bankDetails);
+      
+      store.dispatch(updateUserFields({field: 'bank', value: bankDetails.userBank}))
+      return bankDetails;
+    }
   };
   
   importTrans = async (transactions: any[], user_id: string): Promise<any> => {

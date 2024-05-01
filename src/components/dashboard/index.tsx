@@ -21,8 +21,11 @@ const Dashboard = () => {
     <div className="page-container dashboard">
       <div className="title-container">
         <div className="page-title">{t('pages.dashboard')}</div>
-        <DatePicker.MonthPicker
+        <DatePicker
+          picker="month"
           defaultPickerValue={currentMonth}
+          maxDate={dayjs()}
+          placeholder={dayjs().format('YYYY-MM')}
           allowClear={false}
           value={monthToDisplay}
           onChange={setMonthToDisplay}

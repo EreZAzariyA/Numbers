@@ -52,12 +52,12 @@ const DashboardView = () => {
 
   const accountItems = user ? [
     getMenuItem(
-      t('pages.account.1'),
+      t('menu.account.1'),
       'profile',
       <AiOutlineProfile size={Sizes.SUB_MENU_ICON} />
     ),
     getMenuItem(
-      t('pages.account.5'),
+      t('menu.account.5'),
       'sign-out',
       <AiOutlineLogout color={Colors.DANGER} size={Sizes.SUB_MENU_ICON} />,
     )
@@ -76,27 +76,27 @@ const DashboardView = () => {
 
   const items: MenuItem[] = [
     getMenuItem(
-      t('pages.dashboard'),
+      t('menu.dashboard'),
       'dashboard',
       <RxDashboard size={Sizes.MENU_ICON} />
     ),
     getMenuItem(
-      t('pages.invoices'),
+      t('menu.invoices'),
       'invoices',
       <BsReceipt size={Sizes.MENU_ICON} />
     ),
     getMenuItem(
-      t('pages.categories'),
+      t('menu.categories'),
       'categories',
       <CiCircleList size={Sizes.MENU_ICON} />
     ),
     getMenuItem(
-      t('pages.bankAccount'),
+      t('menu.bankAccount'),
       'bank',
       <CiBank size={Sizes.MENU_ICON} />
     ),
     getMenuItem(
-      t('pages.account.0'),
+      t('menu.account.0'),
       'account',
       <VscAccount size={Sizes.MENU_ICON} />,
       accountItems

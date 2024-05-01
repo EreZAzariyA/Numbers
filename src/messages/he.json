@@ -1,5 +1,5 @@
 {
-  "pages": {
+  "menu": {
     "dashboard": "דף הבית",
     "invoices": "הוצאות",
     "categories": "קטגוריות",
@@ -13,6 +13,13 @@
       "הרשמה",
       "יציאה"
     ]
+  },
+  "pages": {
+    "dashboard": "דף הבית",
+    "invoices": "הוצאות",
+    "categories": "קטגוריות",
+    "bankAccount": "חשבון בנק",
+    "profile": "פרופיל"
   },
   "homePage": {
     "firstPage": [

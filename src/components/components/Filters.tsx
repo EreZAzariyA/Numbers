@@ -2,7 +2,7 @@ import { Button, Col, DatePicker, Row, Select } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useTranslation } from "react-i18next";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useResize } from "../../utils/helpers";
 
 interface FiltersProps {
@@ -16,8 +16,8 @@ interface FiltersProps {
 
 export const Filters = (props: FiltersProps) => {
   const { t } = useTranslation();
-  const categories = useSelector((state: RootState) => state.categories);
   const { isPhone } = useResize();
+  const categories = useSelector((state: RootState) => state.categories);
 
   return (
     <Row align={'middle'} justify={'start'} gutter={[20, 10]}>
@@ -27,6 +27,7 @@ export const Filters = (props: FiltersProps) => {
             allowClear
             style={{ minWidth: '200px' }}
             value={props.filterState.dates}
+            maxDate={dayjs()}
             onChange={(val) => {
               if (!val) {
                 props.handleFilterChange('dates', null);
@@ -42,6 +43,7 @@ export const Filters = (props: FiltersProps) => {
         <Col>
           <DatePicker
             picker="month"
+            maxDate={dayjs()}
             allowClear={!isPhone}
             value={props.filterState.month}
             onChange={(val) => {

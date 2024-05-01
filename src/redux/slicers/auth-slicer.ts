@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode';
 import UserModel from '../../models/user-model';
-import extraReducer from './bank-slicer';
 
 export interface AuthState {
   token: string | null,
@@ -42,6 +41,16 @@ const authSlicer = createSlice({
         user: jwtDecode(action.payload.token)
       };
       return state;
+    },
+    updateUserFields(state: AuthState, action: PayloadAction<{field: string, value: any}>): AuthState {
+      state = {
+        ...state,
+        user: {
+          ...state.user,
+          [action.payload.field]: action.payload.value
+        }
+      };
+      return state
     }
   }
 });
@@ -51,5 +60,6 @@ export const {
   registerAction,
   logoutAction,
   refreshTokenAction,
+  updateUserFields
   } = authSlicer.actions;
 export default authSlicer.reducer;

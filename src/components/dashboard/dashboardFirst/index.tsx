@@ -33,7 +33,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
             </Col>
 
             <Col span={12}><b>Total Spent:</b></Col>
-            <Col span={12}>{totalSpent?.spent}</Col>
+            <Col span={12}>{Math.abs(totalSpent?.spent)}</Col>
             <Divider style={{ margin: 0 }} />
             {(maxSpent?.amount > 0) && (
               <>
