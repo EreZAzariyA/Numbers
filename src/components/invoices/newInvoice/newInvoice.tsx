@@ -17,13 +17,13 @@ interface NewInvoiceProps {
 const NewInvoice = (props: NewInvoiceProps) => {
   const [form] = Form.useForm();
 
-  const [initialValues, setInitialValues] = useState<InvoiceModel>({
+  const [initialValues, setInitialValues] = useState<Partial<InvoiceModel>>({
     _id: props.invoice?._id || null,
     user_id: props.invoice?.user_id || null,
     category_id: props.invoice?.category_id || props.newInvoiceCategoryId || '',
     description: props.invoice?.description || '',
     amount: props.invoice?.amount || null,
-    date: dayjs(props.invoice?.date) || null
+    date: dayjs(props.invoice?.date) || null,
   })
 
   const options: DefaultOptionType[] = [...props.categories].map((category) => ({

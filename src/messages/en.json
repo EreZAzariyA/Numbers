@@ -30,6 +30,7 @@
   },
   "placeholders": [
     "Search by category",
-    "Search For Category"
+    "Search For Category",
+    "Search by status"
   ]
 }

@@ -7,6 +7,7 @@ class InvoiceModel {
   category_id: string;
   description: string;
   amount: number;
+  status: string
 
   constructor(invoice: InvoiceModel) {
     this._id = invoice._id;
@@ -15,6 +16,7 @@ class InvoiceModel {
     this.category_id = invoice.category_id;
     this.description = invoice.description;
     this.amount = invoice.amount;
+    this.status = invoice.status;
   };
 };
 

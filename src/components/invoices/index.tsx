@@ -13,6 +13,7 @@ import { Filters } from "../components/Filters";
 import dayjs, { Dayjs } from "dayjs";
 import TotalAmountInput from "../components/TotalAmount";
 import { useLocation, useNavigate } from "react-router-dom";
+import { TransactionStatuses } from "../../utils/transactions";
 
 enum Steps {
   New_Invoice = "New_Invoice",
@@ -33,7 +34,8 @@ const Invoices = () => {
   const [filterState, setFilterState] = useState({
     category_id: null,
     dates: null,
-    month: dayjs()
+    month: dayjs(),
+    status: 'completed'
   });
 
   useEffect(() => {
@@ -52,6 +54,9 @@ const Invoices = () => {
         dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
         dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
       ))
+    }
+    if (filterState.status) {
+      data = data.filter((d) => d.status === filterState.status)
     }
     setDataSource(data);
   }, [filterState, invoices]);
@@ -110,7 +115,12 @@ const Invoices = () => {
   };
 
   const resetFilters = () => {
-    setFilterState({ category_id: null, dates: [], month: dayjs() });
+    setFilterState({
+      category_id: null,
+      dates: [],
+      month: dayjs(),
+      status: 'completed'
+    });
   };
 
   const columns: TableProps<InvoiceDataType>['columns'] = [
@@ -144,6 +154,14 @@ const Invoices = () => {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (val) => {
+        return (TransactionStatuses as any)[val]
+      }
     }
   ];
 
@@ -164,6 +182,7 @@ const Invoices = () => {
                   datesFilter
                   monthFilter
                   categoryFilter
+                  statusFilter
                   filterState={filterState}
                   handleFilterChange={handleFilterChange}
                   resetFilters={resetFilters}
