@@ -35,14 +35,15 @@ const authSlicer = createSlice({
       state = {token: null, user: null}
       return state;
     },
-    refreshTokenAction(state: AuthState, action: PayloadAction<AuthState>): AuthState {
+    refreshTokenAction(state: AuthState, action: PayloadAction<string>): AuthState {
+      localStorage.setItem('token', action.payload);
       state = {
-        token: action.payload.token,
-        user: jwtDecode(action.payload.token)
+        token: action.payload,
+        user: jwtDecode(action.payload)
       };
       return state;
     },
-    updateUserFields(state: AuthState, action: PayloadAction<{field: string, value: any}>): AuthState {
+    updateUserFieldsAction(state: AuthState, action: PayloadAction<{field: string, value: any}>): AuthState {
       state = {
         ...state,
         user: {
@@ -51,6 +52,13 @@ const authSlicer = createSlice({
         }
       };
       return state
+    },
+    fetchUserDataAction(state: AuthState, action: PayloadAction<UserModel>): AuthState {
+      state = {
+        ...state,
+        user: action.payload
+      }
+      return state;
     }
   }
 });
@@ -60,6 +68,7 @@ export const {
   registerAction,
   logoutAction,
   refreshTokenAction,
-  updateUserFields
+  updateUserFieldsAction,
+  fetchUserDataAction
   } = authSlicer.actions;
 export default authSlicer.reducer;

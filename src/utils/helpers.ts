@@ -85,6 +85,13 @@ export const useResize = () => {
   return windowSize;
 };
 
+export const isArray = (arr: any[]): boolean => {
+  return Array.isArray(arr)
+};
+export const isArrayAndNotEmpty = (arr: any[]): boolean => {
+  return isArray(arr) && arr.length > 0
+};
+
 export const getError = (err: any) => {
   if(typeof err === "string") return err;
   if(typeof err.response?.data === "string") return err.response.data; // axios: 401, 403, 500
@@ -99,32 +106,39 @@ export const asNumber = (num: number, digits: number = 2) => (
 
 export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], monthToDisplay: Dayjs): InvoiceModel[] => {
   let monthInvoices: InvoiceModel[] = [];
-  invoices.forEach((i) => {
-    const invoiceDate = dayjs(i.date).format('MMMM');
-    if (invoiceDate === monthToDisplay?.format('MMMM')) {
-      monthInvoices.push(i);
-    }
-  });
-  return monthInvoices;
+  if (isArrayAndNotEmpty(invoices)) {
+    invoices.forEach((i) => {
+      const invoiceDate = dayjs(i.date).month();
+      if (invoiceDate === monthToDisplay?.month()) {
+        monthInvoices.push(i);
+      }
+    });
+    return monthInvoices;
+  }
+  return [];
 };
 
 export const getTotals = (arr: number[]): number => {
-  const total = arr?.reduce((a, b) => a + b, 0);
-  return asNumber(total);
+  if (isArrayAndNotEmpty(arr)) {
+    const total = arr?.reduce((a, b) => a + b, 0);
+    return asNumber(total);
+  }
+  return 0;
 };
-
 
 export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): {spent: number, income: number } => {
   let totals: number[] = [];
   let incomes: number[] = [];
 
-  invoices.forEach((i) => {
-    if (i.amount > 0) {
-      incomes.push(i.amount);
-    } else {
-      totals.push(i.amount);
-    }
-  })
+  if (isArrayAndNotEmpty(invoices)) {
+    invoices.forEach((i) => {
+      if (i.amount > 0) {
+        incomes.push(i.amount);
+      } else {
+        totals.push(i.amount);
+      }
+    })
+  }
 
   return {
     spent: getTotals(totals),
@@ -136,18 +150,21 @@ export const getInvoicesPricePerCategory = (invoices: InvoiceModel[]) => {
   const categories = store.getState().categories;
   let invoicesByCategory: any = {};
 
-  for (let category of categories) {
-    const categoryInvoices: InvoiceModel[] = [];
+  if (isArrayAndNotEmpty(invoices) && isArrayAndNotEmpty(categories)) {
+    for (let category of categories) {
+      const categoryInvoices: InvoiceModel[] = [];
+  
+      invoices.forEach((invoice) => {
+        if (invoice.category_id === category._id){
+          categoryInvoices.push(invoice);
+        }
+      });
+      const totalAmount = getInvoicesTotalsPrice(categoryInvoices);
+      invoicesByCategory[category.name] = totalAmount
+    };
+  }
 
-    invoices.forEach((invoice) => {
-      if (invoice.category_id === category._id){
-        categoryInvoices.push(invoice);
-      }
-    });
-    const totalAmount = getInvoicesTotalsPrice(categoryInvoices);
-    invoicesByCategory[category.name] = totalAmount
-  };
-  return invoicesByCategory;
+  return invoicesByCategory
 };
 
 interface CategoryData {

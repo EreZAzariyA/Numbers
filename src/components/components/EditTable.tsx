@@ -62,7 +62,7 @@ export const EditTable = <T extends DataType | InvoiceDataType>(props: EditTable
         columns={props.columns}
         dataSource={props.dataSource}
         rootClassName="editable-row"
-        scroll={props.scrollAble ? {x: 600} : {}}
+        scroll={props.scrollAble ? {x: 700} : {}}
       />
     </Form>
   );

@@ -103,6 +103,12 @@ const DashboardView = () => {
     )
   ];
 
+  items.forEach((i) => (
+    i.style = {
+      textAlign: 'left',
+    }
+  ));
+
   const onClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'sign-out') {
       authServices.logout();
@@ -111,12 +117,6 @@ const DashboardView = () => {
     navigate(e.key);
     setCurrent(e.key);
   };
-
-  items.forEach((i) => (
-    i.style = {
-      textAlign: 'left',
-    }
-  ));
 
   const handleChangeTheme = async (): Promise<void> => {
     if (!user) {

@@ -12,6 +12,8 @@ class InterceptorsService {
         request.headers['Authorization'] = `Bearer ${token}`;
       }
 
+      request.headers["ngrok-skip-browser-warning"] = true;
+
       return request;
     }, ((err) => console.log(err)));
 
