@@ -6,8 +6,8 @@ interface ModalProps {
   title?: string;
   isOpen: boolean;
   children: ReactNode;
-  onOk: () => void;
-  onCancel: () => void;
+  onOk?: () => void;
+  onCancel?: () => void;
   okText?: string
 };
 

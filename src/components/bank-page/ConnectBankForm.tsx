@@ -1,12 +1,10 @@
-import { Button, Checkbox, Form, Input, Modal, Result, Select, Space, Typography, message } from "antd";
+import { Button, Checkbox, Form, Input, Result, Select, Space, Typography } from "antd";
 import { SCRAPERS, SupportedCompanyTypes } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/types";
 import { useEffect, useState } from "react";
-import bankServices from "../../services/banks";
 import { jwtDecode } from "jwt-decode";
 import UserModel from "../../models/user-model";
-
-const { confirm } = Modal;
+import { fetchBankAccountData } from "../../utils/transactions";
 
 interface ConnectBankFormProps {
   user: UserModel;
@@ -46,39 +44,8 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   };
 
   const onFinish = async (values: any) => {
-    setIsLoading(true);
-
-    try {
-      const res = await bankServices.fetchBankData(values, props.user?._id);
-      if (res) {
-        if (res.account && res.account?.txns && res.account.txns?.length) {
-          showTransConfirm(res.account?.txns);
-        }
-        setResult(res);
-      }
-      setIsLoading(false);
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
-
-  const showTransConfirm = async (transactions: any) => {
-    confirm({
-      okText: 'Import',
-      onOk: () => onTransactionsImportOk(transactions),
-      content: `We found ${transactions.length} invoices, would you like to import them?`
-    });
-  };
-
-  const onTransactionsImportOk = async (transactions: any[]) => {
-    try {
-      const res = await bankServices.importTrans(transactions, props.user?._id);
-      if (res) {
-        message.success('OK');
-      }
-    } catch (err: any) {
-      message.error(err);
-    }
+    const accountData = await fetchBankAccountData(null, values, props.user?._id, setIsLoading, true, setResult, )
+    console.log(accountData);
   };
 
   return (

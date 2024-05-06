@@ -5,12 +5,14 @@ abstract class Config {
       signIn: "",
       googleSignIn: ""
     },
-    user: "",
+    users: "",
     invoices: "",
     categories: "",
     bank: {
       fetchBankData: "",
-      importTransactions: ""
+      updateBankData: "",
+      importTransactions: "",
+      fetchBankHtml: ""
     }
   };
 
@@ -21,12 +23,14 @@ abstract class Config {
         signIn: baseUrl + "auth/signin",
         googleSignIn: baseUrl + "auth/google"
       },
-      user: baseUrl + "user/",
+      users: baseUrl + "users/",
       invoices: baseUrl + "invoices",
       categories: baseUrl + "categories",
       bank: {
         fetchBankData: baseUrl + "bank-account/fetch-bank-data",
+        updateBankData: baseUrl + "bank-account/update-bank-data",
         importTransactions: baseUrl + "bank-account/import-data",
+        fetchBankHtml: baseUrl + "bank-account/draw-bank-html",
       }
     }
   };
@@ -37,7 +41,8 @@ class DevelopmentConfig extends Config {
     // super("https://ea-numbers-server.vercel.app/api/");
     // super("https://ea-numbers-server-test.vercel.app/api/");
     // super("https://t2obu15q2h.execute-api.eu-central-1.amazonaws.com/");
-    super("http://127.0.0.1:5001/api/");
+    // super("https://5dda-2a0d-6fc2-5e61-1600-c91a-9fb6-cd1b-f492.ngrok-free.app/api/");
+    super("http://127.0.0.1:5005/api/");
   };
 };
 
