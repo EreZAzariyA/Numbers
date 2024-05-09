@@ -1,36 +1,40 @@
-import { Button, Checkbox, Form, Input, Result, Select, Space, Typography } from "antd";
+import { Button, Checkbox, Form, Input, Modal, Result, Select, Space, Typography, message } from "antd";
 import { SCRAPERS, SupportedCompanyTypes } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/types";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import UserModel from "../../models/user-model";
-import { fetchBankAccountData } from "../../utils/transactions";
+import { Transaction } from "../../utils/transactions";
+import bankServices from "../../services/banks";
+import { isArray } from "../../utils/helpers";
+
+const { confirm } = Modal;
 
 interface ConnectBankFormProps {
   user: UserModel;
 };
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [credentials, setCredentials] = useState();
+  const [result, setResult] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: false,
     name: '',
     loginFields: []
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [credentials, setCredentials] = useState();
-  const [result, setResult] = useState(null);
 
   useEffect(() => {
-    if (props.user.bank?.[0]?.credentials) {
-      const credentials: any = jwtDecode(props.user.bank[0].credentials);
+    if (props.user.bank?.credentials) {
+      const credentials: any = jwtDecode(props.user.bank.credentials);
       setCredentials(credentials);
       onSelectCompany(credentials.companyId);
     }
   }, [props.user]);
 
-  const bankList: MenuItem[] = Object.entries(SupportedCompanyTypes).map(([bank, value]) => {
-    return getMenuItem(bank, bank, null, null, null, value)
-  });
+  const bankList: MenuItem[] = Object.entries(SupportedCompanyTypes).map(([bank, value]) => (
+    getMenuItem(bank, bank, null, null, null, value)
+  ));
 
   const onSelectCompany = (companyId: string) => {
     const company = (SCRAPERS as any)[companyId];
@@ -44,8 +48,43 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   };
 
   const onFinish = async (values: any) => {
-    const accountData = await fetchBankAccountData(null, values, props.user?._id, setIsLoading, true, setResult, )
-    console.log(accountData);
+    setIsLoading(true);
+
+    if (!props.user._id) {
+      message.error('User is not define');
+      setIsLoading(false);
+      return;
+    }
+  
+    try {
+      const res = await bankServices.fetchBankData(values, props.user._id);
+      if (res?.account && res.account?.txns && res.account.txns?.length) {
+        showTransImportConfirmation(res.account?.txns);
+      }
+      setResult(res);
+      setIsLoading(false);
+    } catch (err: any) {
+      message.error(err.message);
+    }
+  };
+
+  const showTransImportConfirmation = async (transactions: Transaction[]): Promise<void> => {
+    confirm({
+      okText: 'Import',
+      onOk: () => onTransactionsImportOk(transactions),
+      content: `We found ${transactions.length} invoices, would you like to import them?`
+    });
+  };
+  
+  const onTransactionsImportOk = async (transactions: Transaction[]): Promise<void> => {
+    try {
+      const res = await bankServices.importTrans(transactions, props.user._id);
+      if (res && isArray(res)) {
+        message.success(`imported transactions: ${res?.length || 0}`);
+      }
+    } catch (err: any) {
+      message.error(err);
+    }
   };
 
   return (
@@ -63,7 +102,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
             autoComplete="off"
             onFinish={onFinish}
           >
-            <Form.Item initialValue={props.user.bank?.[0]?.bankName} label="Select your bank" name={'companyId'}>
+            <Form.Item initialValue={props.user.bank?.bankName} label="Select your bank" name={'companyId'}>
               <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
             </Form.Item>
       

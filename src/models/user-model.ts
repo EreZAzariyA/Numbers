@@ -13,6 +13,13 @@ export class EmailModel {
   }
 };
 
+export class UserBankModel {
+  bankName: string;
+  credentials: string;
+  details: object;
+  lastConnection: number;
+};
+
 class UserModel {
   _id: string;
   profile: {
@@ -28,12 +35,7 @@ class UserModel {
     lang?: string,
     'theme-color'?: string
   };
-  bank?: [{
-    bankName: string
-    credentials: string,
-    details: object,
-    lastConnection: number
-  }];
+  bank?: UserBankModel;
   role: Role = Role.User;
 
   constructor(user: UserModel) {
