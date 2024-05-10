@@ -3,7 +3,6 @@
 }
 .auth-form-main-container {
   min-height: 100vh;
-  margin-left: 24px;
 
   display: flex;
   flex-direction: column;
@@ -18,8 +17,9 @@
 
 .auth-form {
   z-index: 1;
-  width: min(100% - 30%, 550px);
+  width: min(100% - 10%, 550px);
   min-height: 0;
+  color: var(--default-white);
 
   padding: 30px 20px 10px;
   background: rgba(0, 0, 0, 0.1);
@@ -27,4 +27,8 @@
   -webkit-box-shadow: 0px 0px 35px 3px rgba(0,0,0,0.5);
   -moz-box-shadow: 0px 0px 35px 3px rgba(0,0,0,0.5);
   box-shadow: 0px 0px 35px 3px rgba(0,0,0,0.5);
+}
+
+.auth-form-main-container .auth-form label {
+  color: var(--default-white);
 }

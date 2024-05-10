@@ -41,7 +41,7 @@ class DevelopmentConfig extends Config {
     // super("https://ea-numbers-server.vercel.app/api/");
     // super("https://ea-numbers-server-test.vercel.app/api/");
     // super("https://t2obu15q2h.execute-api.eu-central-1.amazonaws.com/");
-    // super("https://5dda-2a0d-6fc2-5e61-1600-c91a-9fb6-cd1b-f492.ngrok-free.app/api/");
+    // super("https://c77d-2a0d-6fc2-5e61-1600-182b-ee57-d979-7cd3.ngrok-free.app/api/");
     super("http://127.0.0.1:5005/api/");
   };
 };

@@ -2,24 +2,13 @@ import { useSelector } from "react-redux";
 import ConnectBankForm from "./ConnectBankForm";
 import { RootState } from "../../redux/store";
 import { useTranslation } from "react-i18next";
-import { Tabs, TabsProps, Typography } from "antd";
 import BankAccountPage from "./BankAccountPage";
 
 const BankPage = () => {
   const { t } = useTranslation();
   const user = useSelector((state: RootState) => state.auth.user);
-  const bankDetails = user.bank;
-  const hasBankAccount = bankDetails && Array.isArray(bankDetails) && bankDetails?.length > 0;
-
-  const onChange = (key: string) => {
-    console.log(key);
-  };
-
-  const items: TabsProps['items'] = [...bankDetails].map((bankAccount) => ({
-    key: bankAccount.bankName,
-    label: <Typography.Text>{bankAccount.bankName}</Typography.Text>,
-    children: <BankAccountPage bankAccount={bankAccount} />
-  }));
+  const bankAccount = user.bank;
+  const hasBankAccount = bankAccount ? true : false;
 
   return (
     <div className="page-container bank-account">
@@ -31,12 +20,7 @@ const BankPage = () => {
           <ConnectBankForm user={user} />
         )}
         {hasBankAccount && (
-          <Tabs
-            defaultActiveKey="1"
-            items={items}
-            onChange={onChange}
-            type="card"
-          />
+          <BankAccountPage bankAccount={bankAccount}/>
         )}
       </div>
     </div>

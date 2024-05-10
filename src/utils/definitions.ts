@@ -1,10 +1,6 @@
 export const PASSWORD_FIELD = 'password';
 
 
-export enum SupportedCompanyTypes {
-  discount = 'discount',
-}
-
 export enum CompanyTypes {
   hapoalim = 'hapoalim',
   hapoalimBeOnline = 'hapoalimBeOnline',
@@ -25,6 +21,17 @@ export enum CompanyTypes {
   behatsdaa = 'behatsdaa',
   beyahadBishvilha = 'beyahadBishvilha',
   oneZero = 'oneZero'
+}
+
+export const SupportedCompanyTypes = {
+  [CompanyTypes.discount]: CompanyTypes.discount
+}
+
+export const SupportedScrapers = {
+  [CompanyTypes.discount]: {
+    name: 'Discount Bank',
+    loginFields: ['id', PASSWORD_FIELD, 'num'],
+  },
 }
 
 export const SCRAPERS = {

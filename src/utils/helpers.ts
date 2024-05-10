@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import UserModel from "../models/user-model";
-import Role from "../models/role";
 import { ThemeColors } from "../redux/slicers/theme-slicer";
 import InvoiceModel from "../models/invoice";
 import dayjs, { Dayjs } from "dayjs";
@@ -52,10 +50,6 @@ export const getStyleForTheme = (component: string, themeColor: string): string 
 
   return color;
 }
-
-export const isAdmin = (user: UserModel) => {
-  return user?.role === Role.Admin;
-};
 
 export const useResize = () => {
   const [windowSize, setWindowSize] = useState({

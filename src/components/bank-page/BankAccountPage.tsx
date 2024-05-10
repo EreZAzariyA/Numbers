@@ -5,7 +5,7 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useState } from "react";
-import { fetchBankAccountData } from "../../utils/transactions";
+import bankServices from "../../services/banks";
 
 interface BankAccountPageProps {
   bankAccount: any;
@@ -20,9 +20,9 @@ const BankAccountPage = (props: BankAccountPageProps) => {
   const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const refreshBankDate = async () => {
+  const refreshBankData = async () => {
     try {
-      const details = await fetchBankAccountData(props.bankAccount?.credentials, null, user?._id, setIsLoading, true);
+      const details = await bankServices.fetchBankData(props.bankAccount?.credentials, user?._id);
       console.log(details);
     } catch (err: any) {
       console.log(err);
@@ -43,7 +43,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
                 <Typography.Text>Last Update: {lastConnectionDate}</Typography.Text>
 
                 <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
-                  <Typography.Link disabled={!isRefreshAvailable} onClick={refreshBankDate}>Refresh</Typography.Link>
+                  <Typography.Link disabled={!isRefreshAvailable} onClick={refreshBankData}>Refresh</Typography.Link>
                 </Tooltip>
               </>
             )}

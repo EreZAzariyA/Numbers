@@ -1,56 +1,75 @@
-import { jwtDecode } from "jwt-decode";
-import bankServices from "../services/banks";
-import { Modal, message } from "antd";
-
-const { confirm } = Modal;
+import { UserBankModel } from "../models/user-model";
+import { CompanyTypes } from "./definitions";
 
 export enum TransactionStatuses {
   completed = "Completed",
   pending = "Pending"
 };
 
-export const fetchBankAccountData = async (detailsToken?: any, defaultDetails?: any, user_id?: string, setLoading?: (isLoading: boolean) => void,  setConfirm?: boolean, setRes?: (res: any) => void ): Promise<any> => {
-  if (setLoading) {
-    setLoading(true);
-  }
-  if (user_id) {
-    try {
-      let details = defaultDetails;
-      if (detailsToken) {
-        details = await jwtDecode(detailsToken);
-      }
-
-      const res = await bankServices.fetchBankData({...details}, user_id);
-      if (setConfirm && res.account && res.account?.txns && res.account.txns?.length) {
-        showTransImportConfirmation(res.account?.txns, user_id);
-      }
-      if (setRes) {
-        setRes(res);
-      }
-      setLoading(false);
-      return res;
-    } catch (err: any) {
-      message.error(err.message);
-    }
-  }
+export declare enum TransactionTypes {
+  Normal = "normal",
+  Installments = "installments"
 };
 
+export interface TransactionsAccount {
+  accountNumber: string;
+  balance?: number;
+  txns: Transaction[];
+}
 
-export const showTransImportConfirmation = async (transactions: any, user_id: string) => {
-  confirm({
-    okText: 'Import',
-    onOk: () => onTransactionsImportOk(transactions, user_id),
-    content: `We found ${transactions.length} invoices, would you like to import them?`
-  });
+export interface BankAccountDetails {
+  userBank: UserBankModel;
+  account: TransactionsAccount;
+  newUserToken: string;
+}
+
+export interface Transaction {
+  type: TransactionTypes;
+  identifier?: string | number;
+  date: string;
+  processedDate: string;
+  originalAmount: number;
+  originalCurrency: string;
+  chargedAmount: number;
+  chargedCurrency?: string;
+  description: string;
+  memo?: string;
+  status: TransactionStatuses;
+  category?: string;
 };
 
-export const onTransactionsImportOk = async (transactions: any[], user_id: string) => {
-  try {
-    const res = await bankServices.importTrans(transactions, user_id);
-    if (res) {
-      message.success('OK');
-    }
-  } catch (err: any) {
-    message.error(err);
-  }
-};
+export declare type ScraperCredentials = {
+  userCode: string;
+  password: string;
+} | {
+  username: string;
+  password: string;
+} | {
+  id: string;
+  password: string;
+} | {
+  id: string;
+  password: string;
+  num: string;
+} | {
+  id: string;
+  password: string;
+  card6Digits: string;
+} | {
+  username: string;
+  nationalID: string;
+  password: string;
+} | ({
+  email: string;
+  password: string;
+} & ({
+  otpCodeRetriever: () => Promise<string>;
+  phoneNumber: string;
+} | {
+  otpLongTermToken: string;
+}));
+
+
+export interface ScraperOptions {
+  companyId: CompanyTypes;
+}

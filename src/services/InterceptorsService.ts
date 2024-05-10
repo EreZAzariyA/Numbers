@@ -21,6 +21,7 @@ class InterceptorsService {
       return response;
     }, (err) => {
       if (err.response?.status === 401) {
+        message.info('Please login again')
         return store.dispatch(logoutAction());
       }
       return message.error(getError(err));
