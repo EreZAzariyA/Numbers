@@ -86,7 +86,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
     <Header className="main-header">
       <div className="main-header-container">
         <div className="left-container">
-          {isPhone && (
+          {isMobile && (
             <div className="menu-collapse">
               <Dropdown
                 menu={{

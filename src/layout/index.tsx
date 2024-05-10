@@ -26,8 +26,8 @@ const DashboardView = () => {
   const { pathname } = useLocation();
   const theme = useSelector((state: RootState) => state.theme.themeColor);
   const user = useSelector((state: RootState) => state.auth.user);
-  const { width } = useResize();
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(width <= 500);
+  const { isMobile } = useResize();
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile);
   const [current, setCurrent] = useState<string>('dashboard');
   const themeToSet = theme === ThemeColors.LIGHT ? 'light' : 'dark';
   const { t } = useTranslation();
@@ -47,8 +47,8 @@ const DashboardView = () => {
   }, [pathname]);
 
   useEffect(() => {
-    setIsCollapsed(width <= 500);
-  }, [width]);
+    setIsCollapsed(isMobile);
+  }, [isMobile]);
 
   const accountItems = user ? [
     getMenuItem(

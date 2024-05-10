@@ -38,7 +38,7 @@ export const Filters = (props: FiltersProps) => {
         <Col>
           <DatePicker.RangePicker
             allowClear
-            style={{ minWidth: '200px' }}
+            style={{ width: '200px' }}
             value={props.filterState.dates}
             maxDate={dayjs()}
             onChange={(val) => {
@@ -58,6 +58,7 @@ export const Filters = (props: FiltersProps) => {
             picker="month"
             maxDate={dayjs()}
             allowClear={!isPhone}
+            style={{ width: '200px' }}
             value={props.filterState.month}
             onChange={(val) => {
               if (!val) {
@@ -75,7 +76,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.category_id}
             allowClear
-            style={{ minWidth: '200px' }}
+            style={{ width: '200px' }}
             placeholder={t('placeholders.0')}
             onChange={(val) => props.handleFilterChange('category_id', val)}
             options={[...categories].map((c) => ({
@@ -91,7 +92,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.status}
             allowClear
-            style={{ minWidth: '200px' }}
+            style={{ width: '200px' }}
             placeholder={t('placeholders.2')}
             onChange={(val) => props.handleFilterChange('status', val)}
             options={[...transactionStatus].map((c) => ({

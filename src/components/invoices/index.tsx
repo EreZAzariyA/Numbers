@@ -149,6 +149,7 @@ const Invoices = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+      width: 250
     },
     {
       title: 'Amount',
@@ -179,7 +180,7 @@ const Invoices = () => {
       <div className="page-inner-container">
         {!step && (
           <Space direction="vertical" className="w-100">
-            <Row justify={'space-between'} wrap={false} gutter={[10, 5]}>
+            <Row justify={'space-between'} align={'middle'} wrap={false} gutter={[10, 5]}>
               <Col>
                 <Filters
                   datesFilter
@@ -191,7 +192,7 @@ const Invoices = () => {
                   resetFilters={resetFilters}
                 />
               </Col>
-              <Col span={8}>
+              <Col>
                 <Space direction="vertical">
                   <TotalAmountInput invoices={dataSource} type={TotalAmountType.SPENT} />
                   <TotalAmountInput invoices={dataSource} type={TotalAmountType.INCOME} />

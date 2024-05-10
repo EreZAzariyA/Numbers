@@ -24,13 +24,13 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     loginFields: []
   });
 
-  useEffect(() => {
-    if (props.user.bank?.credentials) {
-      const credentials: any = jwtDecode(props.user.bank.credentials);
-      setCredentials(credentials);
-      onSelectCompany(credentials.companyId);
-    }
-  }, [props.user]);
+  // useEffect(() => {
+  //   if (props.user.bank?.credentials) {
+  //     const credentials: any = jwtDecode(props.user.bank.credentials);
+  //     setCredentials(credentials);
+  //     onSelectCompany(credentials.companyId);
+  //   }
+  // }, [props.user]);
 
   const bankList: MenuItem[] = Object.entries(SupportedCompanyTypes).map(([bank, value]) => (
     getMenuItem(bank, bank, null, null, null, value)
@@ -103,10 +103,10 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
             autoComplete="off"
             onFinish={onFinish}
           >
-            <Form.Item initialValue={props.user.bank?.bankName} label="Select your bank" name={'companyId'}>
+            <Form.Item label="Select your bank" name={'companyId'}>
               <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
             </Form.Item>
-      
+
             {selectedCompany.isSelected && (
               <>
                 <h2>{selectedCompany.name}</h2>
@@ -127,7 +127,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
             >
               <Checkbox>Save my credentials</Checkbox>
             </Form.Item>
-      
+
             <Button loading={isLoading} type="link" htmlType="submit">Check</Button>
           </Form>
         </Space>

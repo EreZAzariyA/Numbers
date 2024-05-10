@@ -4,7 +4,7 @@ import { Col, Divider, Row } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import InvoiceModel from "../../../models/invoice";
 import CategoryModel from "../../../models/category-model";
-import { asNumString, findCategoryWithLargestAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../../utils/helpers";
+import { asNumString, findCategoryWithLargestSpentAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../../utils/helpers";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -17,7 +17,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
   const month = dayjs(props.monthToDisplay).locale('he').format('MMMM');
   const invoicesPricePerCategory = getInvoicesPricePerCategory(props.invoices);
   const totalSpent = getInvoicesTotalsPrice(props.invoices);
-  const maxSpent = findCategoryWithLargestAmount(invoicesPricePerCategory);
+  const maxSpent = findCategoryWithLargestSpentAmount(invoicesPricePerCategory);
   const minSpent = findCategoryWithLowestAmount(invoicesPricePerCategory);
 
   return (

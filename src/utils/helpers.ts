@@ -107,8 +107,8 @@ export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], monthToDisp
   let monthInvoices: InvoiceModel[] = [];
   if (isArrayAndNotEmpty(invoices)) {
     invoices.forEach((i) => {
-      const invoiceDate = dayjs(i.date).month();
-      if (invoiceDate === monthToDisplay?.month()) {
+      const invoiceDate = dayjs(i.date).format('YYYY-MM');
+      if (invoiceDate === monthToDisplay?.format('YYYY-MM')) {
         monthInvoices.push(i);
       }
     });
@@ -173,7 +173,7 @@ interface CategoryData {
   };
 }
 
-export const findCategoryWithLargestAmount = (data: CategoryData): { category: string, amount: number } => {
+export const findCategoryWithLargestSpentAmount = (data: CategoryData): { category: string, amount: number } => {
   let maxCategory: string | null = null;
   let maxValue: number = -Infinity;
 

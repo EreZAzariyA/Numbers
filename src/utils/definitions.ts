@@ -123,3 +123,8 @@ export enum ScraperProgressTypes {
   EndScraping = 'END_SCRAPING',
   Terminating = 'TERMINATING',
 }
+
+
+export const CompaniesNames = {
+  [CompanyTypes.discount]: SCRAPERS[CompanyTypes.discount].name
+}

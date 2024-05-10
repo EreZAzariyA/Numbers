@@ -35,7 +35,7 @@ class UserModel {
     lang?: string,
     'theme-color'?: string
   };
-  bank?: UserBankModel;
+  bank?: UserBankModel[];
 
   constructor(user: UserModel) {
     this._id = user._id;
