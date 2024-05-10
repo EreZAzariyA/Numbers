@@ -98,6 +98,11 @@ export const asNumber = (num: number, digits: number = 2) => (
   parseFloat(num?.toFixed(digits)) || 0
 );
 
+export const asNumString = (num: number, digits: number = 2): string => {
+  const formattedNumber = num.toFixed(digits);
+  return parseFloat(formattedNumber).toLocaleString();
+};
+
 export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], monthToDisplay: Dayjs): InvoiceModel[] => {
   let monthInvoices: InvoiceModel[] = [];
   if (isArrayAndNotEmpty(invoices)) {

@@ -1,5 +1,5 @@
 import { Input } from "antd";
-import { asNumber, getInvoicesTotalsPrice } from "../../utils/helpers";
+import { asNumString, getInvoicesTotalsPrice } from "../../utils/helpers";
 import InvoiceModel from "../../models/invoice";
 
 interface TotalAmountInputProps {
@@ -9,7 +9,7 @@ interface TotalAmountInputProps {
 const TotalAmountInput = (props: TotalAmountInputProps) => {
   const totalAmount = getInvoicesTotalsPrice(props.invoices);
   return (
-    <Input disabled style={{ maxWidth: '350px' }} value={asNumber(totalAmount.spent)} />
+    <Input disabled style={{ maxWidth: '350px' }} value={asNumString(totalAmount.spent)} />
   )
 };
 

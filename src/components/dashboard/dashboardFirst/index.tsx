@@ -4,7 +4,7 @@ import { Col, Divider, Row } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import InvoiceModel from "../../../models/invoice";
 import CategoryModel from "../../../models/category-model";
-import { findCategoryWithLargestAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../../utils/helpers";
+import { asNumString, findCategoryWithLargestAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../../utils/helpers";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -33,19 +33,19 @@ const DashboardFirst = (props: DashboardFirstProps) => {
             </Col>
 
             <Col span={12}><b>Total Spent:</b></Col>
-            <Col span={12}>{Math.abs(totalSpent?.spent)}</Col>
+            <Col span={12}>{asNumString(Math.abs(totalSpent?.spent))}</Col>
             <Divider style={{ margin: 0 }} />
             {(maxSpent?.amount > 0) && (
               <>
                 <Col span={12}><b>Largest Spent:</b></Col>
-                <Col span={12}>{`${maxSpent?.category}: ${maxSpent?.amount}`}</Col>
+                <Col span={12}>{`${maxSpent?.category}: ${asNumString(maxSpent?.amount)}`}</Col>
                 <Divider style={{ margin: 0 }} />
               </>
             )}
             {minSpent?.amount > 0 && (
               <>
                 <Col span={12}><b>Lowest Spent:</b></Col>
-                <Col span={12}>{`${minSpent?.category}: ${minSpent?.amount}`}</Col>
+                <Col span={12}>{`${minSpent?.category}: ${asNumString(minSpent?.amount)}`}</Col>
                 <Divider style={{ margin: 0 }} />
               </>
             )}

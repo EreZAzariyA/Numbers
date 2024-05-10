@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import invoicesServices from "../../services/invoices";
 import { EditTable } from "../components/EditTable";
-import { getError } from "../../utils/helpers";
+import { asNumString, getError } from "../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import { Filters } from "../components/Filters";
 import dayjs, { Dayjs } from "dayjs";
@@ -154,6 +154,9 @@ const Invoices = () => {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
+      render: (val) => (
+        asNumString(val)
+      )
     },
     {
       title: 'Status',

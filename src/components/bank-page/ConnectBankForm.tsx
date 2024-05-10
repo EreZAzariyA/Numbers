@@ -64,6 +64,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
       setResult(res);
       setIsLoading(false);
     } catch (err: any) {
+      setIsLoading(false);
       message.error(err.message);
     }
   };
@@ -72,7 +73,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     confirm({
       okText: 'Import',
       onOk: () => onTransactionsImportOk(transactions),
-      content: `We found ${transactions.length} invoices, would you like to import them?`
+      content: `We found ${transactions.length} transactions, would you like to import them?`
     });
   };
   
