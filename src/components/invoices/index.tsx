@@ -11,7 +11,7 @@ import { asNumString, getError } from "../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import { Filters } from "../components/Filters";
 import dayjs, { Dayjs } from "dayjs";
-import TotalAmountInput from "../components/TotalAmount";
+import TotalAmountInput, { TotalAmountType } from "../components/TotalAmount";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TransactionStatuses } from "../../utils/transactions";
 
@@ -192,7 +192,10 @@ const Invoices = () => {
                 />
               </Col>
               <Col span={8}>
-                <TotalAmountInput invoices={dataSource} />
+                <Space direction="vertical">
+                  <TotalAmountInput invoices={dataSource} type={TotalAmountType.SPENT} />
+                  <TotalAmountInput invoices={dataSource} type={TotalAmountType.INCOME} />
+                </Space>
               </Col>
             </Row>
             <EditTable
