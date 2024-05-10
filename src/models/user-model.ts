@@ -1,5 +1,4 @@
 import { TokenResponse } from "@react-oauth/google";
-import Role from "./role";
 
 export class EmailModel {
   email: string;
@@ -21,10 +20,11 @@ export class UserBankModel {
 };
 
 class UserModel {
-  _id: string;
+  _id?: string;
   profile: {
     first_name: string;
     last_name: string;
+    image_url?: string;
   };
   emails: EmailModel[];
   services: {
@@ -36,19 +36,14 @@ class UserModel {
     'theme-color'?: string
   };
   bank?: UserBankModel;
-  role: Role = Role.User;
 
   constructor(user: UserModel) {
     this._id = user._id;
-    this.profile = {
-      first_name: user.profile.first_name,
-      last_name: user.profile.last_name
-    };
+    this.profile = user.profile;
     this.emails = user.emails;
     this.services = user.services;
     this.config = user.config;
     this.bank = user.bank;
-    this.role = user.role;
   }
 };
 
