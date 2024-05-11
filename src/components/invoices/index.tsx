@@ -61,7 +61,7 @@ const Invoices = () => {
     setDataSource(data);
   }, [filterState, invoices]);
 
-  const onFinish = async (invoice: InvoiceModel) => {
+  const onFinish = async (invoice: Partial<InvoiceModel>) => {
     if (!user) {
       message.error("User id is missing");
       return;
@@ -174,7 +174,7 @@ const Invoices = () => {
       <div className="title-container">
         <div className="page-title">{t('pages.invoices')}</div>
         {step && (
-          <Button className="btn-18" type="text" size="small" onClick={onBack}>Back</Button>
+          <Button danger className="btn-18" type="link" size="small" onClick={onBack}>Back</Button>
         )}
       </div>
       <div className="page-inner-container">
@@ -208,7 +208,7 @@ const Invoices = () => {
               onEditMode={onEdit}
               removeHandler={onRemove}
             />
-            <Button className="btn-18" onClick={() => setStep(Steps.New_Invoice)}>
+            <Button onClick={() => setStep(Steps.New_Invoice)}>
               Add Invoice
             </Button>
           </Space>

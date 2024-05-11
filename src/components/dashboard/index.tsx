@@ -6,7 +6,7 @@ import { RootState } from "../../redux/store";
 import DashboardFirst from "./dashboardFirst";
 import DashboardSeconde from "./dashboardSeconde";
 import { getInvoicesBySelectedMonth } from "../../utils/helpers";
-import { DatePicker } from "antd";
+import { DatePicker, Space } from "antd";
 import "./dashboard.css";
 
 const Dashboard = () => {
@@ -32,12 +32,17 @@ const Dashboard = () => {
         />
       </div>
       <div className="page-inner-container">
-        <DashboardFirst
-          invoices={invoicesByMonth}
-          categories={categories}
-          monthToDisplay={monthToDisplay}
-        />
-        <DashboardSeconde invoices={invoices} />
+        <Space direction="vertical" size={"large"}>
+          <DashboardFirst
+            invoices={invoicesByMonth}
+            categories={categories}
+            monthToDisplay={monthToDisplay}
+          />
+          <DashboardSeconde
+            invoices={invoicesByMonth}
+            monthToDisplay={monthToDisplay}
+          />
+        </Space>
       </div>
     </div>
   );

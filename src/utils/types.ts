@@ -1,4 +1,27 @@
 import { MenuProps } from "antd";
+import { TransactionsTypes } from "./enums";
+
+export type ATMTransactionsTypes = [TransactionsTypes.ATM, TransactionsTypes.ATM_WITHDRAWAL, TransactionsTypes.FROM_ATM];
+export type SalaryTypes = [TransactionsTypes.SALARY];
+export type CardWithdrawalTypes = [TransactionsTypes.TRANSFER_FROM, TransactionsTypes.TRANSFER_TO];
+export type AllCardTransactionsTypes = [TransactionsTypes.CARD_WITHDRAWALS, ...CardWithdrawalTypes];
+
+export const ATMWithdrawalsList: ATMTransactionsTypes = [
+  TransactionsTypes.ATM,
+  TransactionsTypes.ATM_WITHDRAWAL,
+  TransactionsTypes.FROM_ATM
+];
+export const CardWithdrawalsList: AllCardTransactionsTypes = [
+  TransactionsTypes.CARD_WITHDRAWALS,
+  TransactionsTypes.TRANSFER_FROM,
+  TransactionsTypes.TRANSFER_TO,
+];
+
+export const WithdrawalsListTypes: any = {
+  [TransactionsTypes.ATM]:  ATMWithdrawalsList,
+  [TransactionsTypes.CARD_WITHDRAWALS]: CardWithdrawalsList
+};
+
 
 export type MenuItem = Required<MenuProps>['items'][number];
 export const getMenuItem = (
@@ -24,6 +47,7 @@ export interface DataType {
   name: string;
   editable: boolean;
 };
+
 export interface InvoiceDataType {
   _id: string;
   date: Date;

@@ -3,6 +3,10 @@ import { ThemeColors } from "../redux/slicers/theme-slicer";
 import InvoiceModel from "../models/invoice";
 import dayjs, { Dayjs } from "dayjs";
 import store from "../redux/store";
+import { CategoryData } from "./interfaces";
+import { WithdrawalsListTypes } from "./types";
+import { TransactionsTypes } from "./enums";
+import { TransactionStatusesType } from "./transactions";
 
 export type ColorType = {
   ICON: string;
@@ -80,10 +84,10 @@ export const useResize = () => {
 };
 
 export const isArray = (arr: any[]): boolean => {
-  return Array.isArray(arr)
+  return Array.isArray(arr);
 };
 export const isArrayAndNotEmpty = (arr: any[]): boolean => {
-  return isArray(arr) && arr.length > 0
+  return isArray(arr) && arr.length > 0;
 };
 
 export const getError = (err: any) => {
@@ -103,26 +107,26 @@ export const asNumString = (num: number, digits: number = 2): string => {
   return parseFloat(formattedNumber).toLocaleString();
 };
 
-export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], monthToDisplay: Dayjs): InvoiceModel[] => {
-  let monthInvoices: InvoiceModel[] = [];
+export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], selectedMonth: Dayjs): InvoiceModel[] => {
+  let invoicesByMonth: InvoiceModel[] = [];
   if (isArrayAndNotEmpty(invoices)) {
     invoices.forEach((i) => {
       const invoiceDate = dayjs(i.date).format('YYYY-MM');
-      if (invoiceDate === monthToDisplay?.format('YYYY-MM')) {
-        monthInvoices.push(i);
+      if (invoiceDate === selectedMonth?.format('YYYY-MM')) {
+        invoicesByMonth.push(i);
       }
     });
-    return monthInvoices;
   }
-  return [];
+  return invoicesByMonth;
 };
 
 export const getTotals = (arr: number[]): number => {
+  let total = 0;
   if (isArrayAndNotEmpty(arr)) {
-    const total = arr?.reduce((a, b) => a + b, 0);
+    total = arr.reduce((a, b) => a + b, 0);
     return asNumber(total);
   }
-  return 0;
+  return total;
 };
 
 export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): {spent: number, income: number } => {
@@ -166,13 +170,6 @@ export const getInvoicesPricePerCategory = (invoices: InvoiceModel[]) => {
   return invoicesByCategory
 };
 
-interface CategoryData {
-  [category: string]: {
-    spent: number,
-    income: number
-  };
-}
-
 export const findCategoryWithLargestSpentAmount = (data: CategoryData): { category: string, amount: number } => {
   let maxCategory: string | null = null;
   let maxValue: number = -Infinity;
@@ -206,4 +203,27 @@ export const findCategoryWithLowestAmount = (data: CategoryData): { category: st
     return null;
   }
   return { category: minCategory, amount: minValue };
+};
+
+export const filterInvoicesByType = (invoices: InvoiceModel[], type?: TransactionsTypes, status?: TransactionStatusesType): InvoiceModel[] => {
+  const list = WithdrawalsListTypes[type] || [type];
+  let arr = [...invoices];
+  if (type) {
+    arr = arr.filter((invoice) => ([...list].some((type) => invoice.description.includes(type))));
+  }
+  if (status) {
+    arr = arr.filter((invoice) => (invoice.status === status))
+  }
+
+  // for (const invoice of invoices) {
+  //   if (list.some((type: string) => invoice.description.includes(type))) {
+  //     if (!status) {
+  //       arr.push(invoice);
+  //     }
+  //     if (status && invoice.status === status) {
+  //       arr.push(invoice);
+  //     }
+  //   }
+  // }
+  return arr;
 };

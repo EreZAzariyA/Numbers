@@ -19,11 +19,11 @@ class BankServices {
     throw new Error('Some error while trying to fetch bank account data');
   };
 
-  updateBankData = async (token: any, user_id: string): Promise<any> => {
-    const response = await axios.post(config.urls.bank.updateBankData + `/${user_id}`, token);
+  updateBankData = async (bankAccount_id: string, user_id: string): Promise<BankAccountDetails> => {
+    const response = await axios.put<BankAccountDetails>(config.urls.bank.updateBankData + `/${user_id}`, bankAccount_id);
     const bankDetails = response.data;
     if (bankDetails) {
-      store.dispatch(updateUserFieldsAction({field: 'bank', value: bankDetails.userBank}))
+      store.dispatch(updateUserFieldsAction({ field: 'bank', value: bankDetails.userBank }));
       return bankDetails;
     }
 
@@ -36,12 +36,6 @@ class BankServices {
     store.dispatch(addManyInvoices(trans));
     return trans;
   };
-
-  fetchBankHtml = async (url: string) => {
-    const response = await axios.post(config.urls.bank.fetchBankHtml, {url});
-    const html = response.data;
-    return html;
-  }
 };
 
 const bankServices = new BankServices();

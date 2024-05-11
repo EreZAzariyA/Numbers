@@ -7,19 +7,19 @@ import { addNewInvoiceAction, fetchInvoicesAction, removeInvoiceAction, updateIn
 class InvoicesServices {
   async fetchInvoicesByUserId(user_id: string): Promise<InvoiceModel[]> {
     const response = await axios.get<InvoiceModel[]>(config.urls.invoices + `/${user_id}`);
-    let userInvoices = response.data;
+    const userInvoices = response.data;
     store.dispatch(fetchInvoicesAction(userInvoices));
     return userInvoices;
   };
 
-  async addInvoice(invoice: InvoiceModel): Promise<InvoiceModel> {
+  async addInvoice(invoice: Partial<InvoiceModel>): Promise<InvoiceModel> {
     const response = await axios.post<InvoiceModel>(config.urls.invoices, invoice);
     const addedInvoice = response.data;
     store.dispatch(addNewInvoiceAction(addedInvoice));
     return addedInvoice;
   };
 
-  async updateInvoice(invoice: InvoiceModel): Promise<InvoiceModel> {
+  async updateInvoice(invoice: Partial<InvoiceModel>): Promise<InvoiceModel> {
     const response = await axios.put<InvoiceModel>(config.urls.invoices, invoice);
     const updatedInvoice = response.data;
     store.dispatch(updateInvoiceAction(updatedInvoice));

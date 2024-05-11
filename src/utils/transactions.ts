@@ -5,8 +5,12 @@ export enum TransactionStatuses {
   completed = "Completed",
   pending = "Pending"
 };
+export enum TransactionStatusesType {
+  COMPLETED = "completed",
+  PENDING = "pending"
+};
 
-export declare enum TransactionTypes {
+declare enum TransactionTypes {
   Normal = "normal",
   Installments = "installments"
 };
@@ -18,7 +22,7 @@ export interface TransactionsAccount {
 }
 
 export interface BankAccountDetails {
-  userBank: UserBankModel;
+  userBank: UserBankModel[];
   account: TransactionsAccount;
   newUserToken: string;
 }

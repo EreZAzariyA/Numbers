@@ -14,6 +14,7 @@ import { MenuItem } from "../utils/types";
 import { getError, useResize } from "../utils/helpers";
 import { Button, Col, Dropdown, Layout, MenuProps, Row, message } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
+import "dayjs/locale/he";
 
 interface DashboardHeaderProps {
   changeTheme?: () => void;
@@ -30,7 +31,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const lang = useSelector((state: RootState) => state.language.lang);
   const [current, setCurrent] = useState<string>('1');
-  const { isPhone, isMobile } = useResize();
+  const { isMobile } = useResize();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -79,7 +80,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const langs: MenuItem[] = Object.entries(languages).map(([key, value]) => ({
     label: `${value}-${key}`,
     value,
-    key: key.toLowerCase()
+    key: key.toLowerCase(),
   }));
 
   return (
@@ -117,7 +118,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
                   menu={{
                     items: langs,
                     className: "dropdown-menu langs",
-                    onClick: (e) => handleChangeLang(e.key as any)
+                    onClick: (e) => handleChangeLang(e.key as any),
                   }}
                 >
                   <Button type="link" size="small">

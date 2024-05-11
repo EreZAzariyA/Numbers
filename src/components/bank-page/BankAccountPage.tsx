@@ -15,18 +15,22 @@ dayjs.extend(relativeTime);
 const BankAccountPage = (props: BankAccountPageProps) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const lastConnection = props.bankAccount?.lastConnection
-  const lastConnectionDate = dayjs(lastConnection).fromNow() || null;
+  const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
   const timeLeftToRefreshData = dayjs(lastConnection).subtract(-5, 'hour');
   const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const refreshBankData = async () => {
+    setIsLoading(true);
+
     try {
-      const details = await bankServices.fetchBankData(props.bankAccount?.credentials, user?._id);
+      const details = await bankServices.updateBankData(props.bankAccount?._id, user?._id);
       console.log(details);
     } catch (err: any) {
       console.log(err);
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -40,7 +44,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
 
             {isLoading ? <Spin /> : (
               <>
-                <Typography.Text>Last Update: {lastConnectionDate}</Typography.Text>
+                <Typography.Text>Last Update: {lastConnectionDateString}</Typography.Text>
 
                 <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
                   <Typography.Link disabled={!isRefreshAvailable} onClick={refreshBankData}>Refresh</Typography.Link>

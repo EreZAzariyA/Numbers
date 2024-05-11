@@ -132,10 +132,7 @@ const CategoriesPage = () => {
               onEditMode={onEdit}
               removeHandler={onRemove}
             />
-            <Button
-              className="btn-18"
-              onClick={() => setStep(Steps.New_Category)}
-            >
+            <Button onClick={() => setStep(Steps.New_Category)}>
               Add Category
             </Button>
           </Space>

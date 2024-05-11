@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import i18next from 'i18next';
 
 export enum Languages {
   EN = "en",
@@ -22,6 +23,7 @@ const languagesSlicer = createSlice({
     fetchUserLangAction(state, action: PayloadAction<LanguageType>): LanguageState {
       state.lang = action.payload;
       localStorage.setItem('lang', action.payload);
+      i18next.changeLanguage(action.payload);
       return state;
     },
     changeLangAction(state, action: PayloadAction<LanguageType>): LanguageState {

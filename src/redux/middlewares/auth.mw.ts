@@ -5,13 +5,14 @@ import { fetchUserThemeAction } from "../slicers/theme-slicer";
 import UserModel from "../../models/user-model";
 
 const authMiddleWare: Middleware = (store) => (next) => (action: any) => {
+  const { dispatch } = store;
   if (action.type === 'auth/loginAction') {
     const token = action.payload.token;
     const user: UserModel = jwtDecode(token);
 
     if (user && user?.config) {
-      store.dispatch(fetchUserLangAction(user.config.lang));
-      store.dispatch(fetchUserThemeAction(user.config?.["theme-color"]));
+      dispatch(fetchUserLangAction(user.config.lang));
+      dispatch(fetchUserThemeAction(user.config?.["theme-color"]));
     }
   }
 

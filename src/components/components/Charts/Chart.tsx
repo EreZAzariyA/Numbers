@@ -33,7 +33,7 @@ const Charts = (props: ChartsProps) => {
       margin={isMobile ? { top: 50, left: 100 } : {}}
       series={[
         {
-          data: data.length ? [...data] : [{label: 'No Data', value: 1, color: 'grey'}],
+          data: data.length ? [...data] : [{label: 'No Data', value: 0.0001, color: 'grey'}],
           innerRadius: isMobile ? 50 : 60,
           cornerRadius: 5,
           paddingAngle: 2,

@@ -1,8 +1,7 @@
 import { Button, Checkbox, Form, Input, Modal, Result, Select, Space, Typography, message } from "antd";
 import { SCRAPERS, SupportedCompanyTypes } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/types";
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
 import UserModel from "../../models/user-model";
 import { Transaction } from "../../utils/transactions";
 import bankServices from "../../services/banks";
@@ -16,21 +15,12 @@ interface ConnectBankFormProps {
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [credentials, setCredentials] = useState();
   const [result, setResult] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: false,
     name: '',
     loginFields: []
   });
-
-  // useEffect(() => {
-  //   if (props.user.bank?.credentials) {
-  //     const credentials: any = jwtDecode(props.user.bank.credentials);
-  //     setCredentials(credentials);
-  //     onSelectCompany(credentials.companyId);
-  //   }
-  // }, [props.user]);
 
   const bankList: MenuItem[] = Object.entries(SupportedCompanyTypes).map(([bank, value]) => (
     getMenuItem(bank, bank, null, null, null, value)
@@ -99,10 +89,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
             Connect your bank account
           </Typography.Title>
 
-          <Form
-            autoComplete="off"
-            onFinish={onFinish}
-          >
+          <Form onFinish={onFinish}>
             <Form.Item label="Select your bank" name={'companyId'}>
               <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
             </Form.Item>
@@ -111,7 +98,11 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
               <>
                 <h2>{selectedCompany.name}</h2>
                 {selectedCompany.loginFields.map((field) => (
-                  <Form.Item initialValue={credentials ? (credentials as any)[field] : ''} name={field} label={field} key={field}>
+                  <Form.Item
+                    key={field}
+                    name={field}
+                    label={field}
+                  >
                     {field === 'password' ? (
                       <Input.Password autoComplete="off" />
                     ) : (
@@ -121,6 +112,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
                 ))}
               </>
             )}
+
             <Form.Item
               name="save"
               valuePropName="checked"

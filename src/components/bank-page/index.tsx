@@ -12,6 +12,7 @@ const BankPage = () => {
   const { t } = useTranslation();
   const user = useSelector((state: RootState) => state.auth.user);
   const bankAccounts = user.bank;
+  const hasBankAccounts = bankAccounts && isArrayAndNotEmpty(bankAccounts);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onChange = (key: string) => {
@@ -29,7 +30,7 @@ const BankPage = () => {
     }
   };
 
-  const items: TabsProps['items'] = [...bankAccounts].map((account) => ({
+  const items: TabsProps['items'] = !hasBankAccounts ? [] : bankAccounts.map((account) => ({
     key: account.bankName,
     label: <Typography.Text>{(CompaniesNames as any)[account.bankName]}</Typography.Text>,
     children: <BankAccountPage bankAccount={account} />,
