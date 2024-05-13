@@ -13,9 +13,13 @@ export class EmailModel {
 };
 
 export class UserBankModel {
+  _id: string;
   bankName: string;
   credentials: string;
-  details: object;
+  details: {
+    account: string,
+    balance: number
+  };
   lastConnection: number;
 };
 

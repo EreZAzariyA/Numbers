@@ -1,4 +1,4 @@
-import { Col, Row, Space, Spin, Tooltip, Typography } from "antd";
+import { Col, Row, Space, Spin, Tooltip, Typography, message } from "antd";
 import { SCRAPERS } from "../../utils/definitions";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
@@ -6,9 +6,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useState } from "react";
 import bankServices from "../../services/banks";
+import { UserBankModel } from "../../models/user-model";
+import { asNumString, getTimeToRefresh } from "../../utils/helpers";
 
 interface BankAccountPageProps {
-  bankAccount: any;
+  bankAccount: UserBankModel;
 };
 dayjs.extend(relativeTime);
 
@@ -16,16 +18,19 @@ const BankAccountPage = (props: BankAccountPageProps) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const lastConnection = props.bankAccount?.lastConnection
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
-  const timeLeftToRefreshData = dayjs(lastConnection).subtract(-5, 'hour');
+  const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
   const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const accountDetails = props.bankAccount?.details;
 
   const refreshBankData = async () => {
     setIsLoading(true);
 
     try {
       const details = await bankServices.updateBankData(props.bankAccount?._id, user?._id);
-      console.log(details);
+      if (details) {
+        message.success('Account data updated...');
+      }
     } catch (err: any) {
       console.log(err);
     }
@@ -45,10 +50,14 @@ const BankAccountPage = (props: BankAccountPageProps) => {
             {isLoading ? <Spin /> : (
               <>
                 <Typography.Text>Last Update: {lastConnectionDateString}</Typography.Text>
+                {accountDetails && (
+                  <Typography.Text>Balance: {asNumString(accountDetails?.balance)}</Typography.Text>
+                )}
 
                 <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
                   <Typography.Link disabled={!isRefreshAvailable} onClick={refreshBankData}>Refresh</Typography.Link>
                 </Tooltip>
+
               </>
             )}
           </Space>

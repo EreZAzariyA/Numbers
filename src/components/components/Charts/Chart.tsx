@@ -39,7 +39,7 @@ const Charts = (props: ChartsProps) => {
           paddingAngle: 2,
           highlightScope: { faded: 'global', highlighted: 'item' },
           faded: { innerRadius: 30, additionalRadius: -30 },
-        }
+        },
       ]}
       height={200}
       slotProps={{

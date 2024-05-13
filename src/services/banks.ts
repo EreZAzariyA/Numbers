@@ -2,7 +2,7 @@ import axios from "axios";
 import config from "../utils/config";
 import store from "../redux/store";
 import { addManyInvoices } from "../redux/slicers/invoices";
-import { refreshTokenAction, updateUserFieldsAction } from "../redux/slicers/auth-slicer";
+import { refreshTokenAction } from "../redux/slicers/auth-slicer";
 import { BankAccountDetails, ScraperCredentials, Transaction } from "../utils/transactions";
 import InvoiceModel from "../models/invoice";
 
@@ -23,7 +23,7 @@ class BankServices {
     const response = await axios.put<BankAccountDetails>(config.urls.bank.updateBankData + `/${user_id}`, bankAccount_id);
     const bankDetails = response.data;
     if (bankDetails) {
-      store.dispatch(updateUserFieldsAction({ field: 'bank', value: bankDetails.userBank }));
+      store.dispatch(refreshTokenAction(bankDetails.newUserToken));
       return bankDetails;
     }
 

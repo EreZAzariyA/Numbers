@@ -1,5 +1,4 @@
-import { ActionReducerMapBuilder, PayloadAction, ReducerType } from "@reduxjs/toolkit";
-import { Reducer } from "redux";
+import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 import { AuthState } from "./auth-slicer";
 
 

@@ -227,3 +227,7 @@ export const filterInvoicesByType = (invoices: InvoiceModel[], type?: Transactio
   // }
   return arr;
 };
+
+export const getTimeToRefresh = (lastConnection: number) => {
+  return dayjs(lastConnection).subtract(-5, 'hour');
+};
