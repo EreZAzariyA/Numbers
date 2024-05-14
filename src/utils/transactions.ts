@@ -1,3 +1,4 @@
+import InvoiceModel from "../models/invoice";
 import { UserBankModel } from "../models/user-model";
 import { CompanyTypes } from "./definitions";
 
@@ -25,7 +26,10 @@ export interface BankAccountDetails {
   userBank: UserBankModel[];
   account: TransactionsAccount;
   newUserToken: string;
+  importedTransactions?: InvoiceModel[]
 }
+
+export type AccountDetails = Pick<BankAccountDetails, "newUserToken" | "importedTransactions">;
 
 export interface Transaction {
   type: TransactionTypes;

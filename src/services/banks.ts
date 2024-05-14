@@ -3,7 +3,7 @@ import config from "../utils/config";
 import store from "../redux/store";
 import { addManyInvoices } from "../redux/slicers/invoices";
 import { refreshTokenAction } from "../redux/slicers/auth-slicer";
-import { BankAccountDetails, ScraperCredentials, Transaction } from "../utils/transactions";
+import { AccountDetails, BankAccountDetails, ScraperCredentials, Transaction } from "../utils/transactions";
 import InvoiceModel from "../models/invoice";
 
 class BankServices {
@@ -19,15 +19,13 @@ class BankServices {
     throw new Error('Some error while trying to fetch bank account data');
   };
 
-  updateBankData = async (bankAccount_id: string, user_id: string): Promise<BankAccountDetails> => {
-    const response = await axios.put<BankAccountDetails>(config.urls.bank.updateBankData + `/${user_id}`, bankAccount_id);
-    const bankDetails = response.data;
-    if (bankDetails) {
-      store.dispatch(refreshTokenAction(bankDetails.newUserToken));
-      return bankDetails;
+  updateBankData = async (bankAccount_id: string, user_id: string): Promise<Pick<AccountDetails, "importedTransactions">> => {
+    const response = await axios.put<AccountDetails>(config.urls.bank.updateBankData + `/${user_id}`, bankAccount_id);
+    const { newUserToken, importedTransactions } = response.data;
+    if (newUserToken && importedTransactions) {
+      store.dispatch(refreshTokenAction(newUserToken));
+      return { importedTransactions };
     }
-
-    throw new Error('Some error while trying to update bank data');
   };
   
   importTrans = async (transactions: Transaction[], user_id: string): Promise<InvoiceModel[]> => {

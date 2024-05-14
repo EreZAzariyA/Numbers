@@ -27,9 +27,12 @@ const BankAccountPage = (props: BankAccountPageProps) => {
     setIsLoading(true);
 
     try {
-      const details = await bankServices.updateBankData(props.bankAccount?._id, user?._id);
-      if (details) {
+      const response = await bankServices.updateBankData(props.bankAccount?._id, user?._id);
+      if (response) {
         message.success('Account data updated...');
+        if (response.importedTransactions.length) {
+          message.success(`${response.importedTransactions.length} invoices updated successfully`);
+        }
       }
     } catch (err: any) {
       console.log(err);
