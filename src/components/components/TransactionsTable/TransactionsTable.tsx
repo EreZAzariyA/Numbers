@@ -1,6 +1,6 @@
 import { Space, Table, TableProps, Typography } from "antd";
 import { TransactionStatuses } from "../../../utils/transactions";
-import { TransactionsTableTypes } from "../../dashboard/dashboardSeconde";
+import { TransactionsTableTypes } from "../../dashboard/DashboardSeconde";
 import "./TransactionsTable.css"
 import InvoiceModel from "../../../models/invoice";
 import dayjs from "dayjs";
@@ -14,15 +14,16 @@ interface TransactionsTableProps {
 
 const TransactionsTable = (props: TransactionsTableProps) => {
   const tableType = (TransactionsTableTypes as any)[props.type] || props.type;
-
   const columns: TableProps<InvoiceModel>['columns'] = [
     {
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
       render: (text) => (
-        <span>{dayjs(text).format('DD MMMM')}</span>
+        <span>{dayjs(text).format('DD MMMM YY')}</span>
       ),
+      width: 170,
+      sorter: (a, b) => (dayjs(b.date).valueOf() - dayjs(a.date).valueOf()),
       defaultSortOrder: 'ascend'
     },
     {
@@ -40,6 +41,9 @@ const TransactionsTable = (props: TransactionsTableProps) => {
       )
     },
   ];
+
+  let dataSet = [...props.invoices];
+
   if (tableType === TransactionsTableTypes.Pending) {
     columns.push({
       title: 'Status',
@@ -48,10 +52,11 @@ const TransactionsTable = (props: TransactionsTableProps) => {
       render: (val) => {
         return (TransactionStatuses as any)[val]
       }
-    })
-  };
+    });
+  }
   if (tableType === TransactionsTableTypes.Card_Withdrawals) {
-    props.invoices.splice(0, 5);
+    const latestInvoices = [...props.invoices].slice(0, 5);
+    dataSet = latestInvoices;
   }
 
   return (
@@ -59,8 +64,9 @@ const TransactionsTable = (props: TransactionsTableProps) => {
       <Typography.Title level={5}>{tableType}</Typography.Title>
       <Table
         columns={columns}
-        dataSource={props.invoices}
+        dataSource={dataSet}
         rowKey="_id"
+        bordered
       />
     </Space>
   );

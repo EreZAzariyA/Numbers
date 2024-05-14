@@ -3,11 +3,10 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
 import { RootState } from "../../redux/store";
-import DashboardFirst from "./dashboardFirst";
-import DashboardSeconde from "./dashboardSeconde";
+import DashboardFirst from "./DashboardFirst";
+import DashboardSeconde from "./DashboardSeconde";
 import { getInvoicesBySelectedMonth } from "../../utils/helpers";
 import { DatePicker, Space } from "antd";
-import "./dashboard.css";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -39,7 +38,8 @@ const Dashboard = () => {
             monthToDisplay={monthToDisplay}
           />
           <DashboardSeconde
-            invoices={invoicesByMonth}
+            invoices={invoices}
+            invoicesByMonth={invoicesByMonth}
             monthToDisplay={monthToDisplay}
           />
         </Space>

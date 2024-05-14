@@ -9,3 +9,8 @@ export enum TransactionsTypes {
   TRANSFER_FROM = 'העברה מ',
   TRANSFER_TO = 'העברה ל'
 };
+
+export enum TotalAmountType {
+  SPENT = 'spent',
+  INCOME = 'income'
+};

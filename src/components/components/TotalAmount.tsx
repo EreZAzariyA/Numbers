@@ -1,11 +1,7 @@
 import { Input } from "antd";
 import { asNumString, getInvoicesTotalsPrice } from "../../utils/helpers";
 import InvoiceModel from "../../models/invoice";
-
-export enum TotalAmountType {
-  SPENT = 'spent',
-  INCOME = 'income'
-};
+import { TotalAmountType } from "../../utils/enums";
 
 interface TotalAmountInputProps {
   invoices: InvoiceModel[];

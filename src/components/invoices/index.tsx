@@ -1,19 +1,20 @@
-import { Button, Col, Row, Space, TableProps, message } from "antd";
-import { InvoiceDataType } from "../../utils/types";
-import { useEffect, useState } from "react";
-import NewInvoice from "./newInvoice/newInvoice";
-import InvoiceModel from "../../models/invoice";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import invoicesServices from "../../services/invoices";
-import { EditTable } from "../components/EditTable";
-import { asNumString, getError } from "../../utils/helpers";
-import { useTranslation } from "react-i18next";
-import { Filters } from "../components/Filters";
 import dayjs, { Dayjs } from "dayjs";
-import TotalAmountInput, { TotalAmountType } from "../components/TotalAmount";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
+import { RootState } from "../../redux/store";
+import NewInvoice from "./newInvoice/newInvoice";
+import { EditTable } from "../components/EditTable";
+import { Filters } from "../components/Filters";
+import TotalAmountInput from "../components/TotalAmount";
+import InvoiceModel from "../../models/invoice";
+import invoicesServices from "../../services/invoices";
+import { InvoiceDataType } from "../../utils/types";
+import { asNumString, getError } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
+import { TotalAmountType } from "../../utils/enums";
+import { Button, Col, Row, Space, TableProps, message } from "antd";
 
 enum Steps {
   New_Invoice = "New_Invoice",
@@ -27,7 +28,6 @@ const Invoices = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const invoices = useSelector((state: RootState) => (state.invoices));
   const categories = useSelector((state: RootState) => (state.categories));
-  const [dataSource, setDataSource] = useState<InvoiceModel[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceModel>(null);
   const newInvoiceWithCategory_idFromCategories = hash.split('#')?.[1];
   const [step, setStep] = useState<string>(hash ? Steps.New_Invoice : null);
@@ -35,31 +35,9 @@ const Invoices = () => {
     category_id: null,
     dates: null,
     month: dayjs(),
-    status: 'completed'
+    status: 'completed',
+    text: null
   });
-
-  useEffect(() => {
-    let data = [...invoices];
-    if (filterState.category_id) {
-      data = data.filter((d) => d.category_id === filterState.category_id)
-    }
-    if (filterState.dates && filterState.dates.length === 2) {
-      data = data.filter((d) => (
-        dayjs(d.date).valueOf() >= dayjs(filterState.dates[0]).startOf('day').valueOf() &&
-        dayjs(d.date).valueOf() <= dayjs(filterState.dates[1]).endOf('day').valueOf()
-      ))
-    }
-    if (filterState.month) {
-      data = data.filter((d) => (
-        dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
-        dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
-      ))
-    }
-    if (filterState.status) {
-      data = data.filter((d) => d.status === filterState.status)
-    }
-    setDataSource(data);
-  }, [filterState, invoices]);
 
   const onFinish = async (invoice: Partial<InvoiceModel>) => {
     if (!user) {
@@ -119,9 +97,33 @@ const Invoices = () => {
       category_id: null,
       dates: [],
       month: dayjs(),
-      status: 'completed'
+      status: 'completed',
+      text: null
     });
   };
+
+  let data = [...invoices];
+  if (filterState.category_id) {
+    data = data.filter((d) => d.category_id === filterState.category_id);
+  }
+  if (filterState.dates && filterState.dates.length === 2) {
+    data = data.filter((d) => (
+      dayjs(d.date).valueOf() >= dayjs(filterState.dates[0]).startOf('day').valueOf() &&
+      dayjs(d.date).valueOf() <= dayjs(filterState.dates[1]).endOf('day').valueOf()
+    ));
+  }
+  if (filterState.month) {
+    data = data.filter((d) => (
+      dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
+      dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
+    ));
+  }
+  if (filterState.status) {
+    data = data.filter((d) => d.status === filterState.status);
+  }
+  if (filterState.text) {
+    data = data.filter((d) => d.description.startsWith(filterState.text));
+  }
 
   const columns: TableProps<InvoiceDataType>['columns'] = [
     {
@@ -187,6 +189,7 @@ const Invoices = () => {
                   monthFilter
                   categoryFilter
                   statusFilter
+                  textFilter
                   filterState={filterState}
                   handleFilterChange={handleFilterChange}
                   resetFilters={resetFilters}
@@ -194,14 +197,14 @@ const Invoices = () => {
               </Col>
               <Col>
                 <Space direction="vertical">
-                  <TotalAmountInput invoices={dataSource} type={TotalAmountType.SPENT} />
-                  <TotalAmountInput invoices={dataSource} type={TotalAmountType.INCOME} />
+                  <TotalAmountInput invoices={data} type={TotalAmountType.SPENT} />
+                  <TotalAmountInput invoices={data} type={TotalAmountType.INCOME} />
                 </Space>
               </Col>
             </Row>
             <EditTable
               columns={columns}
-              dataSource={dataSource}
+              dataSource={data}
               rowKey="_id"
               scrollAble
               type="invoices"

@@ -1,4 +1,4 @@
-import { Button, Col, DatePicker, Row, Select } from "antd";
+import { Button, Col, DatePicker, Input, Row, Select } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ interface FiltersProps {
   monthFilter?: boolean;
   categoryFilter?: boolean;
   statusFilter?: boolean;
+  textFilter?: boolean;
   filterState: any;
   handleFilterChange: (field: string, val: string | number[] | Dayjs[]) => void;
   resetFilters?: () => void;
@@ -30,7 +31,6 @@ export const Filters = (props: FiltersProps) => {
       value: TransactionStatuses.pending
     }
   ];
-
 
   return (
     <Row align={'middle'} justify={'start'} gutter={[20, 10]}>
@@ -83,6 +83,18 @@ export const Filters = (props: FiltersProps) => {
               label: c.name,
               value: c._id,
             }))}
+          />
+        </Col>
+      )}
+
+      {props.textFilter && (
+        <Col>
+          <Input
+            value={props.filterState.text}
+            allowClear
+            style={{ width: '200px' }}
+            placeholder={t('placeholders.3')}
+            onChange={(val) => props.handleFilterChange('text', val.target.value)}
           />
         </Col>
       )}

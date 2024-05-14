@@ -34,7 +34,11 @@ const NewCategory = (props: NewCategoryProps) => {
               onFinish={() => props.onFinish(initialValues)}
               className="insert-form add-category-form"
             >
-              <Form.Item label="Name" name={'name'}>
+              <Form.Item
+                label="Name"
+                name={'name'}
+                rules={[{ required: true, message: 'Please enter category for invoices'}]}
+              >
                 <Input onChange={(e) => setInitialValues({...initialValues, name: e.target.value})} />
               </Form.Item>
 

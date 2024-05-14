@@ -29,6 +29,7 @@
   "placeholders": [
     "Search by category",
     "Search For Category",
-    "Search by status"
+    "Search by status",
+    "Search by text"
   ]
 }

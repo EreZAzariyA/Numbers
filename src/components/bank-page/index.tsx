@@ -14,6 +14,7 @@ const BankPage = () => {
   const bankAccounts = user.bank;
   const hasBankAccounts = bankAccounts && isArrayAndNotEmpty(bankAccounts);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOkBtnActive, setIsBtnActive] = useState<boolean>(false);
 
   const onChange = (key: string) => {
     console.log(key);
@@ -50,10 +51,13 @@ const BankPage = () => {
           onEdit={(_, action) => onEdit(action)}
           type="editable-card"
         />
-        <Modal open={isOpen} onCancel={() => setIsOpen(false)}>
-          <ConnectBankForm user={user} />
-        </Modal>
+        {!hasBankAccounts && (
+          <p>Connect your bank account on the '+' button to see details</p>
+        )}
       </div>
+      <Modal open={isOpen} onCancel={() => setIsOpen(false)} okButtonProps={{ disabled: !isOkBtnActive }}>
+        <ConnectBankForm user={user} handleOkButton={setIsBtnActive} />
+      </Modal>
     </div>
   );
 };

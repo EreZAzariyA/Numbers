@@ -214,20 +214,32 @@ export const filterInvoicesByType = (invoices: InvoiceModel[], type?: Transactio
   if (status) {
     arr = arr.filter((invoice) => (invoice.status === status))
   }
+  
+  arr = sortInvoices(arr, 'date');
+  return arr;
+};
+export const filterInvoicesByListTypes = (invoices: InvoiceModel[], types: TransactionsTypes[]): InvoiceModel[] => {
+  let arr = [...invoices];
 
-  // for (const invoice of invoices) {
-  //   if (list.some((type: string) => invoice.description.includes(type))) {
-  //     if (!status) {
-  //       arr.push(invoice);
-  //     }
-  //     if (status && invoice.status === status) {
-  //       arr.push(invoice);
-  //     }
-  //   }
-  // }
+  for (let type of types) {
+    const list = WithdrawalsListTypes[type] || [type];
+    if (type) {
+      arr = arr.filter((invoice) => ([...list].some((type) => invoice.description.includes(type))));
+    }
+  }
+  
+  arr = sortInvoices(arr, 'date');
   return arr;
 };
 
 export const getTimeToRefresh = (lastConnection: number) => {
   return dayjs(lastConnection).subtract(-5, 'hour');
+};
+
+export const sortInvoices = (invoices: InvoiceModel[], sortBy: 'date'): InvoiceModel[] => {
+  if (sortBy === 'date') {
+    invoices.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
+  }
+
+  return invoices;
 };

@@ -1,13 +1,12 @@
-import "./dashboardFirst.css";
-import Charts from "../../components/Charts/Chart";
+import Charts from "../components/Charts/Chart";
 import { Col, Divider, Row, Space } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import InvoiceModel from "../../../models/invoice";
-import CategoryModel from "../../../models/category-model";
-import { asNumString, findCategoryWithLargestSpentAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../../utils/helpers";
+import InvoiceModel from "../../models/invoice";
+import CategoryModel from "../../models/category-model";
+import { asNumString, findCategoryWithLargestSpentAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../utils/helpers";
 import { Trans as T } from "react-i18next";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { RootState } from "../../redux/store";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;

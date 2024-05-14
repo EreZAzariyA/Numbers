@@ -11,6 +11,7 @@ const { confirm } = Modal;
 
 interface ConnectBankFormProps {
   user: UserModel;
+  handleOkButton?: (val: boolean) => void;
 };
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
@@ -52,6 +53,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         showTransImportConfirmation(res.account?.txns);
       }
       setResult(res);
+      props.handleOkButton(true);
       setIsLoading(false);
     } catch (err: any) {
       setIsLoading(false);
@@ -89,7 +91,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
             Connect your bank account
           </Typography.Title>
 
-          <Form onFinish={onFinish}>
+          <Form onFinish={onFinish} layout="vertical">
             <Form.Item label="Select your bank" name={'companyId'}>
               <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
             </Form.Item>
@@ -116,6 +118,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
             <Form.Item
               name="save"
               valuePropName="checked"
+              extra="Save your credentials to update data faster"
             >
               <Checkbox>Save my credentials</Checkbox>
             </Form.Item>
@@ -128,7 +131,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         <Result
           status="success"
           title="Successfully Connected To Your Bank Account!"
-          subTitle={`Account number: ${result.account.accountNumber} Added. Amount of ${result.account.balance} added to your account`}
+          subTitle={`Account number: ${result.account.accountNumber} Added. Current balance of ${result.account.balance} added to your account`}
         />
       )}
     </>
