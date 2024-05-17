@@ -181,30 +181,26 @@ const Invoices = () => {
         {step && (
           <Button danger className="btn-18" type="link" size="small" onClick={onBack}>Back</Button>
         )}
+        {!step && (
+          <Space>
+            <TotalAmountInput invoices={data} type={TotalAmountType.SPENT} style={{ width: 100 }} />
+            <TotalAmountInput invoices={data} type={TotalAmountType.INCOME} style={{ width: 100 }} />
+          </Space>
+        )}
       </div>
       <div className="page-inner-container">
         {!step && (
           <Space direction="vertical" className="w-100">
-            <Row justify={'space-between'} align={'middle'} wrap={false} gutter={[10, 5]}>
-              <Col>
-                <Filters
-                  datesFilter
-                  monthFilter
-                  categoryFilter
-                  statusFilter
-                  textFilter
-                  filterState={filterState}
-                  handleFilterChange={handleFilterChange}
-                  resetFilters={resetFilters}
-                />
-              </Col>
-              <Col>
-                <Space direction="vertical">
-                  <TotalAmountInput invoices={data} type={TotalAmountType.SPENT} />
-                  <TotalAmountInput invoices={data} type={TotalAmountType.INCOME} />
-                </Space>
-              </Col>
-            </Row>
+            <Filters
+              datesFilter
+              monthFilter
+              categoryFilter
+              statusFilter
+              textFilter
+              filterState={filterState}
+              handleFilterChange={handleFilterChange}
+              resetFilters={resetFilters}
+            />
             <EditTable
               columns={columns}
               dataSource={data}

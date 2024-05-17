@@ -33,12 +33,12 @@ export const Filters = (props: FiltersProps) => {
   ];
 
   return (
-    <Row align={'middle'} justify={'start'} gutter={[20, 10]}>
+    <Row align={'middle'} justify={'start'} gutter={[10, 10]}>
       {props.datesFilter && (
         <Col>
           <DatePicker.RangePicker
             allowClear
-            style={{ width: '200px' }}
+            style={{ width: 200 }}
             value={props.filterState.dates}
             maxDate={dayjs()}
             onChange={(val) => {
@@ -58,7 +58,7 @@ export const Filters = (props: FiltersProps) => {
             picker="month"
             maxDate={dayjs()}
             allowClear={!isPhone}
-            style={{ width: '200px' }}
+            style={{ width: 150 }}
             value={props.filterState.month}
             onChange={(val) => {
               if (!val) {
@@ -76,7 +76,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.category_id}
             allowClear
-            style={{ width: '200px' }}
+            style={{ width: 150 }}
             placeholder={t('placeholders.0')}
             onChange={(val) => props.handleFilterChange('category_id', val)}
             options={[...categories].map((c) => ({
@@ -92,7 +92,7 @@ export const Filters = (props: FiltersProps) => {
           <Input
             value={props.filterState.text}
             allowClear
-            style={{ width: '200px' }}
+            style={{ width: 150 }}
             placeholder={t('placeholders.3')}
             onChange={(val) => props.handleFilterChange('text', val.target.value)}
           />
@@ -104,7 +104,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.status}
             allowClear
-            style={{ width: '200px' }}
+            style={{ width: 150 }}
             placeholder={t('placeholders.2')}
             onChange={(val) => props.handleFilterChange('status', val)}
             options={[...transactionStatus].map((c) => ({
