@@ -103,6 +103,9 @@ export const asNumber = (num: number, digits: number = 2) => (
 );
 
 export const asNumString = (num: number, digits: number = 2): string => {
+  if (!num || typeof num !== 'number') {
+    return '0'
+  }
   const formattedNumber = num.toFixed(digits);
   return parseFloat(formattedNumber).toLocaleString();
 };

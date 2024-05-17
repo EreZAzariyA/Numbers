@@ -137,7 +137,7 @@ const DashboardView = () => {
         collapsedHandler={() => setIsCollapsed(!isCollapsed)}
         items={items}
       />
-      <Layout hasSider style={{position: 'relative'}}>
+      <Layout hasSider>
         <Sider
           trigger={null}
           collapsed={isCollapsed}

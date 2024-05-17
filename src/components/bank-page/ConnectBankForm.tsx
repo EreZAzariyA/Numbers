@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, Modal, Result, Select, Space, Typography, message } from "antd";
-import { SCRAPERS, SupportedCompanyTypes } from "../../utils/definitions";
+import { SCRAPERS, SupportedCompaniesTypes } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/types";
 import { useState } from "react";
 import UserModel from "../../models/user-model";
@@ -12,6 +12,7 @@ const { confirm } = Modal;
 interface ConnectBankFormProps {
   user: UserModel;
   handleOkButton?: (val: boolean) => void;
+  setResult?: (res: any) => void;
 };
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
@@ -23,7 +24,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     loginFields: []
   });
 
-  const bankList: MenuItem[] = Object.entries(SupportedCompanyTypes).map(([bank, value]) => (
+  const bankList: MenuItem[] = Object.entries(SupportedCompaniesTypes).map(([bank, value]) => (
     getMenuItem(bank, bank, null, null, null, value)
   ));
 
@@ -52,7 +53,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
       if (res?.account && res.account?.txns && res.account.txns?.length) {
         showTransImportConfirmation(res.account?.txns);
       }
-      setResult(res);
+      props.setResult(res);
       props.handleOkButton(true);
       setIsLoading(false);
     } catch (err: any) {
@@ -81,60 +82,49 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   };
 
   return (
-    <>
-      {!result && (
-        <Space className="w-100" direction="vertical" size={'large'}>
-          <Typography.Title
-            style={{ margin: 0, textDecoration: 'underline' }}
-            level={4}
-          >
-            Connect your bank account
-          </Typography.Title>
+    <Space className="w-100" direction="vertical" size={'large'}>
+      <Typography.Title
+        style={{ margin: 0, textDecoration: 'underline' }}
+        level={4}
+      >
+        Connect your bank account
+      </Typography.Title>
 
-          <Form onFinish={onFinish} layout="vertical">
-            <Form.Item label="Select your bank" name={'companyId'}>
-              <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
-            </Form.Item>
+      <Form onFinish={onFinish} layout="vertical">
+        <Form.Item label="Select your bank" name={'companyId'}>
+          <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
+        </Form.Item>
 
-            {selectedCompany.isSelected && (
-              <>
-                <h2>{selectedCompany.name}</h2>
-                {selectedCompany.loginFields.map((field) => (
-                  <Form.Item
-                    key={field}
-                    name={field}
-                    label={field}
-                  >
-                    {field === 'password' ? (
-                      <Input.Password autoComplete="off" />
-                    ) : (
-                      <Input type={field || 'text'} autoComplete="off" />
-                    )}
-                  </Form.Item>
-                ))}
-              </>
-            )}
+        {selectedCompany.isSelected && (
+          <>
+            <h2>{selectedCompany.name}</h2>
+            {selectedCompany.loginFields.map((field) => (
+              <Form.Item
+                key={field}
+                name={field}
+                label={field}
+              >
+                {field === 'password' ? (
+                  <Input.Password autoComplete="off" />
+                ) : (
+                  <Input type={field || 'text'} autoComplete="off" />
+                )}
+              </Form.Item>
+            ))}
+          </>
+        )}
 
-            <Form.Item
-              name="save"
-              valuePropName="checked"
-              extra="Save your credentials to update data faster"
-            >
-              <Checkbox>Save my credentials</Checkbox>
-            </Form.Item>
+        <Form.Item
+          name="save"
+          valuePropName="checked"
+          extra="Save your credentials to update data faster"
+        >
+          <Checkbox>Save my credentials</Checkbox>
+        </Form.Item>
 
-            <Button loading={isLoading} type="link" htmlType="submit">Check</Button>
-          </Form>
-        </Space>
-      )}
-      {result?.account && (
-        <Result
-          status="success"
-          title="Successfully Connected To Your Bank Account!"
-          subTitle={`Account number: ${result.account.accountNumber} Added. Current balance of ${result.account.balance} added to your account`}
-        />
-      )}
-    </>
+        <Button loading={isLoading} type="link" htmlType="submit">Check</Button>
+      </Form>
+    </Space>
   );
 };
 

@@ -1,6 +1,5 @@
 export const PASSWORD_FIELD = 'password';
 
-
 export enum CompanyTypes {
   hapoalim = 'hapoalim',
   hapoalimBeOnline = 'hapoalimBeOnline',
@@ -21,18 +20,43 @@ export enum CompanyTypes {
   behatsdaa = 'behatsdaa',
   beyahadBishvilha = 'beyahadBishvilha',
   oneZero = 'oneZero'
-}
-
-export const SupportedCompanyTypes = {
-  [CompanyTypes.discount]: CompanyTypes.discount
-}
+};
+export enum SupportedCompaniesTypes {
+  max = 'max',
+  discount = 'discount',
+  behatsdaa = 'behatsdaa',
+};
 
 export const SupportedScrapers = {
-  [CompanyTypes.discount]: {
+  [SupportedCompaniesTypes.discount]: {
     name: 'Discount Bank',
     loginFields: ['id', PASSWORD_FIELD, 'num'],
   },
-}
+  [SupportedCompaniesTypes.max]: {
+    name: 'Max',
+    loginFields: ['username', PASSWORD_FIELD],
+  },
+  [SupportedCompaniesTypes.behatsdaa]: {
+    name: 'Behatsdaa',
+    loginFields: ['id', PASSWORD_FIELD],
+  },
+};
+
+
+// export const SupportedScrapers = {
+//   [SupportedCompaniesTypes.discount]: {
+//     name: 'Discount Bank',
+//     loginFields: SUPPORTED_SCRAPERS_FIELDS[SupportedCompaniesTypes.discount],
+//   },
+//   [SupportedCompaniesTypes.max]: {
+//     name: 'Max For You',
+//     loginFields: SUPPORTED_SCRAPERS_FIELDS[SupportedCompaniesTypes.max],
+//   },
+//   [SupportedCompaniesTypes.behatsdaa]: {
+//     name: 'Max For You',
+//     loginFields: SUPPORTED_SCRAPERS_FIELDS[SupportedCompaniesTypes.behatsdaa],
+//   },
+// }
 
 export const SCRAPERS = {
   [CompanyTypes.hapoalim]: {

@@ -20,7 +20,7 @@ class BankServices {
   };
 
   updateBankData = async (bankAccount_id: string, user_id: string): Promise<Pick<AccountDetails, "importedTransactions">> => {
-    const response = await axios.put<AccountDetails>(config.urls.bank.updateBankData + `/${user_id}`, bankAccount_id);
+    const response = await axios.put<AccountDetails>(config.urls.bank.updateBankData + `/${user_id}`, { bankAccount_id });
     const { newUserToken, importedTransactions } = response.data;
     if (newUserToken && importedTransactions) {
       store.dispatch(refreshTokenAction(newUserToken));
