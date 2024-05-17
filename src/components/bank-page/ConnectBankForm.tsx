@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input, Modal, Result, Select, Space, Typography, message } from "antd";
+import { Button, Checkbox, Form, Input, Modal, Select, Space, Typography, message } from "antd";
 import { SCRAPERS, SupportedCompaniesTypes } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/types";
 import { useState } from "react";
@@ -17,7 +17,6 @@ interface ConnectBankFormProps {
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [result, setResult] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: false,
     name: '',
