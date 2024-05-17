@@ -50,18 +50,18 @@ const CategoriesPage = () => {
       message.error("User id is missing");
       return;
     }
-    category.user_id = user._id;
+
     setIsLoading(true);
     try {
       let res = null;
       let msg = '';
       if (selectedCategory) {
-        res = await categoriesServices.updateCategory(category);
+        res = await categoriesServices.updateCategory(category, user._id);
         msg = 'Updated category successfully';
         console.log('to update');
       } else {
         console.log('to add');
-        res = await categoriesServices.addCategory(category);
+        res = await categoriesServices.addCategory(category, user._id);
         msg = 'Category added successfully'
       }
       if (res) {

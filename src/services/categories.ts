@@ -12,15 +12,15 @@ class CategoriesServices {
     return userCategories;
   };
 
-  async addCategory(category: CategoryModel): Promise<CategoryModel> {
-    const response = await axios.post<CategoryModel>(config.urls.categories, category);
+  async addCategory(category: CategoryModel, user_id: string): Promise<CategoryModel> {
+    const response = await axios.post<CategoryModel>(config.urls.categories + `/${user_id}`, category);
     const addedCategory = response.data;
     store.dispatch(addNewCategoryAction(addedCategory));
     return addedCategory;
   };
 
-  async updateCategory(category: CategoryModel): Promise<CategoryModel> {
-    const response = await axios.put<CategoryModel>(config.urls.categories, category);
+  async updateCategory(category: CategoryModel, user_id: string): Promise<CategoryModel> {
+    const response = await axios.put<CategoryModel>(config.urls.categories + `/${user_id}`, category);
     const updatedCategory = response.data;
     store.dispatch(updateCategoryAction(updatedCategory));
     return updatedCategory;
