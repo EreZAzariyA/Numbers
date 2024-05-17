@@ -33,7 +33,7 @@ const Dashboard = () => {
       </div>
       <div className="sub-title-container">
         <Row>
-          Hey {getUserfName(user)} {getGreeting()}
+          Hey {getUserfName(user)}, {getGreeting()}
         </Row>
       </div>
       <div className="page-inner-container">

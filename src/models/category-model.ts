@@ -1,5 +1,3 @@
-import { Dayjs } from "dayjs";
-
 class CategoryModel {
   _id: string;
   user_id: string;
