@@ -67,6 +67,7 @@ const TransactionsTable = (props: TransactionsTableProps) => {
         dataSource={dataSet}
         rowKey="_id"
         bordered
+        pagination={false}
       />
     </Space>
   );
