@@ -7,6 +7,7 @@ import { CategoryData } from "./interfaces";
 import { WithdrawalsListTypes } from "./types";
 import { TransactionsTypes } from "./enums";
 import { TransactionStatusesType } from "./transactions";
+import UserModel from "../models/user-model";
 
 export type ColorType = {
   ICON: string;
@@ -245,4 +246,22 @@ export const sortInvoices = (invoices: InvoiceModel[], sortBy: 'date'): InvoiceM
   }
 
   return invoices;
+};
+
+export const getGreeting = () => {
+  const currentHour = dayjs().hour();
+  if (currentHour >= 5 && currentHour < 12) {
+    return 'Good morning';
+  } else if (currentHour >= 12 && currentHour < 17) {
+    return 'Good afternoon';
+  } else if (currentHour >= 17 && currentHour < 20) {
+    return 'Good evening';
+  } else {
+    return 'Good night';
+  }
+};
+
+export const getUserfName = (user: UserModel) => {
+  if (!user) return '';
+  return user.profile.first_name;
 };

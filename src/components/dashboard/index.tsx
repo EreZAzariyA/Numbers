@@ -5,11 +5,12 @@ import dayjs, { Dayjs } from "dayjs";
 import { RootState } from "../../redux/store";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSeconde from "./DashboardSeconde";
-import { getInvoicesBySelectedMonth } from "../../utils/helpers";
-import { DatePicker, Space } from "antd";
+import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
+import { DatePicker, Row, Space } from "antd";
 
 const Dashboard = () => {
   const { t } = useTranslation();
+  const user = useSelector((state: RootState) => state.auth.user);
   const invoices = useSelector((state: RootState) => state.invoices);
   const categories = useSelector((state: RootState) => state.categories);
   const currentMonth = dayjs();
@@ -29,6 +30,11 @@ const Dashboard = () => {
           value={monthToDisplay}
           onChange={setMonthToDisplay}
         />
+      </div>
+      <div className="sub-title-container">
+        <Row>
+          Hey {getUserfName(user)} {getGreeting()}
+        </Row>
       </div>
       <div className="page-inner-container">
         <Space direction="vertical" size={"large"}>
