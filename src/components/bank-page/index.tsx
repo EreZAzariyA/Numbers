@@ -55,7 +55,7 @@ const BankPage = () => {
           <p>Connect your bank account on the '+' button to see details</p>
         )}
       </div>
-      <Modal open={isOpen} onCancel={() => setIsOpen(false)} okButtonProps={{ disabled: !isOkBtnActive }}>
+      <Modal open={isOpen} onCancel={() => setIsOpen(false)} okButtonProps={{ disabled: !isOkBtnActive }} onOk={() => setIsOpen(false)}>
         <ConnectBankForm user={user} handleOkButton={setIsBtnActive} />
       </Modal>
     </div>

@@ -6,11 +6,11 @@ import CategoryModel from "../../../models/category-model";
 interface NewCategoryProps {
   category?: CategoryModel;
   onFinish: (values: CategoryModel) => void;
+  isLoading?: boolean;
 };
 
 const NewCategory = (props: NewCategoryProps) => {
   const [form] = Form.useForm();
-
   const [initialValues, setInitialValues] = useState<CategoryModel>({
     _id: props.category?._id || null,
     user_id: props.category?.user_id || null,
@@ -43,7 +43,7 @@ const NewCategory = (props: NewCategoryProps) => {
               </Form.Item>
 
               <Form.Item>
-                <Button htmlType="submit">Submit</Button>
+                <Button htmlType="submit" loading={props.isLoading}>Submit</Button>
               </Form.Item>
             </Form>
           </Col>

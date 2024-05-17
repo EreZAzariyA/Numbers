@@ -22,6 +22,7 @@ const CategoriesPage = () => {
   const [dataSource, setDataSource] = useState<CategoryModel[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryModel>(null);
   const [step, setStep] = useState<string>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filterState, setFilterState] = useState({
     category: '',
   });
@@ -50,7 +51,7 @@ const CategoriesPage = () => {
       return;
     }
     category.user_id = user._id;
-
+    setIsLoading(true);
     try {
       let res = null;
       let msg = '';
@@ -71,6 +72,7 @@ const CategoriesPage = () => {
       console.log(error);
       message.error(getError(error));
     }
+    setIsLoading(false);
   };
 
   const onRemove = async (record_id: string): Promise<void> => {
@@ -140,12 +142,14 @@ const CategoriesPage = () => {
         {(step && step === Steps.New_Category) && (
           <NewCategory
             onFinish={onFinish}
+            isLoading={isLoading}
           />
         )}
         {(step && step === Steps.Update_Category) && (
           <NewCategory
             onFinish={onFinish}
             category={selectedCategory}
+            isLoading={isLoading}
           />
         )}
       </div>
