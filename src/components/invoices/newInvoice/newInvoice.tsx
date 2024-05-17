@@ -11,6 +11,7 @@ interface NewInvoiceProps {
   categories?: CategoryModel[];
   onFinish: (values: Partial<InvoiceModel>) => void;
   newInvoiceCategoryId?: string;
+  isLoading?: boolean;
 };
 
 const NewInvoice = (props: NewInvoiceProps) => {
@@ -107,7 +108,7 @@ const NewInvoice = (props: NewInvoiceProps) => {
               </Form.Item>
 
               <Form.Item>
-                <Button htmlType="submit">Submit</Button>
+                <Button htmlType="submit" loading={props.isLoading || false}>Submit</Button>
               </Form.Item>
             </Form>
           </Col>

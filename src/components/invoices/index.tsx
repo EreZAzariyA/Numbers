@@ -31,6 +31,7 @@ const Invoices = () => {
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceModel>(null);
   const newInvoiceWithCategory_idFromCategories = hash.split('#')?.[1];
   const [step, setStep] = useState<string>(hash ? Steps.New_Invoice : null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filterState, setFilterState] = useState({
     category_id: null,
     dates: null,
@@ -45,6 +46,7 @@ const Invoices = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       invoice.user_id = user._id;
       let res = null;
@@ -67,6 +69,7 @@ const Invoices = () => {
     } catch (error: any) {
       message.error(error.message);
     }
+    setIsLoading(false);
   };
 
   const onBack = () => {
@@ -221,6 +224,7 @@ const Invoices = () => {
             onFinish={onFinish}
             categories={categories}
             newInvoiceCategoryId={newInvoiceWithCategory_idFromCategories}
+            isLoading={isLoading}
           />
         )}
         {(step && step === Steps.Update_Invoice) && (
@@ -228,6 +232,7 @@ const Invoices = () => {
             onFinish={onFinish}
             categories={categories}
             invoice={selectedInvoice}
+            isLoading={isLoading}
           />
         )}
       </div>
