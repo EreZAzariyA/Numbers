@@ -1,21 +1,19 @@
 import { Col, Row, Space, Spin, Tooltip, Typography, message } from "antd";
-import { SCRAPERS } from "../../utils/definitions";
+import { CompaniesNames } from "../../utils/definitions";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import { useState } from "react";
 import bankServices from "../../services/banks";
-import { UserBankModel } from "../../models/user-model";
+import UserModel, { UserBankModel } from "../../models/user-model";
 import { asNumString, getTimeToRefresh } from "../../utils/helpers";
 
 interface BankAccountPageProps {
   bankAccount: UserBankModel;
+  user: UserModel;
 };
 dayjs.extend(relativeTime);
 
 const BankAccountPage = (props: BankAccountPageProps) => {
-  const user = useSelector((state: RootState) => state.auth.user);
   const lastConnection = props.bankAccount?.lastConnection
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
   const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
@@ -27,7 +25,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
     setIsLoading(true);
 
     try {
-      const response = await bankServices.updateBankData(props.bankAccount?._id, user?._id);
+      const response = await bankServices.updateBankData(props.bankAccount?._id, props.user?._id);
       if (response) {
         message.success('Account data updated...');
         if (response.importedTransactions.length) {
@@ -47,7 +45,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
         <Col span={24}>
           <Space direction="vertical">
             <Typography.Title level={4} style={{ margin: 0 }}>
-              {(SCRAPERS as any)[props.bankAccount.bankName]?.name || props.bankAccount?.bankName}
+              {CompaniesNames[props.bankAccount.bankName] || props.bankAccount?.bankName}
             </Typography.Title>
 
             {isLoading ? <Spin /> : (
@@ -60,7 +58,6 @@ const BankAccountPage = (props: BankAccountPageProps) => {
                 <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
                   <Typography.Link disabled={!isRefreshAvailable} onClick={refreshBankData}>Refresh</Typography.Link>
                 </Tooltip>
-
               </>
             )}
           </Space>

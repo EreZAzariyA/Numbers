@@ -34,8 +34,8 @@ const BankPage = () => {
 
   const items: TabsProps['items'] = !hasBankAccounts ? [] : bankAccounts.map((account) => ({
     key: account.bankName,
-    label: <Typography.Text>{(CompaniesNames as any)[account.bankName] || account.bankName}</Typography.Text>,
-    children: <BankAccountPage bankAccount={account} />,
+    label: <Typography.Text>{CompaniesNames[account.bankName] || account.bankName}</Typography.Text>,
+    children: <BankAccountPage user={user} bankAccount={account} />,
     closable: false
   }));
 

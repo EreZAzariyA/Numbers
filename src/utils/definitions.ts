@@ -1,33 +1,17 @@
 export const PASSWORD_FIELD = 'password';
 
-export enum CompanyTypes {
-  hapoalim = 'hapoalim',
-  hapoalimBeOnline = 'hapoalimBeOnline',
-  beinleumi = 'beinleumi',
-  union = 'union',
-  amex = 'amex',
-  isracard = 'isracard',
-  visaCal = 'visaCal',
-  max = 'max',
-  leumiCard = 'leumiCard',
-  otsarHahayal = 'otsarHahayal',
-  discount = 'discount',
-  mercantile = 'mercantile',
-  mizrahi = 'mizrahi',
-  leumi = 'leumi',
-  massad = 'massad',
-  yahav = 'yahav',
-  behatsdaa = 'behatsdaa',
-  beyahadBishvilha = 'beyahadBishvilha',
-  oneZero = 'oneZero'
-};
 export enum SupportedCompaniesTypes {
   max = 'max',
   discount = 'discount',
   behatsdaa = 'behatsdaa',
+  leumi = 'leumi',
 };
 
-export const SupportedScrapers = {
+export const SupportedScrapers: any = {
+  [SupportedCompaniesTypes.leumi]: {
+    name: 'Bank Leumi',
+    loginFields: ['username', PASSWORD_FIELD],
+  },
   [SupportedCompaniesTypes.discount]: {
     name: 'Discount Bank',
     loginFields: ['id', PASSWORD_FIELD, 'num'],
@@ -42,100 +26,106 @@ export const SupportedScrapers = {
   },
 };
 
+// export enum CompanyTypes {
+//   hapoalim = 'hapoalim',
+//   hapoalimBeOnline = 'hapoalimBeOnline',
+//   beinleumi = 'beinleumi',
+//   union = 'union',
+//   amex = 'amex',
+//   isracard = 'isracard',
+//   visaCal = 'visaCal',
+//   max = 'max',
+//   leumiCard = 'leumiCard',
+//   otsarHahayal = 'otsarHahayal',
+//   discount = 'discount',
+//   mercantile = 'mercantile',
+//   mizrahi = 'mizrahi',
+//   leumi = 'leumi',
+//   massad = 'massad',
+//   yahav = 'yahav',
+//   behatsdaa = 'behatsdaa',
+//   beyahadBishvilha = 'beyahadBishvilha',
+//   oneZero = 'oneZero'
+// };
 
-// export const SupportedScrapers = {
-//   [SupportedCompaniesTypes.discount]: {
+// export const SCRAPERS = {
+//   [CompanyTypes.hapoalim]: {
+//     name: 'Bank Hapoalim',
+//     loginFields: ['userCode', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.hapoalimBeOnline]: {
+//     name: 'Bank Hapoalim',
+//     loginFields: ['userCode', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.leumi]: {
+//     name: 'Bank Leumi',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.mizrahi]: {
+//     name: 'Mizrahi Bank',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.discount]: {
 //     name: 'Discount Bank',
-//     loginFields: SUPPORTED_SCRAPERS_FIELDS[SupportedCompaniesTypes.discount],
+//     loginFields: ['id', PASSWORD_FIELD, 'num'],
 //   },
-//   [SupportedCompaniesTypes.max]: {
-//     name: 'Max For You',
-//     loginFields: SUPPORTED_SCRAPERS_FIELDS[SupportedCompaniesTypes.max],
+//   [CompanyTypes.mercantile]: {
+//     name: 'Mercantile Bank',
+//     loginFields: ['id', PASSWORD_FIELD, 'num'],
 //   },
-//   [SupportedCompaniesTypes.behatsdaa]: {
-//     name: 'Max For You',
-//     loginFields: SUPPORTED_SCRAPERS_FIELDS[SupportedCompaniesTypes.behatsdaa],
+//   [CompanyTypes.otsarHahayal]: {
+//     name: 'Bank Otsar Hahayal',
+//     loginFields: ['username', PASSWORD_FIELD],
 //   },
-// }
-
-export const SCRAPERS = {
-  [CompanyTypes.hapoalim]: {
-    name: 'Bank Hapoalim',
-    loginFields: ['userCode', PASSWORD_FIELD],
-  },
-  [CompanyTypes.hapoalimBeOnline]: {
-    name: 'Bank Hapoalim',
-    loginFields: ['userCode', PASSWORD_FIELD],
-  },
-  [CompanyTypes.leumi]: {
-    name: 'Bank Leumi',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.mizrahi]: {
-    name: 'Mizrahi Bank',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.discount]: {
-    name: 'Discount Bank',
-    loginFields: ['id', PASSWORD_FIELD, 'num'],
-  },
-  [CompanyTypes.mercantile]: {
-    name: 'Mercantile Bank',
-    loginFields: ['id', PASSWORD_FIELD, 'num'],
-  },
-  [CompanyTypes.otsarHahayal]: {
-    name: 'Bank Otsar Hahayal',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.leumiCard]: { // TODO remove in Major version
-    name: 'Leumi Card',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.max]: {
-    name: 'Max',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.visaCal]: {
-    name: 'Visa Cal',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.isracard]: {
-    name: 'Isracard',
-    loginFields: ['id', 'card6Digits', PASSWORD_FIELD],
-  },
-  [CompanyTypes.amex]: {
-    name: 'Amex',
-    loginFields: ['id', 'card6Digits', PASSWORD_FIELD],
-  },
-  [CompanyTypes.union]: {
-    name: 'Union',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.beinleumi]: {
-    name: 'Beinleumi',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.massad]: {
-    name: 'Massad',
-    loginFields: ['username', PASSWORD_FIELD],
-  },
-  [CompanyTypes.yahav]: {
-    name: 'Bank Yahav',
-    loginFields: ['username', 'nationalID', PASSWORD_FIELD],
-  },
-  [CompanyTypes.beyahadBishvilha]: {
-    name: 'Beyahad Bishvilha',
-    loginFields: ['id', PASSWORD_FIELD],
-  },
-  [CompanyTypes.oneZero]: {
-    name: 'One Zero',
-    loginFields: ['email', PASSWORD_FIELD, 'otpCodeRetriever', 'phoneNumber', 'otpLongTermToken'],
-  },
-  [CompanyTypes.behatsdaa]: {
-    name: 'Behatsdaa',
-    loginFields: ['id', PASSWORD_FIELD],
-  },
-};
+//   [CompanyTypes.leumiCard]: { // TODO remove in Major version
+//     name: 'Leumi Card',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.max]: {
+//     name: 'Max',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.visaCal]: {
+//     name: 'Visa Cal',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.isracard]: {
+//     name: 'Isracard',
+//     loginFields: ['id', 'card6Digits', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.amex]: {
+//     name: 'Amex',
+//     loginFields: ['id', 'card6Digits', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.union]: {
+//     name: 'Union',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.beinleumi]: {
+//     name: 'Beinleumi',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.massad]: {
+//     name: 'Massad',
+//     loginFields: ['username', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.yahav]: {
+//     name: 'Bank Yahav',
+//     loginFields: ['username', 'nationalID', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.beyahadBishvilha]: {
+//     name: 'Beyahad Bishvilha',
+//     loginFields: ['id', PASSWORD_FIELD],
+//   },
+//   [CompanyTypes.oneZero]: {
+//     name: 'One Zero',
+//     loginFields: ['email', PASSWORD_FIELD, 'otpCodeRetriever', 'phoneNumber', 'otpLongTermToken'],
+//   },
+//   [CompanyTypes.behatsdaa]: {
+//     name: 'Behatsdaa',
+//     loginFields: ['id', PASSWORD_FIELD],
+//   },
+// };
 
 export enum ScraperProgressTypes {
   Initializing = 'INITIALIZING',
@@ -149,6 +139,6 @@ export enum ScraperProgressTypes {
 }
 
 
-export const CompaniesNames = {
-  [CompanyTypes.discount]: SCRAPERS[CompanyTypes.discount].name
+export const CompaniesNames: any = {
+  [SupportedCompaniesTypes.discount]: SupportedScrapers[SupportedCompaniesTypes.discount].name
 }

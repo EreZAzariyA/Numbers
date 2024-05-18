@@ -1,6 +1,6 @@
 import InvoiceModel from "../models/invoice";
 import { UserBankModel } from "../models/user-model";
-import { CompanyTypes } from "./definitions";
+import { SupportedCompaniesTypes } from "./definitions";
 
 export enum TransactionStatuses {
   completed = "Completed",
@@ -79,5 +79,5 @@ export declare type ScraperCredentials = {
 
 
 export interface ScraperOptions {
-  companyId: CompanyTypes;
+  companyId: SupportedCompaniesTypes;
 }

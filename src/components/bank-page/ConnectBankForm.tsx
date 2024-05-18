@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, Modal, Select, Space, Typography, message } from "antd";
-import { SCRAPERS, SupportedCompaniesTypes } from "../../utils/definitions";
+import { SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/types";
 import { useState } from "react";
 import UserModel from "../../models/user-model";
@@ -28,7 +28,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   ));
 
   const onSelectCompany = (companyId: string) => {
-    const company = (SCRAPERS as any)[companyId];
+    const company = SupportedScrapers[companyId];
     if (company) {
       setSelectedCompany({
         isSelected: true,
