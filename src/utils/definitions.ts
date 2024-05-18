@@ -26,6 +26,14 @@ export const SupportedScrapers: any = {
   },
 };
 
+export const CompaniesNames: any = {
+  [SupportedCompaniesTypes.discount]: SupportedScrapers[SupportedCompaniesTypes.discount].name,
+  [SupportedCompaniesTypes.max]: SupportedScrapers[SupportedCompaniesTypes.max].name,
+  [SupportedCompaniesTypes.behatsdaa]: SupportedScrapers[SupportedCompaniesTypes.behatsdaa].name,
+  [SupportedCompaniesTypes.leumi]: SupportedScrapers[SupportedCompaniesTypes.leumi].name,
+  
+}
+
 // export enum CompanyTypes {
 //   hapoalim = 'hapoalim',
 //   hapoalimBeOnline = 'hapoalimBeOnline',
@@ -136,9 +144,4 @@ export enum ScraperProgressTypes {
   ChangePassword = 'CHANGE_PASSWORD',
   EndScraping = 'END_SCRAPING',
   Terminating = 'TERMINATING',
-}
-
-
-export const CompaniesNames: any = {
-  [SupportedCompaniesTypes.discount]: SupportedScrapers[SupportedCompaniesTypes.discount].name
 }

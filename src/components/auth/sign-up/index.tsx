@@ -1,7 +1,5 @@
 import { Button, Form, Input, Space, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import UserModel, { EmailModel } from "../../../models/user-model";
-import { SyntheticEvent, useState } from "react";
 import authServices from "../../../services/authentication";
 import { getError } from "../../../utils/helpers";
 

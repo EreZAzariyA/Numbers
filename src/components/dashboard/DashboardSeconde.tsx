@@ -1,11 +1,10 @@
 import { Dayjs } from "dayjs";
 import InvoiceModel from "../../models/invoice";
-import { filterInvoicesByType, filterInvoicesByListTypes } from "../../utils/helpers";
+import { filterInvoicesByType } from "../../utils/helpers";
 import { TransactionsTypes } from "../../utils/enums";
 import TransactionsTable from "../components/TransactionsTable/TransactionsTable";
 import { Col, Row } from "antd";
 import { TransactionStatusesType } from "../../utils/transactions";
-import { WithdrawalsListTypes } from "../../utils/types";
 
 interface DashboardSecondeProps {
   invoices: InvoiceModel[];

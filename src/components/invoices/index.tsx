@@ -14,7 +14,7 @@ import { InvoiceDataType } from "../../utils/types";
 import { asNumString, getError } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
 import { TotalAmountType } from "../../utils/enums";
-import { Button, Col, Row, Space, TableProps, message } from "antd";
+import { Button, Space, TableProps, message } from "antd";
 
 enum Steps {
   New_Invoice = "New_Invoice",
