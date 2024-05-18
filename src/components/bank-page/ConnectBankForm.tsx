@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, Modal, Select, Space, Typography, message } from "antd";
-import { SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
+import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/types";
 import { useState } from "react";
 import UserModel from "../../models/user-model";
@@ -19,7 +19,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: false,
-    name: '',
+    companyId: SupportedCompaniesTypes.discount || SupportedCompaniesTypes.behatsdaa,
     loginFields: []
   });
 
@@ -27,12 +27,12 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     getMenuItem(bank, bank, null, null, null, value)
   ));
 
-  const onSelectCompany = (companyId: string) => {
+  const onSelectCompany = (companyId: SupportedCompaniesTypes) => {
     const company = SupportedScrapers[companyId];
     if (company) {
       setSelectedCompany({
         isSelected: true,
-        name: company.name,
+        companyId,
         loginFields: company.loginFields,
       });
     }
@@ -71,7 +71,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   
   const onTransactionsImportOk = async (transactions: Transaction[]): Promise<void> => {
     try {
-      const res = await bankServices.importTrans(transactions, props.user._id);
+      const res = await bankServices.importTrans(transactions, props.user._id, (SupportedCompaniesTypes as any)[selectedCompany.companyId]);
       if (res && isArray(res)) {
         message.success(`imported transactions: ${res?.length || 0}`);
       }
@@ -96,7 +96,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
 
         {selectedCompany.isSelected && (
           <>
-            <h2>{selectedCompany.name}</h2>
+            <h2>{CompaniesNames[selectedCompany.companyId]}</h2>
             {selectedCompany.loginFields.map((field) => (
               <Form.Item
                 key={field}

@@ -5,6 +5,7 @@ import { addManyInvoices } from "../redux/slicers/invoices";
 import { refreshTokenAction } from "../redux/slicers/auth-slicer";
 import { AccountDetails, BankAccountDetails, ScraperCredentials, Transaction } from "../utils/transactions";
 import InvoiceModel from "../models/invoice";
+import { SupportedCompaniesTypes } from "../utils/definitions";
 
 class BankServices {
   fetchBankData = async (details: ScraperCredentials, user_id: string): Promise<BankAccountDetails> => {
@@ -28,8 +29,8 @@ class BankServices {
     }
   };
   
-  importTrans = async (transactions: Transaction[], user_id: string): Promise<InvoiceModel[]> => {
-    const response = await axios.post<InvoiceModel[]>(config.urls.bank.importTransactions + `/${user_id}`, transactions);
+  importTrans = async (transactions: Transaction[], user_id: string, companyId: SupportedCompaniesTypes): Promise<InvoiceModel[]> => {
+    const response = await axios.post<InvoiceModel[]>(config.urls.bank.importTransactions + `/${user_id}`, { transactions, companyId });
     const trans = response.data;
     store.dispatch(addManyInvoices(trans));
     return trans;
