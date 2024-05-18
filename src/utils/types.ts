@@ -50,6 +50,8 @@ export const getMenuItem = (
 export interface DataType {
   _id: string;
   name: string;
+  expectedSpent: number;
+  total: number;
   editable: boolean;
 };
 

@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Row, Space } from "antd";
+import { Button, Col, Form, Input, InputNumber, Row, Space } from "antd";
 import "./newCategory.css";
 import { useState } from "react";
 import CategoryModel from "../../../models/category-model";
@@ -15,6 +15,7 @@ const NewCategory = (props: NewCategoryProps) => {
     _id: props.category?._id || null,
     user_id: props.category?.user_id || null,
     name: props.category?.name || null,
+    expectedSpent: props.category?.expectedSpent || 0,
   });
 
   return (
@@ -40,6 +41,18 @@ const NewCategory = (props: NewCategoryProps) => {
                 rules={[{ required: true, message: 'Please enter category for invoices'}]}
               >
                 <Input onChange={(e) => setInitialValues({...initialValues, name: e.target.value})} />
+              </Form.Item>
+
+              <Form.Item
+                label="Expected expense amounts"
+                name={'expectedSpent'}
+                rules={[{ required: true, message: 'Please enter the expected expense amounts for this category'}]}
+              >
+                <InputNumber
+                  controls={false}
+                  changeOnWheel
+                  onChange={(val) => setInitialValues({...initialValues, expectedSpent: +val }) }
+                />
               </Form.Item>
 
               <Form.Item>

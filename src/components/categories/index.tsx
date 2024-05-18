@@ -6,7 +6,7 @@ import CategoryModel from "../../models/category-model";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import categoriesServices from "../../services/categories";
-import { getError } from "../../utils/helpers";
+import { asNumString, getError, getInvoicesTotalsPrice } from "../../utils/helpers";
 import { EditTable } from "../components/EditTable";
 import { useTranslation } from "react-i18next";
 
@@ -19,6 +19,7 @@ const CategoriesPage = () => {
   const { t } = useTranslation();
   const user = useSelector((state: RootState) => (state.auth.user));
   const categories = useSelector((state: RootState) => (state.categories));
+  const invoices = useSelector((state: RootState) => (state.invoices));
   const [dataSource, setDataSource] = useState<CategoryModel[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryModel>(null);
   const [step, setStep] = useState<string>(null);
@@ -32,6 +33,17 @@ const CategoriesPage = () => {
     if (filterState.category) {
       data = data.filter((d) => d.name.toLowerCase().startsWith(filterState.category.toLowerCase()));
     }
+
+    data = data.map((data) => {
+      const categoryInvoices = invoices.filter((i) => i.category_id === data._id);
+      const total = getInvoicesTotalsPrice(categoryInvoices);
+
+      return {
+        ...data,
+        total: asNumString(total.spent)
+      }
+    });
+
     setDataSource(data);
   }, [filterState, categories]);
 
@@ -95,6 +107,17 @@ const CategoriesPage = () => {
       key: 'name',
       width: 80,
       fixed: 'left'
+    },
+    {
+      title: 'Expected spent amount',
+      dataIndex: 'expectedSpent',
+      key: 'expectedSpent',
+      width: 80,
+    },
+    {
+      title: 'Current spent amount',
+      dataIndex: 'total',
+      key: 'total'
     },
   ];
 
