@@ -1,7 +1,7 @@
-import { PieChart, Pie, ResponsiveContainer, Cell, Legend } from "recharts";
+import { PieChart, Pie, ResponsiveContainer, Cell, Sector } from "recharts";
 import CategoryModel from "../../models/category-model";
 import InvoiceModel from "../../models/invoice";
-import { setCategoriesAndInvoicesArray } from "../../utils/helpers";
+import { asNumString, setCategoriesAndInvoicesArray } from "../../utils/helpers";
 import { MouseEvent, useState } from "react";
 
 interface ChartsProps {
@@ -11,46 +11,73 @@ interface ChartsProps {
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-  index
-}: any) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+const renderActiveShape = (props: any) => {
+  const RADIAN = Math.PI / 180;
+  const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? 'start' : 'end';
 
   return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor={x > cx ? "start" : "end"}
-      dominantBaseline="central"
-    >
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
+    <g>
+      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+        {payload.name}
+      </text>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={outerRadius + 6}
+        outerRadius={outerRadius + 10}
+        fill={fill}
+      />
+      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`Price ${asNumString(value)}`}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+        {`(Rate ${(percent * 100).toFixed(2)}%)`}
+      </text>
+    </g>
   );
 };
 
 const Charts = (props: ChartsProps) => {
   const data = setCategoriesAndInvoicesArray(props.categories, props.invoices);
+  const [state, setState] = useState({ activeIndex: 0 });
+
+  const onPieEnter = (_: any, index: number) => {
+    setState({
+      activeIndex: index,
+    });
+  };
 
   return (
     <ResponsiveContainer width={'100%'} height={250}>
       <PieChart>
         <Pie
-          data={data}
-          dataKey={'value'}
-          outerRadius={80}
-          label={renderCustomizedLabel}
-          labelLine={false}
-          legendType="diamond"
+            activeIndex={state.activeIndex}
+            activeShape={renderActiveShape}
+            data={data}
+            innerRadius={60}
+            outerRadius={80}
+            dataKey="value"
+            onMouseEnter={onPieEnter}
         >
           {data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
