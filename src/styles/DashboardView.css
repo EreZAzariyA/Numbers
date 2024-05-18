@@ -61,6 +61,9 @@
     padding: 5px 10px 5px 0;
     position: relative;
   }
+  .rtl-direction .main-layout .ant-layout-header {
+    padding: 5px 0 5px 10px;
+  }
 
   .main-header-container .right-container {
     max-width: 150px;

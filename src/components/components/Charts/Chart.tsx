@@ -3,6 +3,7 @@ import { RootState } from '../../../redux/store';
 import InvoiceModel from '../../../models/invoice';
 import CategoryModel from '../../../models/category-model';
 import { ThemeColors } from '../../../redux/slicers/theme-slicer';
+import { Languages } from '../../../redux/slicers/lang-slicer';
 import { getInvoicesTotalsPrice, useResize } from '../../../utils/helpers';
 import { PieChart } from '@mui/x-charts';
 import "./Charts.css"
@@ -14,6 +15,8 @@ interface ChartsProps {
 
 const Charts = (props: ChartsProps) => {
   const theme = useSelector((state: RootState) => state.theme.themeColor);
+  const lang = useSelector((state: RootState) => state.language.lang);
+  const isEn = lang === Languages.EN;
   const pieColor = theme === ThemeColors.LIGHT ? 'black' : 'white';
   const { isMobile } = useResize();
 
@@ -33,7 +36,7 @@ const Charts = (props: ChartsProps) => {
       margin={isMobile ? { top: 50, left: 100 } : {}}
       series={[
         {
-          data: data.length ? [...data] : [{label: 'No Data', value: 0.0001, color: 'grey'}],
+          data: data.length ? [...data] : [{ label: 'No Data', value: 0.0001, color: 'grey' }],
           innerRadius: isMobile ? 50 : 60,
           cornerRadius: 5,
           paddingAngle: 2,
@@ -48,11 +51,11 @@ const Charts = (props: ChartsProps) => {
             fill: pieColor
           },
           padding: {
-            left: 10,
+            left: isEn ? 10 : 0,
           },
           direction: isMobile ? 'row' : 'column',
           position: {
-            horizontal: isMobile ? 'middle' : 'right',
+            horizontal: isMobile ? 'middle' : isEn ? 'right' : 'right',
             vertical: isMobile ? 'top' : 'middle',
           }
         },

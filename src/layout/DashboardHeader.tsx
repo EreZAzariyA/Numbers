@@ -17,7 +17,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import "dayjs/locale/he";
 
 interface DashboardHeaderProps {
-  changeTheme?: () => void;
+  changeTheme?: (isDarkTheme: boolean) => void;
   collapsedHandler?: () => void;
   items: MenuItem[];
 };

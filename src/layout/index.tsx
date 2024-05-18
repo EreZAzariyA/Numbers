@@ -4,12 +4,13 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { RootState } from "../redux/store";
 import { ThemeColors } from "../redux/slicers/theme-slicer";
+import { Languages } from "../redux/slicers/lang-slicer";
 import DashboardHeader from "./DashboardHeader";
 import authServices from "../services/authentication";
 import userServices from "../services/user-services";
 import { Colors, Sizes, useResize } from "../utils/helpers";
 import { MenuItem, getMenuItem } from "../utils/types";
-import { Layout, Menu, MenuProps, message } from "antd";
+import { ConfigProvider, Layout, Menu, MenuProps, message, theme } from "antd";
 import { AiOutlineLogout, AiOutlineProfile } from "react-icons/ai";
 import { BiLogInCircle } from "react-icons/bi";
 import { CiCircleList } from "react-icons/ci";
@@ -23,23 +24,38 @@ const { Sider, Content } = Layout;
 
 const DashboardView = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { pathname } = useLocation();
-  const theme = useSelector((state: RootState) => state.theme.themeColor);
-  const user = useSelector((state: RootState) => state.auth.user);
   const { isMobile } = useResize();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const lang = useSelector((state: RootState) => state.language.lang);
+  const direction = lang === Languages.EN ? 'ltr': 'rtl';
+
+  const colorTheme = useSelector((state: RootState) => state.theme.themeColor);
+  const isDarkTheme = colorTheme === ThemeColors.DARK;
+  const algorithm = isDarkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm;
+
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile);
   const [current, setCurrent] = useState<string>('dashboard');
-  const themeToSet = theme === ThemeColors.LIGHT ? 'light' : 'dark';
-  const { t } = useTranslation();
 
   useEffect(() => {
     const body = document.querySelector('body');
-    body.classList.add(`${theme}-theme`);
+    body.classList.add(`${colorTheme}-theme`);
 
     return () => {
-      body.classList.remove(`${theme}-theme`);
+      body.classList.remove(`${colorTheme}-theme`);
     }
-  }, [theme]);
+  }, [colorTheme]);
+
+  useEffect(() => {
+    const body = document.querySelector('body');
+    body.classList.add(`${direction}-direction`);
+
+    return () => {
+      body.classList.remove(`${direction}-direction`);
+    }
+  }, [direction]);
 
   useEffect(() => {
     const path = pathname.split('/')[1];
@@ -118,11 +134,12 @@ const DashboardView = () => {
     setCurrent(e.key);
   };
 
-  const handleChangeTheme = async (): Promise<void> => {
+  const handleChangeTheme = async (isDark: boolean): Promise<void> => {
     if (!user) {
       return;
     };
-    const newThemeToSet = theme === ThemeColors.LIGHT ? ThemeColors.DARK : ThemeColors.LIGHT;
+
+    const newThemeToSet = isDark ? ThemeColors.DARK : ThemeColors.LIGHT;
     try {
       userServices.changeTheme(user._id, newThemeToSet);
     } catch (err: any) {
@@ -130,33 +147,44 @@ const DashboardView = () => {
     }
   };
 
+  const themeToSet = isDarkTheme ? ThemeColors.DARK : ThemeColors.LIGHT;
   return (
-    <Layout className={`main-layout ${theme}-theme`}>
-      <DashboardHeader
-        changeTheme={handleChangeTheme}
-        collapsedHandler={() => setIsCollapsed(!isCollapsed)}
-        items={items}
-      />
-      <Layout hasSider>
-        <Sider
-          trigger={null}
-          collapsed={isCollapsed}
-          collapsedWidth={0}
-          theme={themeToSet}
-        >
-          <Menu
-            mode="inline"
+    <ConfigProvider
+      direction={direction}
+      theme={{
+        algorithm,
+        components: {
+          Table: { }
+        }
+      }}
+    >
+      <Layout className="main-layout">
+        <DashboardHeader
+          changeTheme={handleChangeTheme}
+          collapsedHandler={() => setIsCollapsed(!isCollapsed)}
+          items={items}
+        />
+        <Layout hasSider>
+          <Sider
+            trigger={null}
+            collapsed={isCollapsed}
+            collapsedWidth={0}
             theme={themeToSet}
-            items={items}
-            onClick={onClick}
-            selectedKeys={[current]}
-          />
-        </Sider>
-        <Content className="site-layout">
-          <Outlet />
-        </Content>
+          >
+            <Menu
+              mode="inline"
+              theme={themeToSet}
+              items={items}
+              onClick={onClick}
+              selectedKeys={[current]}
+            />
+          </Sider>
+          <Content className="site-layout">
+            <Outlet />
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   );
 };
 

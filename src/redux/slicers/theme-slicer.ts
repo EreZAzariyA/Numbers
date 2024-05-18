@@ -5,7 +5,7 @@ export enum ThemeColors {
   LIGHT = "light"
 };
 
-export type ThemeType = string;
+export type ThemeType = 'dark' | 'light' | string;
 
 export interface ThemeState {
   themeColor: ThemeType
