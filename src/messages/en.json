@@ -27,9 +27,10 @@
     ]
   },
   "placeholders": [
-    "Search by category",
+    "Search By Category",
     "Search For Category",
-    "Search by status",
-    "Search by text"
+    "Search By Status",
+    "Search By Text",
+    "Search By Company"
   ]
 }

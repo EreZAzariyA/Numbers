@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { SupportedCompaniesTypes } from "../utils/definitions";
 
 class InvoiceModel {
   _id?: string;
@@ -7,7 +8,8 @@ class InvoiceModel {
   category_id: string;
   description: string;
   amount: number;
-  status: string
+  status: string;
+  companyId: SupportedCompaniesTypes;
 
   constructor(invoice: InvoiceModel) {
     this._id = invoice._id;
@@ -17,6 +19,7 @@ class InvoiceModel {
     this.description = invoice.description;
     this.amount = invoice.amount;
     this.status = invoice.status;
+    this.companyId = invoice.companyId;
   };
 };
 

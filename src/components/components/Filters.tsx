@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
 import { useResize } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
+import { CompaniesNames, SupportedCompaniesTypes } from "../../utils/definitions";
 
 interface FiltersProps {
   datesFilter?: boolean;
@@ -12,6 +13,7 @@ interface FiltersProps {
   categoryFilter?: boolean;
   statusFilter?: boolean;
   textFilter?: boolean;
+  companyFilter?: boolean;
   filterState: any;
   handleFilterChange: (field: string, val: string | number[] | Dayjs[]) => void;
   resetFilters?: () => void;
@@ -110,6 +112,22 @@ export const Filters = (props: FiltersProps) => {
             options={[...transactionStatus].map((c) => ({
               label: c.name,
               value: c.value.toLocaleLowerCase(),
+            }))}
+          />
+        </Col>
+      )}
+
+      {props.companyFilter && (
+        <Col>
+          <Select
+            value={props.filterState.companyId}
+            allowClear
+            style={{ width: 200 }}
+            placeholder={t('placeholders.4')}
+            onChange={(val) => props.handleFilterChange('companyId', val)}
+            options={Object.entries(SupportedCompaniesTypes).map(([key, val]) => ({
+              label: CompaniesNames[val],
+              value: key,
             }))}
           />
         </Col>

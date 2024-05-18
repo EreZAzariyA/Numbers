@@ -15,6 +15,7 @@ import { asNumString, getError } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
 import { TotalAmountType } from "../../utils/enums";
 import { Button, Space, TableProps, message } from "antd";
+import { CompaniesNames } from "../../utils/definitions";
 
 enum Steps {
   New_Invoice = "New_Invoice",
@@ -37,7 +38,8 @@ const Invoices = () => {
     dates: null,
     month: dayjs(),
     status: 'completed',
-    text: null
+    text: null,
+    companyId: null
   });
 
   const onFinish = async (invoice: Partial<InvoiceModel>) => {
@@ -101,13 +103,17 @@ const Invoices = () => {
       dates: [],
       month: dayjs(),
       status: 'completed',
-      text: null
+      text: null,
+      companyId: null,
     });
   };
 
   let data = [...invoices];
   if (filterState.category_id) {
     data = data.filter((d) => d.category_id === filterState.category_id);
+  }
+  if (filterState.companyId) {
+    data = data.filter((d) => d.companyId === filterState.companyId);
   }
   if (filterState.dates && filterState.dates.length === 2) {
     data = data.filter((d) => (
@@ -171,6 +177,12 @@ const Invoices = () => {
       render: (val) => {
         return (TransactionStatuses as any)[val]
       }
+    },
+    {
+      title: 'Company',
+      dataIndex: 'companyId',
+      key: 'companyId',
+      render: (val) => (CompaniesNames[val])
     }
   ];
 
@@ -197,6 +209,7 @@ const Invoices = () => {
               categoryFilter
               statusFilter
               textFilter
+              companyFilter
               filterState={filterState}
               handleFilterChange={handleFilterChange}
               resetFilters={resetFilters}
