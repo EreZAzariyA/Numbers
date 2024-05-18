@@ -8,6 +8,7 @@ import { WithdrawalsListTypes } from "./types";
 import { TransactionsTypes } from "./enums";
 import { TransactionStatusesType } from "./transactions";
 import UserModel from "../models/user-model";
+import CategoryModel from "../models/category-model";
 
 export type ColorType = {
   ICON: string;
@@ -265,3 +266,26 @@ export const getUserfName = (user: UserModel) => {
   if (!user) return '';
   return user.profile.first_name;
 };
+
+export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], invoices: InvoiceModel[]) => {
+  const categoryMap = new Map();
+  categories.forEach(category => {
+    categoryMap.set(category._id, category.name);
+  });
+
+  const categoryInvoiceAmounts: any = {};
+  invoices.forEach(invoice => {
+    const categoryName = categoryMap.get(invoice.category_id);
+    if (!categoryInvoiceAmounts[categoryName]) {
+        categoryInvoiceAmounts[categoryName] = 0;
+    }
+    categoryInvoiceAmounts[categoryName] += invoice.amount;
+  });
+
+  const result = Object.entries(categoryInvoiceAmounts).map(([name, amount]) => ({
+    name,
+    value: Math.abs(asNumber(amount as number))
+  }));
+
+  return result;
+}

@@ -1,4 +1,4 @@
-import Charts from "../components/Charts/Chart";
+// import Charts from "../components/Charts/Chart";
 import { Col, Divider, Row, Space } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import InvoiceModel from "../../models/invoice";
@@ -7,6 +7,7 @@ import { asNumString, findCategoryWithLargestSpentAmount, findCategoryWithLowest
 import { Trans as T } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import Charts from "../components/Charts";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -27,6 +28,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
     <Space direction="vertical">
       <Row gutter={[10, 10]} align={'top'}>
         <Col xs={24} md={14}>
+          {/* <Charts categories={props.categories} invoices={props.invoices} /> */}
           <Charts categories={props.categories} invoices={props.invoices} />
         </Col>
         <Col xs={24} md={10}>
