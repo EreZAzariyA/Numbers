@@ -8,7 +8,7 @@ interface GraphProps {
 
 export const Graph = (props: GraphProps) => {
 
-  const data = props.pastOrFutureDebits.map((debit) => ({
+  const data = props.pastOrFutureDebits?.map((debit) => ({
     name: getFutureDebitDate(debit.DebitMonth),
     uv: debit.MonthlyNISDebitSum,
   }));

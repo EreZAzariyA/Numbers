@@ -11,10 +11,10 @@ interface DashboardThirdProps {
 
 const DashboardThird = (props: DashboardThirdProps) => {
 
-  const banks = props.bankAccount.map((bank) => ({
-    label: CompaniesNames[bank.bankName] || bank.bankName,
-    key: bank._id,
-    children: <Graph pastOrFutureDebits={bank.pastOrFutureDebits} />
+  const banks = props.bankAccount?.map((bank) => ({
+    label: CompaniesNames?.[bank?.bankName] || bank?.bankName,
+    key: bank?._id,
+    children: <Graph pastOrFutureDebits={bank?.pastOrFutureDebits} />
   }));
 
   return (
