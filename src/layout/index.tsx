@@ -58,7 +58,7 @@ const DashboardView = () => {
   }, [direction]);
 
   useEffect(() => {
-    const path = pathname.split('/')[1];
+    const path = pathname.split('/')?.[1];
     setCurrent(path);
   }, [pathname]);
 
@@ -154,7 +154,6 @@ const DashboardView = () => {
       theme={{
         algorithm,
         components: {
-          Table: { }
         }
       }}
     >

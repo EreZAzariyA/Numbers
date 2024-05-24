@@ -14,8 +14,8 @@ class UserServices {
   };
 
   changeTheme = async (user_id: string, theme: ThemeType): Promise<void> => {
-    await axios.put(config.urls.users + user_id + '/theme', {theme: theme});
     store.dispatch(changeThemeAction(theme));
+    await axios.put(config.urls.users + user_id + '/theme', {theme: theme});
   };
 
   changeLang = async (user_id: string, lang: LanguageType): Promise<void> => {

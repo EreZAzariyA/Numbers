@@ -7,6 +7,7 @@ import DashboardFirst from "./DashboardFirst";
 import DashboardSeconde from "./DashboardSeconde";
 import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
 import { DatePicker, Row, Space } from "antd";
+import DashboardThird from "./DashboardThird";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -47,6 +48,10 @@ const Dashboard = () => {
             invoices={invoices}
             invoicesByMonth={invoicesByMonth}
             monthToDisplay={monthToDisplay}
+          />
+          <DashboardThird
+            invoices={invoices}
+            bankAccount={user?.bank}
           />
         </Space>
       </div>

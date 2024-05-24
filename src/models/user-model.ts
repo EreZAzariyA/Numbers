@@ -12,15 +12,25 @@ export class EmailModel {
   }
 };
 
+export interface PastOrFutureDebits {
+  DebitMonth: string;
+  MonthlyNumberOfTransactions: number;
+  MonthlyNISDebitSum: number;
+  MonthlyUSDDebitSum: number;
+  MonthlyEURDebitSum: number;
+};
+
 export class UserBankModel {
   _id: string;
   bankName: string;
   credentials: string;
   details: {
     account: string,
-    balance: number
+    balance: number,
   };
   lastConnection: number;
+  extraInfo?: any;
+  pastOrFutureDebits?: PastOrFutureDebits[];
 };
 
 class UserModel {
