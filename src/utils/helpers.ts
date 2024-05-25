@@ -4,11 +4,11 @@ import InvoiceModel from "../models/invoice";
 import dayjs, { Dayjs } from "dayjs";
 import store from "../redux/store";
 import { CategoryData } from "./interfaces";
-import { WithdrawalsListTypes } from "./types";
 import { TransactionsTypes } from "./enums";
 import { TransactionStatusesType } from "./transactions";
 import UserModel from "../models/user-model";
 import CategoryModel from "../models/category-model";
+import categoriesServices from "../services/categories";
 
 export type ColorType = {
   ICON: string;
@@ -210,31 +210,11 @@ export const findCategoryWithLowestAmount = (data: CategoryData): { category: st
   return { category: minCategory, amount: minValue };
 };
 
-export const filterInvoicesByType = (invoices: InvoiceModel[], type?: TransactionsTypes, status?: TransactionStatusesType): InvoiceModel[] => {
-  const list = WithdrawalsListTypes[type] || [type];
-  let arr = [...invoices];
-  if (type) {
-    arr = arr.filter((invoice) => ([...list].some((type) => invoice.description.includes(type))));
-  }
-  if (status) {
-    arr = arr.filter((invoice) => (invoice.status === status))
-  }
-  
-  arr = sortInvoices(arr, 'date');
-  return arr;
+export const filterInvoicesByStatus = (invoices: InvoiceModel[], status: TransactionStatusesType): InvoiceModel[] => {
+  return invoices.filter((i) => i.status === status);
 };
-export const filterInvoicesByListTypes = (invoices: InvoiceModel[], types: TransactionsTypes[]): InvoiceModel[] => {
-  let arr = [...invoices];
-
-  for (let type of types) {
-    const list = WithdrawalsListTypes[type] || [type];
-    if (type) {
-      arr = arr.filter((invoice) => ([...list].some((type) => invoice.description.includes(type))));
-    }
-  }
-  
-  arr = sortInvoices(arr, 'date');
-  return arr;
+export const filterInvoicesByCategoryId = (invoices: InvoiceModel[], category_id: string): InvoiceModel[] => {
+  return invoices.filter((i) => i.category_id === category_id)
 };
 
 export const getTimeToRefresh = (lastConnection: number) => {

@@ -13,11 +13,11 @@ export class EmailModel {
 };
 
 export interface PastOrFutureDebits {
-  DebitMonth: string;
-  MonthlyNumberOfTransactions: number;
-  MonthlyNISDebitSum: number;
-  MonthlyUSDDebitSum: number;
-  MonthlyEURDebitSum: number;
+  debitMonth: string;
+  monthlyNumberOfTransactions: number;
+  monthlyNISDebitSum: number;
+  monthlyUSDDebitSum: number;
+  monthlyEURDebitSum: number;
 };
 
 export class UserBankModel {

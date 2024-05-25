@@ -1,12 +1,16 @@
 import { Dayjs } from "dayjs";
 import InvoiceModel from "../../models/invoice";
-import { filterInvoicesByType } from "../../utils/helpers";
+import { filterInvoicesByStatus, filterInvoicesByCategoryId } from "../../utils/helpers";
 import { TransactionsTypes } from "../../utils/enums";
 import TransactionsTable from "../components/TransactionsTable/TransactionsTable";
 import { Col, Row } from "antd";
 import { TransactionStatusesType } from "../../utils/transactions";
+import UserModel from "../../models/user-model";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 interface DashboardSecondeProps {
+  user: UserModel;
   invoices: InvoiceModel[];
   invoicesByMonth?: InvoiceModel[];
   monthToDisplay: Dayjs;
@@ -18,8 +22,10 @@ export enum TransactionsTableTypes {
 };
 
 const DashboardSeconde = (props: DashboardSecondeProps) => {
-  const cardWithdrawals = filterInvoicesByType(props.invoicesByMonth, TransactionsTypes.ATM);
-  const pendingTransactions = filterInvoicesByType(props.invoices, TransactionsTypes.CARD_WITHDRAWAL, TransactionStatusesType.PENDING);
+  const categories = useSelector((state: RootState) => state.categories);
+  const category = categories.find((c) => c.name === TransactionsTypes.ATM_WITHDRAWAL);
+  const pendingTransactions = filterInvoicesByStatus(props.invoices, TransactionStatusesType.PENDING) || [];
+  const ATMWithdrawals = filterInvoicesByCategoryId(props.invoicesByMonth, category?._id) || [];
 
   return (
     <div className="home-seconde-main-container home-component">
@@ -28,7 +34,7 @@ const DashboardSeconde = (props: DashboardSecondeProps) => {
           <TransactionsTable type={TransactionsTableTypes.Pending} invoices={pendingTransactions} />
         </Col>
         <Col xs={24} md={20} lg={12}>
-          <TransactionsTable type={TransactionsTableTypes.Card_Withdrawals} invoices={cardWithdrawals} />
+          <TransactionsTable type={TransactionsTableTypes.Card_Withdrawals} invoices={ATMWithdrawals} />
         </Col>
       </Row>
     </div>

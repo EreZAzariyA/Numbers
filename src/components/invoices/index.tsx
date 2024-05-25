@@ -60,6 +60,7 @@ const Invoices = () => {
         res = await invoicesServices.addInvoice(invoice);
         msg = 'Invoice added successfully'
       }
+      setIsLoading(false);
 
       if (res) {
         message.success(msg);
@@ -71,7 +72,6 @@ const Invoices = () => {
     } catch (error: any) {
       message.error(error.message);
     }
-    setIsLoading(false);
   };
 
   const onBack = () => {

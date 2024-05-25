@@ -17,7 +17,8 @@ const BankAccountPage = (props: BankAccountPageProps) => {
   const lastConnection = props.bankAccount?.lastConnection
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
   const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
-  const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
+  // const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
+  const isRefreshAvailable =true
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const accountDetails = props.bankAccount?.details;
 

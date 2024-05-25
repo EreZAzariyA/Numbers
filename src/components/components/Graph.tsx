@@ -9,11 +9,11 @@ interface GraphProps {
 export const Graph = (props: GraphProps) => {
 
   const data = props.pastOrFutureDebits?.map((debit) => ({
-    name: getFutureDebitDate(debit.DebitMonth),
-    uv: debit.MonthlyNISDebitSum,
+    name: getFutureDebitDate(debit.debitMonth),
+    uv: debit.monthlyNISDebitSum,
   }));
 
-  const customTooltipFormatter = (value: number) => {
+  const customTooltipFormatter = (value: number): string => {
     return asNumString(value);
   };
 

@@ -19,7 +19,7 @@
   background: var(--bg-dark);
 } */
 
-.dark-theme .ant-table-wrapper .ant-table .ant-table-container {
+/* .dark-theme .ant-table-wrapper .ant-table .ant-table-container {
   border: 1px solid var(--ant-default-dark);
 }
 .dark-theme .ant-table .ant-table-thead .ant-table-cell {
@@ -35,4 +35,4 @@
 }
 .dark-theme .ant-table-wrapper .ant-table-tbody>tr.ant-table-placeholder > td .ant-empty-description {
   color: white;
-}
+} */

@@ -10,6 +10,7 @@ interface TransactionsTableProps {
   type: string;
   status?: TransactionStatuses;
   invoices: InvoiceModel[];
+  loading?: boolean;
 };
 
 const TransactionsTable = (props: TransactionsTableProps) => {
@@ -61,13 +62,16 @@ const TransactionsTable = (props: TransactionsTableProps) => {
 
   return (
     <Space direction="vertical" className="w-100 transaction-table">
-      <Typography.Title level={5}>{tableType}</Typography.Title>
       <Table
+        title={() => (
+          <Typography.Title level={5} style={{ margin: 0 }}>{tableType}</Typography.Title>
+        )}
         columns={columns}
         dataSource={dataSet}
         rowKey="_id"
         bordered
         pagination={false}
+        loading={props.loading}
       />
     </Space>
   );

@@ -45,6 +45,7 @@ const Dashboard = () => {
             monthToDisplay={monthToDisplay}
           />
           <DashboardSeconde
+            user={user}
             invoices={invoices}
             invoicesByMonth={invoicesByMonth}
             monthToDisplay={monthToDisplay}
