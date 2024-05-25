@@ -3,6 +3,9 @@ import { PieChart, Pie, ResponsiveContainer, Cell, Sector } from "recharts";
 import CategoryModel from "../../models/category-model";
 import InvoiceModel from "../../models/invoice";
 import { asNumString, setCategoriesAndInvoicesArray } from "../../utils/helpers";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { ThemeColors } from "../../redux/slicers/theme-slicer";
 
 interface ChartsProps {
   categories: CategoryModel[];
@@ -13,7 +16,7 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
-  const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+  const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value, theme } = props;
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
   const sx = cx + (outerRadius + 10) * cos;
@@ -23,6 +26,7 @@ const renderActiveShape = (props: any) => {
   const ex = mx + (cos >= 0 ? 1 : -1) * 22;
   const ey = my;
   const textAnchor = cos >= 0 ? 'start' : 'end';
+  const textColor = theme === ThemeColors.LIGHT ? "#333" : '#FFFFFF'
 
   return (
     <g>
@@ -49,7 +53,7 @@ const renderActiveShape = (props: any) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill={ "#333"}>{`Price ${asNumString(value)}`}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill={textColor}>{`Price ${asNumString(value)}`}</text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
         {`(Rate ${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -60,6 +64,7 @@ const renderActiveShape = (props: any) => {
 const Charts = (props: ChartsProps) => {
   const data = setCategoriesAndInvoicesArray(props.categories, props.invoices);
   const [state, setState] = useState({ activeIndex: 0 });
+  const theme = useSelector((state: RootState) => state.theme.themeColor);
 
   const onPieEnter = (_: any, index: number) => {
     setState({
@@ -72,7 +77,7 @@ const Charts = (props: ChartsProps) => {
       <PieChart>
         <Pie
             activeIndex={state.activeIndex}
-            activeShape={renderActiveShape}
+            activeShape={(props: any) => renderActiveShape({ ...props, theme })}
             data={data}
             innerRadius={60}
             outerRadius={80}

@@ -151,11 +151,7 @@ const DashboardView = () => {
   return (
     <ConfigProvider
       direction={direction}
-      theme={{
-        algorithm,
-        components: {
-        }
-      }}
+      theme={{ algorithm }}
     >
       <Layout className="main-layout">
         <DashboardHeader

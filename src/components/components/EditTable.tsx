@@ -8,7 +8,7 @@ interface EditTableProps<T> {
   type: string;
   handleAdd?: () => void;
   onEditMode?: (record: any) => void;
-  removeHandler?: (record_id: string) => void;
+  removeHandler?: (record_id: string) => Promise<void>;
   rowKey: string;
   scrollAble?: boolean;
   isReady?: boolean;

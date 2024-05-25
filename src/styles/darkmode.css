@@ -1,4 +1,4 @@
-.dark-theme b,
+/* .dark-theme b,
 .dark-theme p,
 .dark-theme span,
 .dark-theme div,
@@ -17,17 +17,17 @@
 .dark-theme .ant-select .ant-select-selector,
 .dark-theme .ant-input-affix-wrapper {
   background: var(--bg-dark);
-}
+} */
 
 .dark-theme .ant-table-wrapper .ant-table .ant-table-container {
   border: 1px solid var(--ant-default-dark);
 }
 .dark-theme .ant-table .ant-table-thead .ant-table-cell {
-  background: var(--ant-default-dark);
+  background: var(--light-dark);
   color: var(--default-white);
 }
 .dark-theme .ant-table .ant-table-tbody .ant-table-cell {
-  background: var(--bg-dark);
+  background: var(--ant-default-dark);
 }
 
 .dark-theme .ant-table-wrapper .ant-table-tbody>tr.ant-table-placeholder:hover > td {
