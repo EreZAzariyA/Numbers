@@ -4,11 +4,9 @@ import InvoiceModel from "../models/invoice";
 import dayjs, { Dayjs } from "dayjs";
 import store from "../redux/store";
 import { CategoryData } from "./interfaces";
-import { TransactionsTypes } from "./enums";
 import { TransactionStatusesType } from "./transactions";
 import UserModel from "../models/user-model";
 import CategoryModel from "../models/category-model";
-import categoriesServices from "../services/categories";
 
 export type ColorType = {
   ICON: string;
