@@ -1,7 +1,7 @@
 import InvoiceModel from "../../models/invoice";
 import { Graph } from "../components/Graph";
 import { UserBankModel } from "../../models/user-model";
-import { Space, Tabs, Typography } from "antd";
+import { Tabs, Typography } from "antd";
 import { CompaniesNames } from "../../utils/definitions";
 import { isArrayAndNotEmpty } from "../../utils/helpers";
 
