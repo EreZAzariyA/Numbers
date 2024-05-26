@@ -269,9 +269,9 @@ export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], invoi
 };
 
 export const getFutureDebitDate = (dateString: string): string => {
-  const month = parseInt(dateString.substring(0, 2)) - 1;
-  const year = parseInt(dateString.substring(2));
-  const date = new Date(year, month, 1).valueOf();
+  const month = parseInt(dateString?.substring(0, 2)) - 1 || 0;
+  const year = parseInt(dateString?.substring(2)) || 0;
+  const date = new Date(year, month, 1).valueOf() || 0;
 
   return dayjs(date).format("DD/MM/YYYY");
 }

@@ -1,4 +1,3 @@
-// import Charts from "../components/Charts/Chart";
 import { Col, Divider, Row, Space } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import InvoiceModel from "../../models/invoice";
@@ -28,7 +27,6 @@ const DashboardFirst = (props: DashboardFirstProps) => {
     <Space direction="vertical">
       <Row gutter={[10, 10]} align={'top'}>
         <Col xs={24} md={14}>
-          {/* <Charts categories={props.categories} invoices={props.invoices} /> */}
           <Charts categories={props.categories} invoices={props.invoices} />
         </Col>
         <Col xs={24} md={10}>

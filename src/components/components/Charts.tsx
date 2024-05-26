@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PieChart, Pie, ResponsiveContainer, Cell, Sector } from "recharts";
 import CategoryModel from "../../models/category-model";
 import InvoiceModel from "../../models/invoice";
-import { asNumString, setCategoriesAndInvoicesArray } from "../../utils/helpers";
+import { asNumString, isArrayAndNotEmpty, setCategoriesAndInvoicesArray } from "../../utils/helpers";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ThemeColors } from "../../redux/slicers/theme-slicer";
@@ -78,13 +78,14 @@ const Charts = (props: ChartsProps) => {
         <Pie
             activeIndex={state.activeIndex}
             activeShape={(props: any) => renderActiveShape({ ...props, theme })}
-            data={data}
+            data={isArrayAndNotEmpty(data) ? data : [{ name: 'No Data', value: 0.001 }]}
             innerRadius={60}
             outerRadius={80}
             dataKey="value"
+            nameKey={"name"}
             onMouseEnter={onPieEnter}
         >
-          {data.map((_, index) => (
+          {isArrayAndNotEmpty(data) && data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
