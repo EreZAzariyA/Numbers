@@ -46,7 +46,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
       setIsLoading(false);
       return;
     }
-  
+
     try {
       const res = await bankServices.fetchBankData(values, props.user._id);
       if (res?.account && res.account?.txns && res.account.txns?.length) {
@@ -68,7 +68,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
       content: `We found ${transactions.length} transactions, would you like to import them?`
     });
   };
-  
+
   const onTransactionsImportOk = async (transactions: Transaction[]): Promise<void> => {
     try {
       const res = await bankServices.importTrans(transactions, props.user._id, (SupportedCompaniesTypes as any)[selectedCompany.companyId]);

@@ -28,7 +28,7 @@ class BankServices {
       return { importedTransactions };
     }
   };
-  
+
   importTrans = async (transactions: Transaction[], user_id: string, companyId: SupportedCompaniesTypes): Promise<InvoiceModel[]> => {
     const response = await axios.post<InvoiceModel[]>(config.urls.bank.importTransactions + `/${user_id}`, { transactions, companyId });
     const trans = response.data;

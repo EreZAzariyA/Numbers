@@ -20,8 +20,8 @@ const Charts = (props: ChartsProps) => {
   const pieColor = theme === ThemeColors.LIGHT ? 'black' : 'white';
   const { isMobile } = useResize();
 
-  let data = [];
-  for (let category of props.categories) {
+  const data = [];
+  for (const category of props.categories) {
     const id = category._id;
     const label = category.name;
     const categoryInvoices = [...props.invoices].filter((i) => i.category_id === category._id);

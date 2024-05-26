@@ -27,8 +27,6 @@ const BankPage = () => {
   const onEdit = (action: 'add' | 'remove') => {
     if (action === 'add') {
       setIsOpen(true);
-    } else {
-      
     }
   };
 

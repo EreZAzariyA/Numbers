@@ -31,7 +31,6 @@ export const CompaniesNames: any = {
   [SupportedCompaniesTypes.max]: SupportedScrapers[SupportedCompaniesTypes.max].name,
   [SupportedCompaniesTypes.behatsdaa]: SupportedScrapers[SupportedCompaniesTypes.behatsdaa].name,
   [SupportedCompaniesTypes.leumi]: SupportedScrapers[SupportedCompaniesTypes.leumi].name,
-  
 }
 
 // export enum CompanyTypes {
@@ -135,13 +134,13 @@ export const CompaniesNames: any = {
 //   },
 // };
 
-export enum ScraperProgressTypes {
-  Initializing = 'INITIALIZING',
-  StartScraping = 'START_SCRAPING',
-  LoggingIn = 'LOGGING_IN',
-  LoginSuccess = 'LOGIN_SUCCESS',
-  LoginFailed = 'LOGIN_FAILED',
-  ChangePassword = 'CHANGE_PASSWORD',
-  EndScraping = 'END_SCRAPING',
-  Terminating = 'TERMINATING',
-}
+// export enum ScraperProgressTypes {
+//   Initializing = 'INITIALIZING',
+//   StartScraping = 'START_SCRAPING',
+//   LoggingIn = 'LOGGING_IN',
+//   LoginSuccess = 'LOGIN_SUCCESS',
+//   LoginFailed = 'LOGIN_FAILED',
+//   ChangePassword = 'CHANGE_PASSWORD',
+//   EndScraping = 'END_SCRAPING',
+//   Terminating = 'TERMINATING',
+// }

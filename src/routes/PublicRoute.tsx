@@ -8,7 +8,7 @@ interface PublicRouteProps {
 };
 
 const PublicRoute = (props: PublicRouteProps) => {
-  let location = useLocation();
+  const location = useLocation();
   const user = useSelector((state: RootState) => state.auth.user);
 
   if (user) {

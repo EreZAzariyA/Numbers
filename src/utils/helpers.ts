@@ -111,7 +111,7 @@ export const asNumString = (num: number, digits: number = 2): string => {
 };
 
 export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], selectedMonth: Dayjs): InvoiceModel[] => {
-  let invoicesByMonth: InvoiceModel[] = [];
+  const invoicesByMonth: InvoiceModel[] = [];
   if (isArrayAndNotEmpty(invoices)) {
     invoices.forEach((i) => {
       const invoiceDate = dayjs(i.date).format('YYYY-MM');
@@ -133,8 +133,8 @@ export const getTotals = (arr: number[]): number => {
 };
 
 export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): {spent: number, income: number } => {
-  let totals: number[] = [];
-  let incomes: number[] = [];
+  const totals: number[] = [];
+  const incomes: number[] = [];
 
   if (isArrayAndNotEmpty(invoices)) {
     invoices.forEach((i) => {
@@ -154,14 +154,14 @@ export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): {spent: number
 
 export const getInvoicesPricePerCategory = (invoices: InvoiceModel[]) => {
   const categories = store.getState().categories;
-  let invoicesByCategory: any = {};
+  const invoicesByCategory: any = {};
 
   if (isArrayAndNotEmpty(invoices) && isArrayAndNotEmpty(categories)) {
-    for (let category of categories) {
+    for (const category of categories) {
       const categoryInvoices: InvoiceModel[] = [];
-  
+
       invoices.forEach((invoice) => {
-        if (invoice.category_id === category._id){
+        if (invoice.category_id === category._id) {
           categoryInvoices.push(invoice);
         }
       });

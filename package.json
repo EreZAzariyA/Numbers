@@ -40,6 +40,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-admin": "set PORT=4000 && react-scripts start",
+    "eslint-fix": "eslint . --fix",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -48,7 +49,13 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "semi-spacing": "error",
+      "space-before-blocks": "error",
+      "space-in-parens": "error",
+      "no-trailing-spaces": "error"
+    }
   },
   "browserslist": {
     "production": [
@@ -63,6 +70,7 @@
     ]
   },
   "devDependencies": {
-    "@types/dompurify": "^3.0.5"
+    "@types/dompurify": "^3.0.5",
+    "eslint-config-react-app": "^7.0.1"
   }
 }
