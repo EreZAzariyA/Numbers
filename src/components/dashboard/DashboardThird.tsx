@@ -1,7 +1,7 @@
 import InvoiceModel from "../../models/invoice";
 import { Graph } from "../components/Graph";
 import { UserBankModel } from "../../models/user-model";
-import { Tabs } from "antd";
+import { Space, Tabs, Typography } from "antd";
 import { CompaniesNames } from "../../utils/definitions";
 import { isArrayAndNotEmpty } from "../../utils/helpers";
 
@@ -23,7 +23,12 @@ const DashboardThird = (props: DashboardThirdProps) => {
       {isArrayAndNotEmpty(banks) ? (
         <Tabs items={banks}/>
       ) : (
-        <Graph pastOrFutureDebits={[]} />
+        <>
+          <Typography.Text className="sub-title pb-10">Add invoices to track your expenses</Typography.Text>
+          <br />
+          <br />
+          <Graph pastOrFutureDebits={[]} />
+        </>
       )}
     </>
   );

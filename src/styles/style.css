@@ -1,3 +1,10 @@
+.sub-title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .logo {
   cursor: pointer;
 }

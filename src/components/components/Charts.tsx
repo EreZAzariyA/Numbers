@@ -76,14 +76,14 @@ const Charts = (props: ChartsProps) => {
     <ResponsiveContainer width={'100%'} height={250}>
       <PieChart>
         <Pie
-            activeIndex={state.activeIndex}
-            activeShape={(props: any) => renderActiveShape({ ...props, theme })}
-            data={isArrayAndNotEmpty(data) ? data : [{ name: 'No Data', value: 0.001 }]}
-            innerRadius={60}
-            outerRadius={80}
-            dataKey="value"
-            nameKey={"name"}
-            onMouseEnter={onPieEnter}
+          activeIndex={state.activeIndex}
+          activeShape={(props: any) => renderActiveShape({ ...props, theme })}
+          data={isArrayAndNotEmpty(data) ? data : [{ name: 'No Data', value: 0.001 }]}
+          innerRadius={60}
+          outerRadius={80}
+          dataKey="value"
+          nameKey={"name"}
+          onMouseEnter={onPieEnter}
         >
           {isArrayAndNotEmpty(data) && data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

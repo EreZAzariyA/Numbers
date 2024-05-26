@@ -32,14 +32,15 @@ const DashboardFirst = (props: DashboardFirstProps) => {
         <Col xs={24} md={10}>
           <Row gutter={[10, 10]} style={{textAlign: 'center'}}>
             <Col className="mb-10" span={24}>
-              <span style={{ textDecoration: 'underline', textUnderlineOffset: 3, fontSize: 20, fontWeight: 600 }}><T>homePage.firstPage.0</T> {date}</span>
+              <span className="sub-title"><T>homePage.firstPage.0</T> {date}</span>
+              {/* <span style={{ textDecoration: 'underline', textUnderlineOffset: 3, fontSize: 20, fontWeight: 600 }}><T>homePage.firstPage.0</T> {date}</span> */}
             </Col>
 
             <Col span={12}><b>Total Spent:</b></Col>
             <Col span={12}>{asNumString(Math.abs(totalSpent?.spent))}</Col>
-            <Divider style={{ margin: 0 }} />
             {(maxSpent?.amount > 0) && (
               <>
+                <Divider style={{ margin: 0 }} />
                 <Col span={12}><b>Largest Spent:</b></Col>
                 <Col span={12}>{`${maxSpent?.category}: ${asNumString(maxSpent?.amount)}`}</Col>
                 <Divider style={{ margin: 0 }} />

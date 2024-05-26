@@ -80,3 +80,8 @@ body.rtl-direction {
     transform: rotate(-360deg);
   }
 }
+
+.ant-menu-inline-collapsed >.ant-menu-item {
+  padding-inline: calc(50% - 15px);
+  padding-top: 5px;
+}

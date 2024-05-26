@@ -6,7 +6,7 @@ import { RootState } from "../../redux/store";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSeconde from "./DashboardSeconde";
 import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
-import { DatePicker, Row, Space } from "antd";
+import { DatePicker, Divider, Row, Space } from "antd";
 import DashboardThird from "./DashboardThird";
 
 const Dashboard = () => {
@@ -21,7 +21,9 @@ const Dashboard = () => {
   return (
     <div className="page-container dashboard">
       <div className="title-container">
-        <div className="page-title">{t('pages.dashboard')}</div>
+        <div className="page-title">
+          {t('pages.dashboard')}
+        </div>
         <DatePicker
           picker="month"
           defaultPickerValue={currentMonth}
@@ -44,12 +46,14 @@ const Dashboard = () => {
             categories={categories}
             monthToDisplay={monthToDisplay}
           />
+          <Divider style={{ margin: 0 }} />
           <DashboardSeconde
             user={user}
             invoices={invoices}
             invoicesByMonth={invoicesByMonth}
             monthToDisplay={monthToDisplay}
           />
+          <Divider style={{ margin: 0 }} />
           <DashboardThird
             invoices={invoices}
             bankAccount={user?.bank}

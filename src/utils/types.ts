@@ -15,7 +15,10 @@ export const getMenuItem = (
     children,
     label,
     type,
-    value
+    value,
+    style: {
+      textAlign: 'left'
+    }
   } as MenuItem;
 };
 

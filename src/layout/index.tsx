@@ -119,12 +119,6 @@ const DashboardView = () => {
     )
   ];
 
-  items.forEach((i) => (
-    i.style = {
-      textAlign: 'left',
-    }
-  ));
-
   const onClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'sign-out') {
       authServices.logout();
@@ -161,10 +155,11 @@ const DashboardView = () => {
         />
         <Layout hasSider>
           <Sider
-            trigger={null}
             collapsed={isCollapsed}
-            collapsedWidth={0}
+            collapsedWidth={80}
             theme={themeToSet}
+            collapsible
+            onCollapse={(e) => setIsCollapsed(e)}
           >
             <Menu
               mode="inline"
