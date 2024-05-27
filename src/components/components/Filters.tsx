@@ -40,7 +40,7 @@ export const Filters = (props: FiltersProps) => {
         <Col>
           <DatePicker.RangePicker
             allowClear
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             value={props.filterState.dates}
             maxDate={dayjs()}
             onChange={(val) => {
@@ -60,7 +60,7 @@ export const Filters = (props: FiltersProps) => {
             picker="month"
             maxDate={dayjs()}
             allowClear={!isPhone}
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             value={props.filterState.month}
             onChange={(val) => {
               if (!val) {
@@ -78,7 +78,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.category_id}
             allowClear
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             placeholder={t('placeholders.0')}
             onChange={(val) => props.handleFilterChange('category_id', val)}
             options={[...categories].map((c) => ({
@@ -94,7 +94,7 @@ export const Filters = (props: FiltersProps) => {
           <Input
             value={props.filterState.text}
             allowClear
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             placeholder={t('placeholders.3')}
             onChange={(val) => props.handleFilterChange('text', val.target.value)}
           />
@@ -106,7 +106,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.status}
             allowClear
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             placeholder={t('placeholders.2')}
             onChange={(val) => props.handleFilterChange('status', val)}
             options={[...transactionStatus].map((c) => ({
@@ -122,7 +122,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.companyId}
             allowClear
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             placeholder={t('placeholders.4')}
             onChange={(val) => props.handleFilterChange('companyId', val)}
             options={Object.entries(SupportedCompaniesTypes).map(([key, val]) => ({
