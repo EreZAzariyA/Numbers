@@ -190,10 +190,9 @@ const Invoices = () => {
     <div className="page-container invoices">
       <div className="title-container">
         <div className="page-title">{t('pages.invoices')}</div>
-        {step && (
+        {step ? (
           <Button danger className="btn-18" type="link" size="small" onClick={onBack}>Back</Button>
-        )}
-        {!step && (
+        ) : (
           <Space>
             <TotalAmountInput invoices={data} type={TotalAmountType.SPENT} style={{ width: 100 }} />
             <TotalAmountInput invoices={data} type={TotalAmountType.INCOME} style={{ width: 100 }} />
