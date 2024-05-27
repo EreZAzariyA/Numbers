@@ -14,6 +14,7 @@ import { MenuItem } from "../utils/types";
 import { getError, useResize } from "../utils/helpers";
 import { Button, Col, Dropdown, Layout, MenuProps, Row, message } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
+import { IoIosClose } from "react-icons/io";
 import "dayjs/locale/he";
 
 interface DashboardHeaderProps {
@@ -31,6 +32,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const lang = useSelector((state: RootState) => state.language.lang);
   const [current, setCurrent] = useState<string>('1');
+  const [isOpen, setIsOpen] = useState(false);
   const { isMobile } = useResize();
 
   useEffect(() => {
@@ -100,9 +102,15 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
                 arrow
                 overlayClassName="dropdown-container"
                 trigger={['click']}
+                open={isOpen}
+                onOpenChange={setIsOpen}
                 className="dropdown-area"
               >
-                <MenuOutlined className="menu-btn" />
+                {!isOpen ? (
+                  <MenuOutlined className="menu-btn" />
+                ) : (
+                  <IoIosClose className="menu-btn" />
+                )}
               </Dropdown>
             </div>
           )}

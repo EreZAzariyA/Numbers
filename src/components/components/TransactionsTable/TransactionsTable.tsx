@@ -7,10 +7,11 @@ import dayjs from "dayjs";
 import { asNumString } from "../../../utils/helpers";
 
 interface TransactionsTableProps {
-  type: string;
+  type?: string;
   status?: TransactionStatuses;
   invoices: InvoiceModel[];
   loading?: boolean;
+  props?: TableProps;
 };
 
 const TransactionsTable = (props: TransactionsTableProps) => {
@@ -63,15 +64,16 @@ const TransactionsTable = (props: TransactionsTableProps) => {
   return (
     <Space direction="vertical" className="w-100 transaction-table">
       <Table
-        title={() => (
+        title={tableType ? () => (
           <Typography.Title level={5} style={{ margin: 0 }}>{tableType}</Typography.Title>
-        )}
+        ) : null}
         columns={columns}
         dataSource={dataSet}
         rowKey="_id"
         bordered
         pagination={false}
         loading={props.loading}
+        {...props.props}
       />
     </Space>
   );
