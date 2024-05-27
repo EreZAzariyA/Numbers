@@ -40,7 +40,7 @@ const Dashboard = () => {
         </Row>
       </div>
       <div className="page-inner-container">
-        <Space direction="vertical" size={"large"}>
+        <Space direction="vertical" size={"large"} className="w-100">
           <DashboardFirst
             invoices={invoicesByMonth}
             categories={categories}
