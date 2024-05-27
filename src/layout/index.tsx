@@ -154,21 +154,23 @@ const DashboardView = () => {
           items={items}
         />
         <Layout hasSider>
-          <Sider
-            collapsed={isCollapsed}
-            collapsedWidth={80}
-            theme={themeToSet}
-            collapsible
-            onCollapse={(e) => setIsCollapsed(e)}
-          >
-            <Menu
-              mode="inline"
+          {!isMobile && (
+            <Sider
+              collapsed={isCollapsed}
+              collapsedWidth={80}
               theme={themeToSet}
-              items={items}
-              onClick={onClick}
-              selectedKeys={[current]}
-            />
-          </Sider>
+              collapsible
+              onCollapse={(e) => setIsCollapsed(e)}
+            >
+              <Menu
+                mode="inline"
+                theme={themeToSet}
+                items={items}
+                onClick={onClick}
+                selectedKeys={[current]}
+              />
+            </Sider>
+          )}
           <Content className="site-layout">
             <Outlet />
           </Content>
