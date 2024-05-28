@@ -33,7 +33,6 @@ const DashboardFirst = (props: DashboardFirstProps) => {
           <Row gutter={[10, 10]} style={{textAlign: 'center'}}>
             <Col className="mb-10" span={24}>
               <span className="sub-title"><T>homePage.firstPage.0</T> {date}</span>
-              {/* <span style={{ textDecoration: 'underline', textUnderlineOffset: 3, fontSize: 20, fontWeight: 600 }}><T>homePage.firstPage.0</T> {date}</span> */}
             </Col>
 
             <Col span={12}><b>Total Spent:</b></Col>

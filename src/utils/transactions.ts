@@ -16,6 +16,14 @@ declare enum TransactionTypes {
   Installments = "installments"
 };
 
+export type PastOrFutureDebitType = {
+  debitMonth: string;
+  monthlyNumberOfTransactions: number;
+  monthlyNISDebitSum: number;
+  monthlyUSDDebitSum: number;
+  monthlyEURDebitSum: number;
+};
+
 export interface TransactionsAccount {
   accountNumber: string;
   balance?: number;

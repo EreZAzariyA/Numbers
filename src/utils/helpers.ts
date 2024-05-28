@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from "dayjs";
 import store from "../redux/store";
 import { CategoryData } from "./interfaces";
 import { TransactionStatusesType } from "./transactions";
-import UserModel from "../models/user-model";
+import UserModel, { UserBankModel } from "../models/user-model";
 import CategoryModel from "../models/category-model";
 
 export type ColorType = {
@@ -268,10 +268,21 @@ export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], invoi
   return result;
 };
 
-export const getFutureDebitDate = (dateString: string): string => {
+export const getFutureDebitDate = (dateString: string, format?: string): string => {
   const month = parseInt(dateString?.substring(0, 2)) - 1 || 0;
   const year = parseInt(dateString?.substring(2)) || 0;
   const date = new Date(year, month, 1).valueOf() || 0;
 
-  return dayjs(date).format("DD/MM/YYYY");
-}
+  return dayjs(date).format(format || "DD/MM/YYYY");
+};
+
+export const getBanksTotal = (banks: UserBankModel[]) => {
+  let arr = [];
+
+  for (const bank of banks) {
+    if (bank?.details?.balance)
+    arr.push(bank.details.balance);
+  }
+
+  return getTotals(arr) || 0;
+};
