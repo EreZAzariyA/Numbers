@@ -1,13 +1,10 @@
 import { Dayjs } from "dayjs";
 import InvoiceModel from "../../models/invoice";
-import { filterInvoicesByStatus, filterInvoicesByCategoryId } from "../../utils/helpers";
-import { TransactionsTypes } from "../../utils/enums";
 import TransactionsTable from "../components/TransactionsTable/TransactionsTable";
 import { Col, Row } from "antd";
-import { TransactionStatusesType } from "../../utils/transactions";
 import UserModel from "../../models/user-model";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useResize } from "../../utils/helpers";
+import { BarCharts } from "../components/BarCharts";
 
 interface DashboardSecondeProps {
   user: UserModel;
@@ -18,23 +15,30 @@ interface DashboardSecondeProps {
 
 export enum TransactionsTableTypes {
   Pending = "Pending Transactions",
-  Card_Withdrawals = "Card Withdrawals"
+  Card_Withdrawals = "Card Withdrawals",
+  Last_Transactions = "Last Transactions"
 };
 
 const DashboardSeconde = (props: DashboardSecondeProps) => {
-  const categories = useSelector((state: RootState) => state.categories);
-  const category = categories.find((c) => c.name === TransactionsTypes.ATM_WITHDRAWAL);
-  const pendingTransactions = filterInvoicesByStatus(props.invoices, TransactionStatusesType.PENDING) || [];
-  const ATMWithdrawals = filterInvoicesByCategoryId(props.invoicesByMonth, category?._id) || [];
+  const { isTablet } = useResize();
+  const debits = props.user.bank[0]?.pastOrFutureDebits || [];
+  const pastOrFutureDebits = !isTablet ? [...debits].reverse().slice(0, 5) : debits;
+  const invoices = [...props.invoices].reverse().slice(0, 50);
 
   return (
     <div className="home-seconde-main-container home-component">
-      <Row align={"top"} justify={'center'} gutter={[10, 5]}>
-        <Col xs={24} md={20} lg={12}>
-          <TransactionsTable type={TransactionsTableTypes.Pending} invoices={pendingTransactions} />
+      <Row align={"top"} justify={'center'} gutter={[10, 20]} style={{ flexDirection: isTablet ? 'column-reverse' : 'row-reverse' }}>
+        <Col xs={24} lg={16}>
+          <TransactionsTable
+            invoices={invoices}
+            type={TransactionsTableTypes.Last_Transactions}
+            props={{ scroll: { y: 600, x: 600 } }}
+          />
         </Col>
-        <Col xs={24} md={20} lg={12}>
-          <TransactionsTable type={TransactionsTableTypes.Card_Withdrawals} invoices={ATMWithdrawals} />
+        <Col xs={24} lg={8} style={{ width: '100%' }}>
+          <div style={{ width: '100%', height: 250 }}>
+            <BarCharts pastOrFutureDebit={pastOrFutureDebits} />
+          </div>
         </Col>
       </Row>
     </div>
