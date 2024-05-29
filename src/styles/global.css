@@ -104,9 +104,28 @@
 .justify-center {
   justify-content: center;
 }
-.justify-space-between {
+.space-between {
   justify-content: space-between;
 }
 .align-items-center {
   align-items: center;
+}
+
+.gap-5 {
+  gap: 5;
+}
+.row-gap-5 {
+  row-gap: 5;
+}
+.column-gap-5 {
+  column-gap: 5;
+}
+.gap-10 {
+  gap: 10;
+}
+.row-gap-10 {
+  row-gap: 10;
+}
+.column-gap-10 {
+  column-gap: 10;
 }
