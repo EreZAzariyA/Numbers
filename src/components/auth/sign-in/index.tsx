@@ -3,7 +3,8 @@ import authServices from "../../../services/authentication";
 import CredentialsModel from "../../../models/credentials-model";
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { getError } from "../../../utils/helpers";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, Space, message } from "antd";
+import { FcGoogle } from "react-icons/fc";
 import "../auth.css";
 
 const SignIn = () => {
@@ -46,7 +47,7 @@ const SignIn = () => {
           form={form}
           onFinish={onFinish}
           className='auth-form sign-in'
-          layout="horizontal"
+          layout="vertical"
           labelAlign='left'
           labelCol={{
             sm: { span: 6 },
@@ -75,12 +76,17 @@ const SignIn = () => {
             <Input.Password />
           </Form.Item>
 
-          <Button htmlType="submit">Sign-in</Button>
-          <p>D`ont have account? <Link to={'/auth/sign-up'}>Sign-Up</Link></p>
+          <Space direction="vertical">
+            <Button htmlType="submit">Sign-in</Button>
+            <p>D`ont have account? <Link to={'/auth/sign-up'}>Sign-Up</Link></p>
+          </Space>
 
-          <Form.Item style={{ width: '200px', margin: 'auto' }}>
-            <Button onClick={() => login()}>Google</Button>
-          </Form.Item>
+          <div className="google-login">
+            <Button onClick={() => login()}>
+              Login with google
+              <FcGoogle size={20} />
+            </Button>
+          </div>
         </Form>
       </div>
     </div>

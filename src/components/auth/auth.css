@@ -1,33 +1,33 @@
 .auth-layout {
+  min-height: 100%;
   background-image: radial-gradient(circle at 17% 77%, rgba(17, 17, 17,0.04) 0%, rgba(17, 17, 17,0.04) 50%,rgba(197, 197, 197,0.04) 50%, rgba(197, 197, 197,0.04) 100%),radial-gradient(circle at 26% 17%, rgba(64, 64, 64,0.04) 0%, rgba(64, 64, 64,0.04) 50%,rgba(244, 244, 244,0.04) 50%, rgba(244, 244, 244,0.04) 100%),radial-gradient(circle at 44% 60%, rgba(177, 177, 177,0.04) 0%, rgba(177, 177, 177,0.04) 50%,rgba(187, 187, 187,0.04) 50%, rgba(187, 187, 187,0.04) 100%),linear-gradient(19deg, rgb(28, 117, 250),rgb(34, 2, 159));
 }
 
 .auth-header-container {
   background: transparent;
   display: flex;
-  justify-content: flex-start;
-  padding: 5px;
+  padding: 15px 5px;
 }
 
-.auth-form-main-container {
-  height: calc(100vh - 64px);
-
+.auth-layout .ant-layout-content {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
+.auth-form-main-container,
 .auth-form-main-container .auth-form-inner-container {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
 }
 
 .auth-form {
+  position: relative;
   z-index: 1;
   width: min(100% - 10%, 550px);
-  min-height: 0;
   color: var(--default-white);
+  min-height: 400px;
 
   padding: 30px 20px 10px;
   background: rgba(0, 0, 0, 0.1);
@@ -39,4 +39,18 @@
 
 .auth-form-main-container .auth-form label {
   color: var(--default-white);
+  font-size: 18px;
+}
+
+.auth-form .google-login {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.auth-form .google-login button {
+  border-radius: 0;
+
+  display: flex;
+  gap: 5px;
 }

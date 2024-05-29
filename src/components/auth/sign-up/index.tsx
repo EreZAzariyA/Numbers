@@ -1,4 +1,4 @@
-import { Button, Form, Input, Space, message } from "antd";
+import { Button, Col, Form, Input, Row, Space, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import authServices from "../../../services/authentication";
 import { getError } from "../../../utils/helpers";
@@ -26,16 +26,12 @@ const SignUp = () => {
         <Form
           onFinish={onFinish}
           className='auth-form sign-up'
-          layout="horizontal"
+          layout="vertical"
           labelAlign='left'
-          wrapperCol={{ span: 24 }}
+          scrollToFirstError
         >
-          <Form.Item
-            style={{
-              marginBottom: 0
-            }}
-          >
-            <Space>
+          <Row gutter={[20, 10]} justify={'space-between'}>
+            <Col span={12}>
               <Form.Item
                 label={'First name'}
                 name={['profile', 'first_name']}
@@ -46,6 +42,8 @@ const SignUp = () => {
               >
                 <Input type="text" />
               </Form.Item>
+            </Col>
+            <Col span={12}>
               <Form.Item
                 label={'Last name'}
                 name={['profile', 'last_name']}
@@ -56,33 +54,56 @@ const SignUp = () => {
               >
                 <Input type="text" />
               </Form.Item>
-            </Space>
+            </Col>
+          </Row>
+
+          <Form.Item
+            label={'Email'}
+            name={['emails', 'email']}
+            rules={[
+              { required: true, message: 'Please enter your email address' },
+              { pattern: emailRegex, message: 'Please enter a valid email address' },
+            ]}
+          >
+            <Input type="email" />
           </Form.Item>
 
-            <Form.Item
-              label={'Email'}
-              name={['emails', 'email']}
-              rules={[
-                { required: true, message: 'Please enter your email address' },
-                { pattern: emailRegex, message: 'Please enter a valid email address' },
-              ]}
-            >
-              <Input type="email" />
-            </Form.Item>
+          <Form.Item
+            label={'Password'}
+            name={['services', 'password']}
+            rules={[
+              { required: true, message: 'Please enter password' },
+              { min: 6, message: 'Password must be at least 6 characters long' },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
 
-            <Form.Item
-              label={'Password'}
-              name={['services', 'password']}
-              rules={[
-                { required: true, message: 'Please enter password' },
-                { min: 6, message: 'Password must be at least 6 characters long' },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
+          <Form.Item
+            name="confirm"
+            label="Confirm Password"
+            dependencies={['password']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Please confirm your password!',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue(['services', 'password']) === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('The password you entered do not match!'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
 
-            <Button htmlType="submit">Sign-up</Button>
-            <p>Already have account? <Link to={'/auth/sign-in'}>Sign-in</Link></p>
+          <Button htmlType="submit">Sign-up</Button>
+          <p>Already have account? <Link to={'/auth/sign-in'}>Sign-in</Link></p>
         </Form>
       </div>
     </div>
