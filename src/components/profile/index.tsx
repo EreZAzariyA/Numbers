@@ -1,4 +1,4 @@
-import { Col, Form, Input, InputNumber, Row } from "antd";
+import { Col, Divider, Form, Input, InputNumber, Row } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useTranslation } from "react-i18next";
@@ -36,12 +36,15 @@ const Profile = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item wrapperCol={{ span: 4 }} label="Current balance" name={'current_balance'}>
-          <InputNumber disabled />
+
+        <Form.Item wrapperCol={{ span: 10 }} label="Email" name={['emails', 'email']}>
+          <Input disabled />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ span: 16 }} label="Email" name={['emails', 'email']}>
-          <Input disabled />
+        <Divider />
+
+        <Form.Item wrapperCol={{ span: 6 }} label="Current balance" name={'current_balance'}>
+          <InputNumber disabled style={{ width: '100%' }} />
         </Form.Item>
       </Form>
     </div>
