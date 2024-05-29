@@ -28,7 +28,7 @@ interface BarChartsProps {
 
 export const BarCharts = (props: BarChartsProps) => {
   const userLang = useSelector((state: RootState) => state.language.lang);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState<number>(null);
 
   let data: barChartsDataType[] = [];
   if (isArrayAndNotEmpty(props.pastOrFutureDebit)) {
@@ -52,7 +52,7 @@ export const BarCharts = (props: BarChartsProps) => {
       <g>
         <circle cx={x + width / 2} cy={y - radius} r={radius} fill="#8884d8" />
         <text x={x + width / 2} y={y - radius} fill="#fff" textAnchor="middle" dominantBaseline="middle">
-          {month}
+          {dayjs(month).isValid() ? month: 0}
         </text>
       </g>
     );
