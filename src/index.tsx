@@ -12,7 +12,6 @@ import './styles/darkmode.css';
 import './styles/DashboardView.css';
 
 interceptorsService.createInterceptors();
-const isAdmin = JSON.parse(process.env.REACT_APP_IS_ADMIN);
 const userLang = localStorage.getItem('lang');
 
 i18n
@@ -33,15 +32,8 @@ i18n
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-
-if (isAdmin) {
-  import("./routes/AdminRouter").then((AdminRouter) => {
-    root.render(AdminRouter.default());
-  });
-} else {
-  import("./routes/UserRouter").then((UserRouter) => {
-    root.render(UserRouter.default());
-  });
-}
+import("./routes/UserRouter").then((UserRouter) => {
+  root.render(UserRouter.default());
+});
 
 reportWebVitals();
