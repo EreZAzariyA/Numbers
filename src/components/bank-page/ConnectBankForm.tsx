@@ -24,7 +24,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   });
 
   const bankList: MenuItem[] = Object.entries(SupportedCompaniesTypes).map(([bank, value]) => (
-    getMenuItem(bank, bank, null, null, null, value)
+    getMenuItem(CompaniesNames[bank] || bank, bank, null, null, null, value)
   ));
 
   const onSelectCompany = (companyId: SupportedCompaniesTypes) => {

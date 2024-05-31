@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Row, Space, message } from "antd";
+import { Button, Col, Form, Input, Row, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import authServices from "../../../services/authentication";
 import { getError } from "../../../utils/helpers";

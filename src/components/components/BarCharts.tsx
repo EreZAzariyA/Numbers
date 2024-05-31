@@ -66,19 +66,13 @@ export const BarCharts = (props: BarChartsProps) => {
           onClick={({ activeTooltipIndex }) => {
             setActiveIndex(activeTooltipIndex);
           }}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 10,
-            bottom: 5,
-          }}
         >
           <CartesianGrid />
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="pv" name={'Month'} fill="#413ea0" minPointSize={5}>
+          <Bar dataKey="pv" name={'Amount'} fill="#413ea0" minPointSize={5}>
             <LabelList dataKey="name" content={renderCustomizedLabel} />
           </Bar>
           <Bar dataKey="uv" name={'Transactions'} fill="#82ca9d" minPointSize={10} />
