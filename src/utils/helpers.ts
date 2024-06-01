@@ -132,12 +132,16 @@ export const getTotals = (arr: number[]): number => {
   return total;
 };
 
-export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): {spent: number, income: number } => {
+export const getInvoicesTotalsPrice = (invoices: InvoiceModel[], status?: TransactionStatusesType): {spent: number, income: number } => {
   const totals: number[] = [];
   const incomes: number[] = [];
 
   if (isArrayAndNotEmpty(invoices)) {
-    invoices.forEach((i) => {
+    let arr = [...invoices];
+    if (status) {
+      arr = filterInvoicesByStatus(arr, status);
+    }
+    arr.forEach((i) => {
       if (i.amount > 0) {
         incomes.push(i.amount);
       } else {
@@ -152,15 +156,20 @@ export const getInvoicesTotalsPrice = (invoices: InvoiceModel[]): {spent: number
   };
 };
 
-export const getInvoicesPricePerCategory = (invoices: InvoiceModel[]) => {
+export const getInvoicesPricePerCategory = (invoices: InvoiceModel[], status?: TransactionStatusesType) => {
   const categories = store.getState().categories;
   const invoicesByCategory: any = {};
+  let arr;
 
-  if (isArrayAndNotEmpty(invoices) && isArrayAndNotEmpty(categories)) {
+  if (status) {
+    arr = filterInvoicesByStatus(invoices, status);
+  }
+
+  if (isArrayAndNotEmpty(arr) && isArrayAndNotEmpty(categories)) {
     for (const category of categories) {
       const categoryInvoices: InvoiceModel[] = [];
 
-      invoices.forEach((invoice) => {
+      arr.forEach((invoice) => {
         if (invoice.category_id === category._id) {
           categoryInvoices.push(invoice);
         }
@@ -170,10 +179,40 @@ export const getInvoicesPricePerCategory = (invoices: InvoiceModel[]) => {
     };
   }
 
-  return invoicesByCategory
+  return invoicesByCategory;
 };
 
-export const findCategoryWithLargestSpentAmount = (data: CategoryData): { category: string, amount: number } => {
+export const getNumOfTransactionsPerCategory = (invoices: InvoiceModel[], categories: CategoryModel[], status?: TransactionStatusesType) => {
+  const numOfTransPerCategory: any = {};
+  let arr = [...invoices];
+  if (status) {
+    arr = filterInvoicesByStatus(invoices, status);
+  }
+
+  if (isArrayAndNotEmpty(arr) && isArrayAndNotEmpty(categories)) {
+    for (const category of categories) {
+      const categoryInvoices: InvoiceModel[] = [];
+      let numOfTrans = 0;
+
+      arr.forEach((invoice) => {
+        if (invoice.category_id === category._id) {
+          categoryInvoices.push(invoice);
+          numOfTrans = numOfTrans + 1;
+        }
+      });
+      const totalAmount = getInvoicesTotalsPrice(categoryInvoices);
+
+      numOfTransPerCategory[category.name] = {
+        totalAmount,
+        numOfTrans
+      }
+    }
+  }
+
+  return numOfTransPerCategory;
+}
+
+export const findCategoryWithLargestSpentAmount = (data: CategoryData, status?: TransactionStatusesType): { category: string, amount: number } => {
   let maxCategory: string | null = null;
   let maxValue: number = -Infinity;
 
@@ -189,7 +228,7 @@ export const findCategoryWithLargestSpentAmount = (data: CategoryData): { catego
   return { category: maxCategory, amount: maxValue };
 };
 
-export const findCategoryWithLowestAmount = (data: CategoryData): { category: string, amount: number } | null => {
+export const findCategoryWithLowestAmount = (data: CategoryData, status?: TransactionStatusesType): { category: string, amount: number } | null => {
   let minCategory: string | null = null;
   let minValue: number = Infinity;
 
@@ -273,7 +312,7 @@ export const getFutureDebitDate = (dateString: string, format?: string): string 
   const year = parseInt(dateString?.substring(2)) || 0;
   const date = new Date(year, month, 1).valueOf() || 0;
 
-  return dayjs(date).format(format || "DD/MM/YYYY");
+  return dayjs(date).format(format || "MM/YYYY");
 };
 
 export const getBanksTotal = (banks: UserBankModel[]) => {
