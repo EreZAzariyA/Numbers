@@ -3,7 +3,7 @@ import { TransactionStatuses } from "../../../utils/transactions";
 import { TransactionsTableTypes } from "../../dashboard/DashboardSeconde";
 import "./TransactionsTable.css"
 import InvoiceModel from "../../../models/invoice";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { asNumString } from "../../../utils/helpers";
 
 interface TransactionsTableProps {
@@ -12,6 +12,7 @@ interface TransactionsTableProps {
   invoices: InvoiceModel[];
   loading?: boolean;
   props?: TableProps;
+  date: Dayjs
 };
 
 const TransactionsTable = (props: TransactionsTableProps) => {
