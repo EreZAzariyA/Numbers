@@ -1,0 +1,4 @@
+export enum ChartsTypes {
+  PAST_DEBIT = "PAST_DEBIT",
+  INVOICES_PER_CATEGORY = "INVOICES_PER_CATEGORY"
+}
