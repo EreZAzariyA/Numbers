@@ -3,8 +3,10 @@ import InvoiceModel from "../../models/invoice";
 import TransactionsTable from "../components/TransactionsTable/TransactionsTable";
 import { Col, Row } from "antd";
 import UserModel from "../../models/user-model";
-import { useResize } from "../../utils/helpers";
-import { BarCharts } from "../components/BarCharts";
+import { filterInvoicesByStatus, useResize } from "../../utils/helpers";
+import { TransactionStatusesType } from "../../utils/transactions";
+import { Graph } from "../components/Charts/Graph";
+import { ChartsTypes } from "../components/Charts/charts-utils";
 
 interface DashboardSecondeProps {
   user: UserModel;
@@ -16,14 +18,14 @@ interface DashboardSecondeProps {
 export enum TransactionsTableTypes {
   Pending = "Pending Transactions",
   Card_Withdrawals = "Card Withdrawals",
-  Last_Transactions = "Last Transactions"
+  Last_Transactions = "Transactions"
 };
 
 const DashboardSeconde = (props: DashboardSecondeProps) => {
   const { isTablet } = useResize();
   const debits = props.user.bank[0]?.pastOrFutureDebits || [];
-  const pastOrFutureDebits = !isTablet ? [...debits].reverse().slice(0, 5) : debits;
-  const invoices = [...props.invoices].reverse().slice(0, 50);
+  const pastOrFutureDebits = !isTablet ? [...debits].reverse() : debits;
+  const invoices = filterInvoicesByStatus(props.invoicesByMonth, TransactionStatusesType.COMPLETED);
 
   return (
     <div className="home-seconde-main-container home-component">
@@ -32,12 +34,13 @@ const DashboardSeconde = (props: DashboardSecondeProps) => {
           <TransactionsTable
             invoices={invoices}
             type={TransactionsTableTypes.Last_Transactions}
+            date={props.monthToDisplay}
             props={{ scroll: { y: 600, x: 600 } }}
           />
         </Col>
         <Col xs={24} lg={8} style={{ width: '100%' }}>
           <div style={{ width: '100%', height: 250 }}>
-            <BarCharts pastOrFutureDebit={pastOrFutureDebits} />
+            <Graph data={pastOrFutureDebits} type={ChartsTypes.PAST_DEBIT} />
           </div>
         </Col>
       </Row>

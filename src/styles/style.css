@@ -55,3 +55,8 @@
   border: 1px solid lightgray;
   border-radius: 10px;
 }
+
+.chart-container {
+  width: 100%;
+  height: 250;
+}

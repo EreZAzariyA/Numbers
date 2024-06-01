@@ -1,12 +1,15 @@
-import { Col, Divider, Row, Space } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import InvoiceModel from "../../models/invoice";
-import CategoryModel from "../../models/category-model";
-import { asNumString, findCategoryWithLargestSpentAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice } from "../../utils/helpers";
-import { Trans as T } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import Charts from "../components/Charts";
+import { Trans as T } from "react-i18next";
+import InvoiceModel from "../../models/invoice";
+import CategoryModel from "../../models/category-model";
+import { BarCharts } from "../components/Charts/BarCharts";
+import { PieChart } from "../components/Charts/PieChart";
+import { asNumString, findCategoryWithLargestSpentAmount, findCategoryWithLowestAmount, getInvoicesPricePerCategory, getInvoicesTotalsPrice, getNumOfTransactionsPerCategory } from "../../utils/helpers";
+import { TransactionStatusesType } from "../../utils/transactions";
+import { Col, Divider, Row } from "antd";
+import { ChartsTypes } from "../components/Charts/charts-utils";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -18,24 +21,28 @@ interface DashboardFirstProps {
 const DashboardFirst = (props: DashboardFirstProps) => {
   const userLang = useSelector((state: RootState) => state.language.lang);
   const date = dayjs(props.monthToDisplay).locale(userLang).format('MMMM-YYYY');
-  const invoicesPricePerCategory = getInvoicesPricePerCategory(props.invoices);
-  const totalSpent = getInvoicesTotalsPrice(props.invoices);
+  const totalSpent = getInvoicesTotalsPrice(props.invoices, TransactionStatusesType.COMPLETED);
+  const numOfTransPerCategory = getNumOfTransactionsPerCategory(props.invoices, props.categories, TransactionStatusesType.COMPLETED);
+  const invoicesPricePerCategory = getInvoicesPricePerCategory(props.invoices, TransactionStatusesType.COMPLETED);
   const maxSpent = findCategoryWithLargestSpentAmount(invoicesPricePerCategory);
   const minSpent = findCategoryWithLowestAmount(invoicesPricePerCategory);
 
   return (
-    <Space direction="vertical">
-      <Row gutter={[10, 10]} align={'top'}>
-        <Col xs={24} md={14}>
-          <Charts categories={props.categories} invoices={props.invoices} />
-        </Col>
-        <Col xs={24} md={10}>
-          <Row gutter={[10, 10]} style={{textAlign: 'center'}}>
-            <Col className="mb-10" span={24}>
-              <span className="sub-title"><T>homePage.firstPage.0</T> {date}</span>
-            </Col>
-
-            <Col span={12}><b>Total Spent:</b></Col>
+    <Row gutter={[10, 10]} align={'middle'}>
+      <Col xs={24} lg={14}>
+        <PieChart categories={props.categories} invoices={props.invoices} />
+      </Col>
+      <Col xs={24} lg={10}>
+        <Row gutter={[10, 10]}>
+          <Col className="mb-10" span={24}>
+            <span className="sub-title"><T>homePage.firstPage.0</T> {date}</span>
+          </Col>
+          <Col span={24}>
+            <div>
+              <BarCharts data={numOfTransPerCategory} type={ChartsTypes.INVOICES_PER_CATEGORY} />
+            </div>
+          </Col>
+          <Col span={12}><b>Total Spent:</b></Col>
             <Col span={12}>{asNumString(Math.abs(totalSpent?.spent))}</Col>
             {(maxSpent?.amount > 0) && (
               <>
@@ -49,7 +56,6 @@ const DashboardFirst = (props: DashboardFirstProps) => {
               <>
                 <Col span={12}><b>Lowest Spent:</b></Col>
                 <Col span={12}>{`${minSpent?.category}: ${asNumString(minSpent?.amount)}`}</Col>
-                <Divider style={{ margin: 0 }} />
               </>
             )}
             {(maxSpent?.amount < 0 && minSpent?.amount  < 0) && (
@@ -57,10 +63,9 @@ const DashboardFirst = (props: DashboardFirstProps) => {
                 <b>No Data</b>
               </Col>
             )}
-          </Row>
-        </Col>
-      </Row>
-    </Space>
+        </Row>
+      </Col>
+    </Row>
   );
 };
 
