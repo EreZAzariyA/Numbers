@@ -49,11 +49,7 @@ const SignIn = () => {
           className='auth-form sign-in'
           layout="vertical"
           labelAlign='left'
-          labelCol={{
-            sm: { span: 6 },
-            lg: { span: 4 },
-          }}
-          wrapperCol={{ span: 24 }}
+          scrollToFirstError
         >
           <Form.Item
             label={'Email'}
