@@ -1,10 +1,10 @@
-import { Space, Table, TableProps, Typography } from "antd";
-import { TransactionStatuses } from "../../../utils/transactions";
-import { TransactionsTableTypes } from "../../dashboard/DashboardSeconde";
-import "./TransactionsTable.css"
-import InvoiceModel from "../../../models/invoice";
 import dayjs, { Dayjs } from "dayjs";
+import InvoiceModel from "../../../models/invoice";
+import { TransactionsTableTypes } from "../../dashboard/DashboardSeconde";
+import { TransactionStatuses } from "../../../utils/transactions";
 import { asNumString } from "../../../utils/helpers";
+import { Table, TableProps } from "antd";
+import "./TransactionsTable.css"
 
 interface TransactionsTableProps {
   type?: string;
@@ -12,7 +12,7 @@ interface TransactionsTableProps {
   invoices: InvoiceModel[];
   loading?: boolean;
   props?: TableProps;
-  date: Dayjs
+  date?: Dayjs;
 };
 
 const TransactionsTable = (props: TransactionsTableProps) => {
@@ -63,20 +63,15 @@ const TransactionsTable = (props: TransactionsTableProps) => {
   }
 
   return (
-    <Space direction="vertical" className="w-100 transaction-table">
-      <Table
-        title={tableType ? () => (
-          <Typography.Title level={5} style={{ margin: 0 }}>{tableType}</Typography.Title>
-        ) : null}
-        columns={columns}
-        dataSource={dataSet}
-        rowKey="_id"
-        bordered
-        pagination={false}
-        loading={props.loading}
-        {...props.props}
-      />
-    </Space>
+    <Table
+      columns={columns}
+      dataSource={dataSet}
+      rowKey="_id"
+      bordered
+      pagination={false}
+      loading={props.loading}
+      {...props.props}
+    />
   );
 };
 

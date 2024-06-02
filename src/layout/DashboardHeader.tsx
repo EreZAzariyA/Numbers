@@ -10,7 +10,7 @@ import userServices from "../services/user-services";
 import categoriesServices from "../services/categories";
 import invoicesServices from "../services/invoices";
 import authServices from "../services/authentication";
-import { MenuItem } from "../utils/types";
+import { MenuItem } from "../utils/antd-types";
 import { getError, useResize } from "../utils/helpers";
 import { Button, Col, Dropdown, Layout, MenuProps, Row, message } from "antd";
 import { MenuOutlined } from "@ant-design/icons";

@@ -1,11 +1,11 @@
 import { Col, Row, Space, Spin, Tooltip, Typography, message } from "antd";
-import { CompaniesNames } from "../../utils/definitions";
+import { CompaniesNames } from "../../../utils/definitions";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react";
-import bankServices from "../../services/banks";
-import UserModel, { UserBankModel } from "../../models/user-model";
-import { asNumString, getTimeToRefresh } from "../../utils/helpers";
+import bankServices from "../../../services/banks";
+import UserModel, { UserBankModel } from "../../../models/user-model";
+import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
 
 interface BankAccountPageProps {
   bankAccount: UserBankModel;
@@ -50,7 +50,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
             </Typography.Title>
 
             {isLoading ? <Spin /> : (
-              <>
+              <Space direction="vertical">
                 <Typography.Text>Last Update: {lastConnectionDateString}</Typography.Text>
                 {accountDetails && (
                   <Typography.Text>Balance: {asNumString(accountDetails?.balance)}</Typography.Text>
@@ -59,7 +59,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
                 <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
                   <Typography.Link disabled={!isRefreshAvailable} onClick={refreshBankData}>Refresh</Typography.Link>
                 </Tooltip>
-              </>
+              </Space>
             )}
           </Space>
         </Col>

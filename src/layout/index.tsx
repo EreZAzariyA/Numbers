@@ -9,7 +9,7 @@ import DashboardHeader from "./DashboardHeader";
 import authServices from "../services/authentication";
 import userServices from "../services/user-services";
 import { Colors, Sizes, useResize } from "../utils/helpers";
-import { MenuItem, getMenuItem } from "../utils/types";
+import { MenuItem, getMenuItem } from "../utils/antd-types";
 import { ConfigProvider, Layout, Menu, MenuProps, message, theme } from "antd";
 import { AiOutlineLogout, AiOutlineProfile } from "react-icons/ai";
 import { BiLogInCircle } from "react-icons/bi";

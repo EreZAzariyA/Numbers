@@ -1,38 +1,29 @@
-import { MenuProps } from "antd";
-
-export type MenuItem = Required<MenuProps>['items'][number];
-export const getMenuItem = (
-  label: React.ReactNode,
-  key?: React.Key | null,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-  type?: 'group',
-  value?: string
-): MenuItem  => {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-    value,
-    style: {
-      textAlign: 'left'
-    }
-  } as MenuItem;
+export type CreditCardType = {
+  cardFamilyDescription: string;
+  cardFrameworkNotUsed: number;
+  cardFrameworkUsed: number;
+  cardHolderFirstName: string;
+  cardHolderLastName: string;
+  cardName: string;
+  cardNumber: string;
+  cardTypeDescription: string;
+  cardValidityDate: string;
+  dateOfUpcomingDebit: string;
+  NISTotalDebit: number;
+  USDTotalDebit: number;
+  EURTotalDebit: number;
 };
 
-export interface DataType {
-  _id: string;
-  name: string;
-  editable: boolean;
+export type PastOrFutureDebits = {
+  debitMonth: string;
+  monthlyNumberOfTransactions: number;
+  monthlyNISDebitSum: number;
+  monthlyUSDDebitSum: number;
+  monthlyEURDebitSum: number;
 };
 
-export interface InvoiceDataType {
-  _id: string;
-  date: Date;
-  category: string;
-  description: string
-  amount: number;
-  editable: boolean;
+export interface AccountSavesType {
+  businessDate: string;
+  totalDepositsCurrentValue: number;
+  currencyCode: string;
 };

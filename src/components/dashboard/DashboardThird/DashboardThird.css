@@ -1,0 +1,10 @@
+.home-third-main-container .card-body {
+  width: 100%;
+}
+.home-third-main-container .card-body .credit-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  overflow: auto;
+  column-gap: 20px;
+}

@@ -5,9 +5,10 @@ import dayjs, { Dayjs } from "dayjs";
 import { RootState } from "../../redux/store";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSeconde from "./DashboardSeconde";
-import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
-import { DatePicker, Divider, Row, Space } from "antd";
 import DashboardThird from "./DashboardThird";
+import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
+import { DatePicker, Row } from "antd";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ const Dashboard = () => {
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
   const invoicesByMonth = getInvoicesBySelectedMonth(invoices, monthToDisplay);
+  const creditCards = user?.bank?.[0]?.creditCards || [];
 
   return (
     <div className="page-container dashboard">
@@ -40,25 +42,21 @@ const Dashboard = () => {
         </Row>
       </div>
       <div className="page-inner-container">
-        <Space direction="vertical" size={"large"} className="w-100">
-          <DashboardFirst
-            invoices={invoicesByMonth}
-            categories={categories}
-            monthToDisplay={monthToDisplay}
-          />
-          <Divider style={{ margin: 0 }} />
-          <DashboardSeconde
-            user={user}
-            invoices={invoices}
-            invoicesByMonth={invoicesByMonth}
-            monthToDisplay={monthToDisplay}
-          />
-          <Divider style={{ margin: 0 }} />
-          <DashboardThird
-            invoices={invoices}
-            bankAccount={user?.bank}
-          />
-        </Space>
+        <DashboardFirst
+          user={user}
+          invoices={invoicesByMonth}
+          categories={categories}
+          monthToDisplay={monthToDisplay}
+        />
+        <DashboardSeconde
+          user={user}
+          invoices={invoices}
+          invoicesByMonth={invoicesByMonth}
+          monthToDisplay={monthToDisplay}
+        />
+        <DashboardThird
+          creditCards={creditCards}
+        />
       </div>
     </div>
   );

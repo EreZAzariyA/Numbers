@@ -1,4 +1,5 @@
 import { TokenResponse } from "@react-oauth/google";
+import { AccountSavesType, CreditCardType, PastOrFutureDebits } from "../utils/types";
 
 export class EmailModel {
   email: string;
@@ -12,13 +13,6 @@ export class EmailModel {
   }
 };
 
-export interface PastOrFutureDebits {
-  debitMonth: string;
-  monthlyNumberOfTransactions: number;
-  monthlyNISDebitSum: number;
-  monthlyUSDDebitSum: number;
-  monthlyEURDebitSum: number;
-};
 
 export class UserBankModel {
   _id: string;
@@ -29,8 +23,20 @@ export class UserBankModel {
     balance: number,
   };
   lastConnection: number;
-  extraInfo?: any;
+  extraInfo?: {
+    accountAvailableBalance: number;
+    accountBalance: number;
+    accountCurrencyCode: string;
+    accountCurrencyLongName: string;
+    accountName: string;
+    accountStatusCode: string;
+    handlingBranchID: string;
+    handlingBranchName: string;
+    privateBusinessFlag: string;
+  };
   pastOrFutureDebits?: PastOrFutureDebits[];
+  creditCards: CreditCardType[];
+  savings: AccountSavesType;
 };
 
 class UserModel {
@@ -45,11 +51,11 @@ class UserModel {
     password: string;
     google?: TokenResponse;
   };
-  config?: {
+  config: {
     lang?: string,
     'theme-color'?: string
   };
-  bank?: UserBankModel[];
+  bank: UserBankModel[];
 
   constructor(user: UserModel) {
     this._id = user._id;

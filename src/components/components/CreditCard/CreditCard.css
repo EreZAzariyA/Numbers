@@ -1,0 +1,11 @@
+.credit-card-main-container .credit-card {
+  width: 100%;
+  min-width: 300px;
+  height: 150px;
+  color: #ffffff;
+
+  border-radius: 6px;
+  padding: 10px;
+  background: linear-gradient(90deg, #4BC87D 20%, #12AA54 100%);
+  box-shadow: 0 10px 16px 0 rgba(67, 96, 144, 0.24);
+}

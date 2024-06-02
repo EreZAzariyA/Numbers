@@ -1,5 +1,5 @@
 import { Form, Table, Typography, Popconfirm, Row, Col, Divider, TableProps } from "antd";
-import { DataType, InvoiceDataType } from "../../utils/types";
+import { DataType, InvoiceDataType } from "../../utils/antd-types";
 import { useNavigate } from "react-router-dom";
 
 interface EditTableProps<T> {

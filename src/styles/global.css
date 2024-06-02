@@ -2,9 +2,10 @@
   --light-blue: #edf1f4;
   --bright-blue: #a6d4ff;
   --default-white: whitesmoke;
+  --dark: #19242f;
   --bg-dark: #002a51;
-  --light-dark: #010530;
-  --ant-default-dark: #001529;
+  --bright-dark: #010530;
+  --ant-default-dark: #141414;
 }
 
 .mt-5 {
@@ -110,6 +111,9 @@
 .align-items-center {
   align-items: center;
 }
+.align-items-start {
+  align-items: flex-start;
+}
 
 .gap-5 {
   gap: 5;
@@ -129,3 +133,12 @@
 .column-gap-10 {
   column-gap: 10;
 }
+
+/*
+@media only screen and (-webkit-min-device-pixel-ratio: 3) {
+  .main-layout .ant-layout-header {
+    background: blue !important;
+  }
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 4) {
+} */

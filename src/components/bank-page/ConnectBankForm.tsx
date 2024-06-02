@@ -1,6 +1,6 @@
 import { Button, Checkbox, Form, Input, Modal, Select, Space, Typography, message } from "antd";
 import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
-import { MenuItem, getMenuItem } from "../../utils/types";
+import { MenuItem, getMenuItem } from "../../utils/antd-types";
 import { useState } from "react";
 import UserModel from "../../models/user-model";
 import { Transaction } from "../../utils/transactions";

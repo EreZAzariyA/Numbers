@@ -23,7 +23,7 @@
   border: 1px solid var(--ant-default-dark);
 }
 .dark-theme .ant-table .ant-table-thead .ant-table-cell {
-  background: var(--light-dark);
+  background: var(--bright-dark);
   color: var(--default-white);
 }
 .dark-theme .ant-table .ant-table-tbody .ant-table-cell {

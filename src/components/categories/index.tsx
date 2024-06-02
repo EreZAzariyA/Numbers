@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DataType } from "../../utils/types";
+import { DataType } from "../../utils/antd-types";
 import { Button, Col, Input, Row, Space, TableProps, message } from "antd";
 import NewCategory from "./newCategory/newCategory";
 import CategoryModel from "../../models/category-model";

@@ -2,13 +2,14 @@ import { Button, Col, Form, Input, Row, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import authServices from "../../../services/authentication";
 import { getError } from "../../../utils/helpers";
+import UserModel from "../../../models/user-model";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const SignUp = () => {
   const navigate = useNavigate();
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: UserModel) => {
     try {
       const res = await authServices.signup(values);
       if (res) {

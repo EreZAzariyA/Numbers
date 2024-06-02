@@ -102,12 +102,12 @@ export const asNumber = (num: number, digits: number = 2) => (
   parseFloat(num?.toFixed(digits)) || 0
 );
 
-export const asNumString = (num: number, digits: number = 2): string => {
+export const asNumString = (num: number = 0, digits: number = 2): string => {
   if (!num || typeof num !== 'number') {
     return '0'
   }
-  const formattedNumber = num.toFixed(digits);
-  return parseFloat(formattedNumber).toLocaleString();
+  const formattedNumber = num?.toFixed(digits);
+  return parseFloat(formattedNumber || '0').toLocaleString();
 };
 
 export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], selectedMonth: Dayjs): InvoiceModel[] => {
@@ -248,7 +248,7 @@ export const findCategoryWithLowestAmount = (data: CategoryData, status?: Transa
 };
 
 export const filterInvoicesByStatus = (invoices: InvoiceModel[], status: TransactionStatusesType): InvoiceModel[] => {
-  return invoices.filter((i) => i.status === status);
+  return invoices.filter((i) => i.status === status).sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
 };
 export const filterInvoicesByCategoryId = (invoices: InvoiceModel[], category_id: string): InvoiceModel[] => {
   return invoices.filter((i) => i.category_id === category_id)

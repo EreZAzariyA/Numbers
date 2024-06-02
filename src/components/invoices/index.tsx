@@ -10,7 +10,7 @@ import { Filters } from "../components/Filters";
 import TotalAmountInput from "../components/TotalAmount";
 import InvoiceModel from "../../models/invoice";
 import invoicesServices from "../../services/invoices";
-import { InvoiceDataType } from "../../utils/types";
+import { InvoiceDataType } from "../../utils/antd-types";
 import { asNumString, getError } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
 import { TotalAmountType } from "../../utils/enums";

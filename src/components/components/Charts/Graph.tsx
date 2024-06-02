@@ -1,7 +1,7 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { PastOrFutureDebits } from '../../../models/user-model';
 import { asNumString, getFutureDebitDate, isArrayAndNotEmpty } from '../../../utils/helpers';
 import { ChartsTypes } from './charts-utils';
+import { PastOrFutureDebits } from '../../../utils/types';
 
 interface GraphProps {
   data: PastOrFutureDebits[];

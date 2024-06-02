@@ -1,17 +1,17 @@
-import InvoiceModel from "../../models/invoice";
-import { Graph } from "../components/Charts/Graph";
-import { UserBankModel } from "../../models/user-model";
+import InvoiceModel from "../../../models/invoice";
+import { Graph } from "../../components/Charts/Graph";
+import { UserBankModel } from "../../../models/user-model";
 import { Tabs, Typography } from "antd";
-import { CompaniesNames } from "../../utils/definitions";
-import { isArrayAndNotEmpty } from "../../utils/helpers";
-import { ChartsTypes } from "../components/Charts/charts-utils";
+import { CompaniesNames } from "../../../utils/definitions";
+import { isArrayAndNotEmpty } from "../../../utils/helpers";
+import { ChartsTypes } from "../../components/Charts/charts-utils";
 
-interface DashboardThirdProps {
+interface DashboardFourthProps {
   invoices: InvoiceModel[];
   bankAccount: UserBankModel[];
 };
 
-const DashboardThird = (props: DashboardThirdProps) => {
+const DashboardFourth = (props: DashboardFourthProps) => {
 
   const banks = props.bankAccount.map((bank) => ({
     label: CompaniesNames[bank.bankName] || bank.bankName,
@@ -20,7 +20,7 @@ const DashboardThird = (props: DashboardThirdProps) => {
   }));
 
   return (
-    <>
+    <div className="home-fourth-main-container home-component">
       {isArrayAndNotEmpty(banks) ? (
         <Tabs items={banks}/>
       ) : (
@@ -31,8 +31,8 @@ const DashboardThird = (props: DashboardThirdProps) => {
           <Graph data={[]} type={null} />
         </>
       )}
-    </>
+    </div>
   );
 };
 
-export default DashboardThird;
+export default DashboardFourth;

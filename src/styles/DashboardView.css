@@ -4,7 +4,7 @@
 
 .main-layout .site-layout {
   padding: 10px;
-  background: var(--default-white);
+  background: var(--light-blue);
   transition: background 300ms ease;
 }
 
@@ -104,7 +104,7 @@
     width: 50px;
   }
   .dark-theme .main-header-container .left-container .menu-collapse .menu-btn {
-    background-color: var(--light-dark);
+    background-color: var(--bright-dark);
   }
 }
 @media (max-width: 380px) {
@@ -135,7 +135,7 @@
 }
 
 .dark-theme .dropdown-menu .ant-dropdown-menu-item-icon {
-  color: var(--light-dark);
+  color: var(--bright-dark);
 }
 .dark-theme .dropdown-menu .ant-dropdown-menu-title-content {
   color: var(--bright-blue);
