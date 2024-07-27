@@ -2,25 +2,37 @@ import { Button, Checkbox, Form, Input, Modal, Select, Space, Typography, messag
 import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/antd-types";
 import { useState } from "react";
-import UserModel from "../../models/user-model";
-import { Transaction } from "../../utils/transactions";
+import UserModel, { UserBankModel } from "../../models/user-model";
+import { BankAccountDetails, Transaction } from "../../utils/transactions";
 import bankServices from "../../services/banks";
 import { isArray } from "../../utils/helpers";
 
 const { confirm } = Modal;
 
+export enum ConnectBankFormType {
+  Connect_Bank = "Connect_Bank",
+  Update_Bank = "Update_Bank"
+}
+
 interface ConnectBankFormProps {
   user: UserModel;
   handleOkButton?: (val: boolean) => void;
   setResult?: (res: any) => void;
+  formType?: ConnectBankFormType;
+  bankDetails?: UserBankModel
 };
+
+const getLoginFields = (companyId: SupportedCompaniesTypes) => {
+  const company = SupportedScrapers[companyId];
+  return company.loginFields;
+}
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCompany, setSelectedCompany] = useState({
-    isSelected: false,
-    companyId: SupportedCompaniesTypes.discount || SupportedCompaniesTypes.behatsdaa,
-    loginFields: []
+    isSelected: props.bankDetails?.bankName || false,
+    companyId: props.bankDetails?.bankName || null,
+    loginFields: props.bankDetails?.bankName ? SupportedScrapers[props.bankDetails.bankName].loginFields : []
   });
 
   const bankList: MenuItem[] = Object.entries(SupportedCompaniesTypes).map(([bank, value]) => (
@@ -38,6 +50,9 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
   };
 
+  console.log(props);
+  
+
   const onFinish = async (values: any) => {
     setIsLoading(true);
 
@@ -48,11 +63,16 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
 
     try {
-      const res = await bankServices.fetchBankData(values, props.user._id);
+      let res: Partial<BankAccountDetails> = {};
+      if (props.formType === ConnectBankFormType.Update_Bank) {
+        res = await bankServices.updateBankDetails(props.bankDetails?._id, props.user._id, values);
+      } else {
+        res = await bankServices.fetchBankData(values, props.user._id);
+      }
       if (res?.account && res.account?.txns && res.account.txns?.length) {
         showTransImportConfirmation(res.account?.txns);
       }
-      props.setResult(res);
+      props?.setResult(res);
       props.handleOkButton(true);
       setIsLoading(false);
     } catch (err: any) {
@@ -86,18 +106,23 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         style={{ margin: 0, textDecoration: 'underline' }}
         level={4}
       >
-        Connect your bank account
+        {(!props.formType || props.formType === ConnectBankFormType.Connect_Bank) && (
+          "Connect your bank account"
+        )}
+        {props.formType === ConnectBankFormType.Update_Bank && (
+          "Update your bank account details"
+        )}
       </Typography.Title>
 
       <Form onFinish={onFinish} layout="vertical">
-        <Form.Item label="Select your bank" name={'companyId'}>
+        <Form.Item label="Select your bank" initialValue={props.bankDetails?.bankName} name={'companyId'}>
           <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
         </Form.Item>
 
         {selectedCompany.isSelected && (
           <>
             <h2>{CompaniesNames[selectedCompany.companyId]}</h2>
-            {selectedCompany.loginFields.map((field) => (
+            {selectedCompany.loginFields.map((field: any) => (
               <Form.Item
                 key={field}
                 name={field}

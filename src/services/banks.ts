@@ -20,13 +20,23 @@ class BankServices {
     throw new Error('Some error while trying to fetch bank account data');
   };
 
-  updateBankData = async (bankAccount_id: string, user_id: string): Promise<Pick<AccountDetails, "importedTransactions">> => {
-    const response = await axios.put<AccountDetails>(config.urls.bank.updateBankData + `/${user_id}`, { bankAccount_id });
+  refreshBankData = async (bankAccount_id: string, user_id: string): Promise<Pick<AccountDetails, "importedTransactions">> => {
+    const response = await axios.put<AccountDetails>(config.urls.bank.refreshBankData + `/${user_id}`, { bankAccount_id });
     const { newUserToken, importedTransactions } = response.data;
     if (newUserToken && importedTransactions) {
       store.dispatch(refreshTokenAction(newUserToken));
       return { importedTransactions };
     }
+  };
+
+  updateBankDetails = async (bankAccount_id: string, user_id: string, newCredentials: any): Promise<AccountDetails> => {
+    const response = await axios.put<AccountDetails>(config.urls.bank.updateBankDetails + `/${user_id}`, { bankAccount_id, newCredentials });
+    console.log(response.data);
+    const { newUserToken, importedTransactions, account } = response.data;
+    if (!!newUserToken && typeof newUserToken === "string") {
+      store.dispatch(refreshTokenAction(newUserToken));
+    }
+    return { importedTransactions, account, newUserToken };
   };
 
   importTrans = async (transactions: Transaction[], user_id: string, companyId: SupportedCompaniesTypes): Promise<InvoiceModel[]> => {

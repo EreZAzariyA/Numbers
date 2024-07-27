@@ -6,6 +6,7 @@ import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
 import { asNumString } from "../../../utils/helpers";
 import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
 import CurrencyList from 'currency-list';
+import { useTranslation } from "react-i18next";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -16,6 +17,7 @@ interface DashboardFirstProps {
 };
 
 const DashboardFirst = (props: DashboardFirstProps) => {
+  const { t } = useTranslation();
   const account = props.user.bank[0];
   const accountBalance = asNumString(account?.details?.balance);
   const currency = CurrencyList.get(account?.extraInfo?.accountCurrencyCode || "ILS");
@@ -27,11 +29,11 @@ const DashboardFirst = (props: DashboardFirstProps) => {
     <div className="home-first-main-container home-component">
       <div className="card-container">
         <div className="card-title-container">
-          <div className="card-title">Your account status</div>
+          <div className="card-title">{t('dashboard.first.0')}</div>
         </div>
         <div className="card-body">
           <div className="sub-title-container">
-            <div className="card-subtitle">Account balance</div>
+            <div className="card-subtitle">{t('dashboard.first.1')}</div>
             <div className="balance"><span>{currency?.symbol}</span> {accountBalance}</div>
           </div>
 

@@ -7,7 +7,7 @@
 
 .page-container.dashboard .page-inner-container .card-container {
   background: white;
-  text-align: left;
+  text-align: start;
 }
 .dark-theme .page-container.dashboard .page-inner-container .card-container {
   background: var(--bright-dark);

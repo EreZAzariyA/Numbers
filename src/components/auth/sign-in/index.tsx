@@ -23,8 +23,10 @@ const SignIn = () => {
 
   const onSuccess = async (tokenResponse: TokenResponse) => {
     try {
-      await authServices.googleSignIn(tokenResponse);
-      message.success("Logged-in successfully");
+      const res = await authServices.googleSignIn(tokenResponse);
+      if (res) {
+        message.success("Logged-in successfully");
+      }
     } catch (err: any) {
       message.error(err.message);
     }

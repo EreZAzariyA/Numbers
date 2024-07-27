@@ -37,7 +37,7 @@ export interface BankAccountDetails {
   importedTransactions?: InvoiceModel[]
 }
 
-export type AccountDetails = Pick<BankAccountDetails, "newUserToken" | "importedTransactions">;
+export type AccountDetails = Pick<BankAccountDetails, "newUserToken" | "importedTransactions" | "account">;
 
 export interface Transaction {
   type: TransactionTypes;

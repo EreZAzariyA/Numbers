@@ -3,6 +3,7 @@ import "./CreditCardsAndSavings.css";
 import { AccountSavesType } from "../../../../utils/types";
 import { GoCreditCard } from "react-icons/go";
 import { Divider } from "antd";
+import { useTranslation } from "react-i18next";
 
 interface CreditCardsAndSavingsProps {
   cardsUsed: number;
@@ -11,6 +12,7 @@ interface CreditCardsAndSavingsProps {
 };
 
 export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
+  const { t } = useTranslation();
   const totalSaves = props.savingsBalance?.totalDepositsCurrentValue || 0;
 
   return (
@@ -21,7 +23,7 @@ export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
             <div className="inner-box-title-icon">
               <GoCreditCard />
             </div>
-            <div className="inner-box-title">Credit cards</div>
+            <div className="inner-box-title">{t('dashboard.first.2')}</div>
           </div>
           <div className="inner-box-body">
             {props.currency} {asNumString(props.cardsUsed || 0)}
@@ -33,7 +35,7 @@ export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
             <div className="inner-box-title-icon">
               <GoCreditCard />
             </div>
-            <div className="inner-box-title">Deposits and savings</div>
+            <div className="inner-box-title">{t('dashboard.first.3')}</div>
           </div>
           <div className="inner-box-body">
             {props.currency} {asNumString(totalSaves)}

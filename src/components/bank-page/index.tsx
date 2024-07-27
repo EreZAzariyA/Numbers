@@ -18,7 +18,6 @@ const BankPage = () => {
   const [modalResult, setModalResult] = useState(null);
 
   const onChange = (key: string) => {
-    console.log(key);
     if (key === 'add_account') {
       setIsOpen(true);
     }
@@ -30,17 +29,17 @@ const BankPage = () => {
     }
   };
 
-  const items: TabsProps['items'] = !hasBankAccounts ? [] : bankAccounts.map((account) => ({
-    key: account.bankName,
-    label: <Typography.Text>{CompaniesNames[account.bankName] || account.bankName}</Typography.Text>,
-    children: <BankAccountPage user={user} bankAccount={account} />,
-    closable: false
-  }));
-
   const onOkHandler = () => {
     setIsOpen(false);
     setModalResult(null);
   };
+
+  const items: TabsProps['items'] = !hasBankAccounts ? [] : bankAccounts.map((account) => ({
+    key: account.bankName,
+    label: <Typography.Text>{CompaniesNames[account.bankName] || account.bankName}</Typography.Text>,
+    children: <BankAccountPage key={account._id} user={user} bankAccount={account} />,
+    closable: false
+  }));
 
   return (
     <div className="page-container bank-account">
@@ -61,7 +60,11 @@ const BankPage = () => {
       </div>
       <Modal open={isOpen} onCancel={() => setIsOpen(false)} okButtonProps={{ disabled: !isOkBtnActive }} onOk={onOkHandler}>
         {!modalResult && (
-          <ConnectBankForm user={user} handleOkButton={setIsBtnActive} setResult={setModalResult} />
+          <ConnectBankForm
+            user={user}
+            handleOkButton={setIsBtnActive}
+            setResult={setModalResult}
+          />
         )}
         {modalResult?.account && (
           <Result

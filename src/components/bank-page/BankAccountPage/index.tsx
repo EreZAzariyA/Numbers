@@ -1,4 +1,4 @@
-import { Col, Row, Space, Spin, Tooltip, Typography, message } from "antd";
+import { Col, Modal, Row, Space, Spin, Tooltip, Typography, message } from "antd";
 import { CompaniesNames } from "../../../utils/definitions";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
@@ -6,6 +6,8 @@ import { useState } from "react";
 import bankServices from "../../../services/banks";
 import UserModel, { UserBankModel } from "../../../models/user-model";
 import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
+import CustomModal from "../../components/CustomModal";
+import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
 
 interface BankAccountPageProps {
   bankAccount: UserBankModel;
@@ -22,11 +24,13 @@ const BankAccountPage = (props: BankAccountPageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const accountDetails = props.bankAccount?.details;
 
-  const refreshBankData = async () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const refreshData = async () => {
     setIsLoading(true);
 
     try {
-      const response = await bankServices.updateBankData(props.bankAccount?._id, props.user?._id);
+      const response = await bankServices.refreshBankData(props.bankAccount?._id, props.user?._id);
       if (response) {
         message.success('Account data updated...');
         if (response.importedTransactions.length) {
@@ -38,6 +42,10 @@ const BankAccountPage = (props: BankAccountPageProps) => {
     }
 
     setIsLoading(false);
+  };
+
+  const editAccountDetails = async () => {
+    setIsOpen(!isOpen);
   };
 
   return (
@@ -56,15 +64,33 @@ const BankAccountPage = (props: BankAccountPageProps) => {
                   <Typography.Text>Balance: {asNumString(accountDetails?.balance)}</Typography.Text>
                 )}
 
-                <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
-                  <Typography.Link disabled={!isRefreshAvailable} onClick={refreshBankData}>Refresh</Typography.Link>
-                </Tooltip>
+                <Row align={'middle'} justify={'center'} gutter={[10, 10]}>
+                  <Col>
+                    <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
+                      <Typography.Link disabled={!isRefreshAvailable} onClick={refreshData}>Refresh</Typography.Link>
+                    </Tooltip>
+                  </Col>
+                  <Col>
+                    <Typography.Link onClick={editAccountDetails}>Edit-details</Typography.Link>
+                  </Col>
+                </Row>
               </Space>
             )}
           </Space>
         </Col>
       </Row>
-
+      <CustomModal
+        title="Update bank account"
+        isOpen={isOpen}
+        onCancel={() => setIsOpen(false)}
+        onOk={() => setIsOpen(false)}
+      >
+        <ConnectBankForm
+          user={props.user}
+          formType={ConnectBankFormType.Update_Bank}
+          bankDetails={props.bankAccount}
+        />
+      </CustomModal>
     </div>
   );
 };

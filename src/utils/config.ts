@@ -10,7 +10,8 @@ abstract class Config {
     categories: "",
     bank: {
       fetchBankData: "",
-      updateBankData: "",
+      refreshBankData: "",
+      updateBankDetails: "",
       importTransactions: "",
     }
   };
@@ -27,7 +28,8 @@ abstract class Config {
       categories: baseUrl + "categories",
       bank: {
         fetchBankData: baseUrl + "bank-account/fetch-bank-data",
-        updateBankData: baseUrl + "bank-account/update-bank-data",
+        refreshBankData: baseUrl + "bank-account/refresh-bank-data",
+        updateBankDetails: baseUrl + "bank-account/update-bank-details",
         importTransactions: baseUrl + "bank-account/import-transactions",
       }
     }

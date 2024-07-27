@@ -3,16 +3,16 @@ import { jwtDecode } from 'jwt-decode';
 import UserModel from '../../models/user-model';
 
 export interface AuthState {
-  token: string | null,
+  token: string | '',
   user?: UserModel | null
 };
 
-const token = localStorage.getItem('token') || null;
+const token = localStorage.getItem('token');
 const user: UserModel = token && token  !== 'undefined' ? jwtDecode(token) : null;
 
 const initialState: AuthState = {
-  token: token,
-  user: user
+  token,
+  user
 };
 
 const authSlicer = createSlice({
@@ -20,7 +20,8 @@ const authSlicer = createSlice({
   initialState,
   reducers: {
     loginAction(state: AuthState, action: PayloadAction<AuthState>): AuthState {
-      if (!action.payload) return;
+      if (!action.payload || !action.payload.token) return;
+
       localStorage.setItem('token', action.payload.token);
       state = {
         token: action.payload.token,

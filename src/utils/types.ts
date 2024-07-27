@@ -1,3 +1,5 @@
+import { SupportedCompaniesTypes } from "./definitions";
+
 export type CreditCardType = {
   cardFamilyDescription: string;
   cardFrameworkNotUsed: number;
@@ -27,3 +29,12 @@ export interface AccountSavesType {
   totalDepositsCurrentValue: number;
   currencyCode: string;
 };
+
+export type BankCredential = {
+  companyId: string,
+  id: string,
+  password: string,
+  num: string,
+  save: boolean,
+  username: string
+}

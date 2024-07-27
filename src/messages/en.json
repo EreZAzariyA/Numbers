@@ -21,9 +21,17 @@
     "bankAccount": "Bank Account",
     "profile": "Profile"
   },
-  "homePage": {
-    "firstPage": [
-      "Monthly report for"
+  "dashboard": {
+    "first": [
+      "Your account status",
+      "Account balance",
+      "Credit cards",
+      "Deposits and savings"
+    ],
+    "second": [
+      "Recent movements in the account",
+      "More movements",
+      "Credit cards"
     ]
   },
   "placeholders": [

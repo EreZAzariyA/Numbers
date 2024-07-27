@@ -5,6 +5,7 @@ import UserModel from "../../../models/user-model";
 import { filterInvoicesByStatus } from "../../../utils/helpers";
 import { TransactionStatusesType } from "../../../utils/transactions";
 import "./DashboardSeconde.css";
+import { useTranslation } from "react-i18next";
 
 interface DashboardSecondeProps {
   user: UserModel;
@@ -20,6 +21,7 @@ export enum TransactionsTableTypes {
 };
 
 const DashboardSeconde = (props: DashboardSecondeProps) => {
+  const { t } = useTranslation();
   let invoices = filterInvoicesByStatus(props.invoices, TransactionStatusesType.COMPLETED);
   invoices = invoices.slice(0, 6);
 
@@ -28,10 +30,10 @@ const DashboardSeconde = (props: DashboardSecondeProps) => {
       <div className="card-container">
         <div className="card-title-container">
           <div className="card-title">
-            Recent movements in the account
+            {t('dashboard.second.0')}
           </div>
           <div className="action">
-            More movements
+            {t('dashboard.second.1')}
           </div>
         </div>
         <div className="card-body">

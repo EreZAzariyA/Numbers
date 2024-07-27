@@ -14,11 +14,10 @@ class AuthServices {
   signup = async (user: UserModel): Promise<string> => {
     const response = await axios.post<string>(config.urls.auth.signUp, user);
     const token = response.data;
-    if (token) {
-      store.dispatch(registerAction({token}));
-      return token;
-    }
-    return null;
+    if (!token) return;
+
+    store.dispatch(registerAction({token}));
+    return token;
   };
 
   signin = async (credentials: CredentialsModel): Promise<string> => {
@@ -27,17 +26,18 @@ class AuthServices {
     }
     const response = await axios.post<string>(config.urls.auth.signIn, credentials);
     const token = response.data;
-    if (token) {
-      store.dispatch(loginAction({token}));
-      return token;
-    }
-    return null;
+
+    if (!token) return;
+    store.dispatch(loginAction({token}));
+    return token;
   };
 
   googleSignIn = async (tokenResponse: TokenResponse): Promise<string> => {
     const response = await axios.post<string>(config.urls.auth.googleSignIn, tokenResponse);
     const token = response.data;
-    store.dispatch(loginAction({token}));
+    if (!token) return;
+
+    store.dispatch(loginAction({ token }));
     return token;
   };
 
