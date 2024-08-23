@@ -15,10 +15,11 @@ const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const invoices = useSelector((state: RootState) => state.invoices);
   const categories = useSelector((state: RootState) => state.categories);
+  const banks = useSelector((state: RootState) => state.userBanks.account.banks);
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
   const invoicesByMonth = getInvoicesBySelectedMonth(invoices, monthToDisplay);
-  const creditCards = user?.bank?.[0]?.creditCards || [];
+  const creditCards = banks?.[0]?.creditCards || [];
 
   return (
     <div className="page-container dashboard">
@@ -26,6 +27,7 @@ const Dashboard = () => {
         <div className="page-title">
           {t('pages.dashboard')}
         </div>
+
         <DatePicker
           picker="month"
           defaultPickerValue={currentMonth}
@@ -47,6 +49,7 @@ const Dashboard = () => {
           invoices={invoicesByMonth}
           categories={categories}
           monthToDisplay={monthToDisplay}
+          account={banks[0]}
         />
         <DashboardSeconde
           user={user}

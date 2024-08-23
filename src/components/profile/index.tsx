@@ -7,6 +7,7 @@ import { asNumString, getBanksTotal } from "../../utils/helpers";
 const Profile = () => {
   const { t } = useTranslation();
   const user = useSelector((state: RootState) => state.auth.user);
+  const banks = useSelector((state: RootState) => state.userBanks.account.banks);
 
   const verifiedEmail = user.emails.find((email) => (email.isValidate || email.isActive));
   const initialValues = {
@@ -14,7 +15,7 @@ const Profile = () => {
     emails: {
       email: verifiedEmail?.email
     },
-    current_balance: asNumString(getBanksTotal(user.bank)),
+    current_balance: asNumString(getBanksTotal(banks)),
     currency: "NIS"
   };
 

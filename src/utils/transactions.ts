@@ -1,6 +1,6 @@
-import InvoiceModel from "../models/invoice";
-import { UserBankModel } from "../models/user-model";
+import { BankAccountModel } from "../models/bank-model";
 import { SupportedCompaniesTypes } from "./definitions";
+import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "./types";
 
 export enum TransactionStatuses {
   completed = "Completed",
@@ -16,28 +16,25 @@ declare enum TransactionTypes {
   Installments = "installments"
 };
 
-export type PastOrFutureDebitType = {
-  debitMonth: string;
-  monthlyNumberOfTransactions: number;
-  monthlyNISDebitSum: number;
-  monthlyUSDDebitSum: number;
-  monthlyEURDebitSum: number;
-};
+export interface CardsPastOrFutureDebitType {
+  cardsBlock?: CreditCardType[];
+  usage?: number;
+}
 
-export interface TransactionsAccount {
+export interface BankAccount {
   accountNumber: string;
   balance?: number;
   txns: Transaction[];
-}
+  info?: Partial<AccountInfoType>;
+  pastOrFutureDebits?: Partial<PastOrFutureDebitType[]>;
+  cardsPastOrFutureDebit?: CardsPastOrFutureDebitType;
+  saving?: AccountSavesType;
+};
 
-export interface BankAccountDetails {
-  userBank: UserBankModel[];
-  account: TransactionsAccount;
-  newUserToken: string;
-  importedTransactions?: InvoiceModel[]
-}
-
-export type AccountDetails = Pick<BankAccountDetails, "newUserToken" | "importedTransactions" | "account">;
+export type BankAccountDetails = {
+  bank: BankAccountModel;
+  account: BankAccount;
+};
 
 export interface Transaction {
   type: TransactionTypes;

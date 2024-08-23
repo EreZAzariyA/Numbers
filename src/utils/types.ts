@@ -1,4 +1,26 @@
-import { SupportedCompaniesTypes } from "./definitions";
+import { BankAccountDetails } from "./transactions";
+
+export type AccountDetails = Pick<BankAccountDetails, "account" | "bank">;
+
+export type AccountInfoType = {
+  accountName: string;
+  accountAvailableBalance: number;
+  accountBalance: number;
+  accountStatusCode: string;
+  accountCurrencyCode: string;
+  accountCurrencyLongName: string;
+  handlingBranchID: string;
+  handlingBranchName: string;
+  privateBusinessFlag: string;
+};
+
+export type PastOrFutureDebitType = {
+  debitMonth: string;
+  monthlyNumberOfTransactions: number;
+  monthlyNISDebitSum: number;
+  monthlyUSDDebitSum: number;
+  monthlyEURDebitSum: number;
+};
 
 export type CreditCardType = {
   cardFamilyDescription: string;
@@ -37,4 +59,4 @@ export type BankCredential = {
   num: string,
   save: boolean,
   username: string
-}
+};

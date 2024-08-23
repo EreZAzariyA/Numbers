@@ -22,7 +22,7 @@ export const getMenuItem = (
   } as MenuItem;
 };
 
-export interface DataType {
+export interface CategoryDataType {
   _id: string;
   name: string;
   editable: boolean;

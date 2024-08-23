@@ -2,41 +2,42 @@ import axios from "axios";
 import config from "../utils/config";
 import store from "../redux/store";
 import { addManyInvoices } from "../redux/slicers/invoices";
-import { refreshTokenAction } from "../redux/slicers/auth-slicer";
-import { AccountDetails, BankAccountDetails, ScraperCredentials, Transaction } from "../utils/transactions";
+import { BankAccountDetails, ScraperCredentials, Transaction } from "../utils/transactions";
 import InvoiceModel from "../models/invoice";
 import { SupportedCompaniesTypes } from "../utils/definitions";
+import { AccountDetails } from "../utils/types";
+import { BankAccountModel } from "../models/bank-model";
 
 class BankServices {
+
+  fetchBankAccounts = async (userId: string): Promise<BankAccountModel[]> => {
+    const response = await axios.get<BankAccountModel[]>(config.urls.bank.fetchAllBanksAccounts + `/${userId}`);
+    const banks = response.data;
+    return banks;
+  };
+
+  fetchOneBankAccount = async (userId: string, bankName: string): Promise<BankAccountModel> => {
+    const response = await axios.get<BankAccountModel>(config.urls.bank.fetchOneBankAccount + `/${userId}`, { data: { bankName } });
+    const banks = response.data;
+    return banks;
+  };
+
   fetchBankData = async (details: ScraperCredentials, user_id: string): Promise<BankAccountDetails> => {
     const response = await axios.post<BankAccountDetails>(config.urls.bank.fetchBankData + `/${user_id}`, details);
     const data = response.data;
-
-    if (data && data.newUserToken) {
-      store.dispatch(refreshTokenAction(data.newUserToken));
-      return data;
-    }
-
-    throw new Error('Some error while trying to fetch bank account data');
+    return data;
   };
 
-  refreshBankData = async (bankAccount_id: string, user_id: string): Promise<Pick<AccountDetails, "importedTransactions">> => {
-    const response = await axios.put<AccountDetails>(config.urls.bank.refreshBankData + `/${user_id}`, { bankAccount_id });
-    const { newUserToken, importedTransactions } = response.data;
-    if (newUserToken && importedTransactions) {
-      store.dispatch(refreshTokenAction(newUserToken));
-      return { importedTransactions };
-    }
+  refreshBankData = async (bankName: string, user_id: string): Promise<Pick<AccountDetails, "account">> => {
+    const response = await axios.put<AccountDetails>(config.urls.bank.refreshBankData + `/${user_id}`, { bankName });
+    const bankData = response.data;
+    return bankData;
   };
 
-  updateBankDetails = async (bankAccount_id: string, user_id: string, newCredentials: any): Promise<AccountDetails> => {
-    const response = await axios.put<AccountDetails>(config.urls.bank.updateBankDetails + `/${user_id}`, { bankAccount_id, newCredentials });
-    console.log(response.data);
-    const { newUserToken, importedTransactions, account } = response.data;
-    if (!!newUserToken && typeof newUserToken === "string") {
-      store.dispatch(refreshTokenAction(newUserToken));
-    }
-    return { importedTransactions, account, newUserToken };
+  updateBankDetails = async (bankName: string, user_id: string, newCredentials: any): Promise<BankAccountDetails> => {
+    const response = await axios.put<BankAccountDetails>(config.urls.bank.updateBankDetails + `/${user_id}`, { bankName, newCredentials });
+    const data = response.data;
+    return data;
   };
 
   importTrans = async (transactions: Transaction[], user_id: string, companyId: SupportedCompaniesTypes): Promise<InvoiceModel[]> => {

@@ -1,14 +1,14 @@
 import InvoiceModel from "../../../models/invoice";
 import { Graph } from "../../components/Charts/Graph";
-import { UserBankModel } from "../../../models/user-model";
 import { Tabs, Typography } from "antd";
 import { CompaniesNames } from "../../../utils/definitions";
 import { isArrayAndNotEmpty } from "../../../utils/helpers";
 import { ChartsTypes } from "../../components/Charts/charts-utils";
+import { BankAccountModel } from "../../../models/bank-model";
 
 interface DashboardFourthProps {
   invoices: InvoiceModel[];
-  bankAccount: UserBankModel[];
+  bankAccount: BankAccountModel[];
 };
 
 const DashboardFourth = (props: DashboardFourthProps) => {

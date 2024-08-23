@@ -1,24 +1,22 @@
 import { Form, Table, Typography, Popconfirm, Row, Col, Divider, TableProps } from "antd";
-import { DataType, InvoiceDataType } from "../../utils/antd-types";
+import { CategoryDataType, InvoiceDataType } from "../../utils/antd-types";
 import { useNavigate } from "react-router-dom";
 
 interface EditTableProps<T> {
-  columns: TableProps<T>['columns'];
-  dataSource: any;
+  dataSource: TableProps<any>['dataSource'];
   type: string;
   handleAdd?: () => void;
   onEditMode?: (record: any) => void;
   removeHandler?: (record_id: string) => Promise<void>;
-  rowKey: string;
-  scrollAble?: boolean;
   isReady?: boolean;
+  tableProps?: TableProps<T>
 };
 
-export const EditTable = <T extends DataType | InvoiceDataType>(props: EditTableProps<T>) => {
+export const EditTable = <T extends CategoryDataType | InvoiceDataType>(props: EditTableProps<T>) => {
   const [ form ] = Form.useForm();
   const navigate = useNavigate();
 
-  props.columns.push({
+  props.tableProps.columns.push({
     title: 'Actions',
     key: 'action',
     width: 200,
@@ -57,12 +55,10 @@ export const EditTable = <T extends DataType | InvoiceDataType>(props: EditTable
   return (
     <Form form={form}>
       <Table
-        rowKey={props.rowKey}
         bordered
-        columns={props.columns}
-        dataSource={props.dataSource}
+        // dataSource={props.dataSource}
         rootClassName="editable-row"
-        scroll={props.scrollAble ? {x: 650} : {}}
+        {...props.tableProps}
       />
     </Form>
   );

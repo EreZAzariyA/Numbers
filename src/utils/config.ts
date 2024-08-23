@@ -9,6 +9,8 @@ abstract class Config {
     invoices: "",
     categories: "",
     bank: {
+      fetchAllBanksAccounts: "",
+      fetchOneBankAccount: "",
       fetchBankData: "",
       refreshBankData: "",
       updateBankDetails: "",
@@ -27,6 +29,8 @@ abstract class Config {
       invoices: baseUrl + "invoices",
       categories: baseUrl + "categories",
       bank: {
+        fetchAllBanksAccounts: baseUrl + "bank-account/fetch-all-banks-accounts",
+        fetchOneBankAccount: baseUrl + "bank-account/fetch-bank-account",
         fetchBankData: baseUrl + "bank-account/fetch-bank-data",
         refreshBankData: baseUrl + "bank-account/refresh-bank-data",
         updateBankDetails: baseUrl + "bank-account/update-bank-details",

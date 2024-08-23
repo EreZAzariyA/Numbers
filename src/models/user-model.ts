@@ -13,32 +13,6 @@ export class EmailModel {
   }
 };
 
-
-export class UserBankModel {
-  _id: string;
-  bankName: string;
-  credentials: string;
-  details: {
-    account: string,
-    balance: number,
-  };
-  lastConnection: number;
-  extraInfo?: {
-    accountAvailableBalance: number;
-    accountBalance: number;
-    accountCurrencyCode: string;
-    accountCurrencyLongName: string;
-    accountName: string;
-    accountStatusCode: string;
-    handlingBranchID: string;
-    handlingBranchName: string;
-    privateBusinessFlag: string;
-  };
-  pastOrFutureDebits?: PastOrFutureDebits[];
-  creditCards: CreditCardType[];
-  savings: AccountSavesType;
-};
-
 class UserModel {
   _id?: string;
   profile: {
@@ -55,7 +29,6 @@ class UserModel {
     lang?: string,
     'theme-color'?: string
   };
-  bank: UserBankModel[];
 
   constructor(user: UserModel) {
     this._id = user._id;
@@ -63,7 +36,6 @@ class UserModel {
     this.emails = user.emails;
     this.services = user.services;
     this.config = user.config;
-    this.bank = user.bank;
   }
 };
 

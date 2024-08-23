@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DataType } from "../../utils/antd-types";
+import { CategoryDataType } from "../../utils/antd-types";
 import { Button, Col, Input, Row, Space, TableProps, message } from "antd";
 import NewCategory from "./newCategory/newCategory";
 import CategoryModel from "../../models/category-model";
@@ -88,7 +88,7 @@ const CategoriesPage = () => {
     setFilterState({ category: null });
   };
 
-  const columns: TableProps<DataType>['columns'] = [
+  const columns: TableProps<CategoryDataType>['columns'] = [
     {
       title: 'Category',
       dataIndex: 'name',
@@ -128,11 +128,13 @@ const CategoriesPage = () => {
             </div>
             <EditTable
               dataSource={dataSource}
-              columns={columns}
               type="categories"
-              rowKey="_id"
               onEditMode={onEdit}
               removeHandler={onRemove}
+              tableProps={{
+                columns,
+                rowKey: '_id'
+              }}
             />
             <Button onClick={() => setStep(Steps.New_Category)}>
               Add Category

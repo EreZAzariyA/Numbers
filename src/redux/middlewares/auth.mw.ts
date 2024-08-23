@@ -3,10 +3,11 @@ import { jwtDecode } from "jwt-decode";
 import { fetchUserLangAction } from "../slicers/lang-slicer";
 import { fetchUserThemeAction } from "../slicers/theme-slicer";
 import UserModel from "../../models/user-model";
+import { loginAction } from "../slicers/auth-slicer";
 
 const authMiddleWare: Middleware = (store) => (next) => (action: any) => {
   const { dispatch } = store;
-  if (action.type === 'auth/loginAction') {
+  if (action.type === loginAction.type) {
     const token = action.payload.token;
     const user: UserModel = jwtDecode(token);
 

@@ -1,8 +1,8 @@
 import i18n from "i18next";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 import { LanguageType, Languages } from "../redux/slicers/lang-slicer";
 import DarkModeButton from "../components/components/Darkmode-button";
 import Logo from "../components/components/logo/logo";
@@ -16,6 +16,7 @@ import { Button, Col, Dropdown, Layout, MenuProps, Row, message } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { IoIosClose } from "react-icons/io";
 import "dayjs/locale/he";
+import { fetchBankAccounts } from "../redux/slicers/bank-slicer";
 
 interface DashboardHeaderProps {
   changeTheme?: (isDarkTheme: boolean) => void;
@@ -29,6 +30,7 @@ const languages = {...Languages};
 const DashboardHeader = (props: DashboardHeaderProps) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
   const lang = useSelector((state: RootState) => state.language.lang);
   const [current, setCurrent] = useState<string>('1');
@@ -40,6 +42,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
       try {
         await categoriesServices.fetchCategoriesByUserId(user._id);
         await invoicesServices.fetchInvoicesByUserId(user._id);
+        dispatch(fetchBankAccounts(user._id));
       } catch (err) {
         console.log(getError(err));
       }
@@ -48,7 +51,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
     if (user && user._id) {
       fetchUserData();
     }
-  }, [user]);
+  }, [user, dispatch]);
 
   useEffect(() => {
     const locationArray = pathname.split('/');

@@ -17,7 +17,7 @@ interface TransactionsTableProps {
 
 const TransactionsTable = (props: TransactionsTableProps) => {
   const tableType = (TransactionsTableTypes as any)[props.type] || props.type;
-  const columns: TableProps<InvoiceModel>['columns'] = [
+  const columns: TableProps<InvoiceModel | any>['columns'] = [
     {
       title: 'Date',
       dataIndex: 'date',

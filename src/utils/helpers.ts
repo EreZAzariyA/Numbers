@@ -5,8 +5,10 @@ import dayjs, { Dayjs } from "dayjs";
 import store from "../redux/store";
 import { CategoryData } from "./interfaces";
 import { TransactionStatusesType } from "./transactions";
-import UserModel, { UserBankModel } from "../models/user-model";
+import UserModel from "../models/user-model";
 import CategoryModel from "../models/category-model";
+import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
+import { BankAccountModel } from "../models/bank-model";
 
 export type ColorType = {
   ICON: string;
@@ -255,7 +257,7 @@ export const filterInvoicesByCategoryId = (invoices: InvoiceModel[], category_id
 };
 
 export const getTimeToRefresh = (lastConnection: number) => {
-  return dayjs(lastConnection).subtract(-5, 'hour');
+  return dayjs(lastConnection).subtract(-3, 'hour');
 };
 
 export const sortInvoices = (invoices: InvoiceModel[], sortBy: 'date'): InvoiceModel[] => {
@@ -315,8 +317,13 @@ export const getFutureDebitDate = (dateString: string, format?: string): string 
   return dayjs(date).format(format || "MM/YYYY");
 };
 
-export const getBanksTotal = (banks: UserBankModel[]) => {
+export const getBanksTotal = (banks: BankAccountModel[]) => {
   let arr = [];
+
+  if (!isArrayAndNotEmpty(banks)) {
+    console.log('empty');
+    return;
+  }
 
   for (const bank of banks) {
     if (bank?.details?.balance)
@@ -325,3 +332,8 @@ export const getBanksTotal = (banks: UserBankModel[]) => {
 
   return getTotals(arr) || 0;
 };
+
+export const getLoginFields = (companyId: SupportedCompaniesTypes) => {
+  const company = SupportedScrapers[companyId];
+  return company.loginFields;
+}

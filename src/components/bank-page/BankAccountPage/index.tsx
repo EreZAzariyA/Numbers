@@ -1,16 +1,17 @@
-import { Col, Modal, Row, Space, Spin, Tooltip, Typography, message } from "antd";
+import { Col, Row, Space, Spin, Tooltip, Typography, message } from "antd";
 import { CompaniesNames } from "../../../utils/definitions";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react";
 import bankServices from "../../../services/banks";
-import UserModel, { UserBankModel } from "../../../models/user-model";
-import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
+import UserModel from "../../../models/user-model";
+import { asNumString, getTimeToRefresh, isArrayAndNotEmpty } from "../../../utils/helpers";
 import CustomModal from "../../components/CustomModal";
 import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
+import { BankAccountModel } from "../../../models/bank-model";
 
 interface BankAccountPageProps {
-  bankAccount: UserBankModel;
+  bankAccount: BankAccountModel;
   user: UserModel;
 };
 dayjs.extend(relativeTime);
@@ -19,8 +20,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
   const lastConnection = props.bankAccount?.lastConnection
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
   const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
-  // const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
-  const isRefreshAvailable =true
+  const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const accountDetails = props.bankAccount?.details;
 
@@ -30,11 +30,11 @@ const BankAccountPage = (props: BankAccountPageProps) => {
     setIsLoading(true);
 
     try {
-      const response = await bankServices.refreshBankData(props.bankAccount?._id, props.user?._id);
+      const response = await bankServices.refreshBankData(props.bankAccount?.bankName, props.user?._id);
       if (response) {
         message.success('Account data updated...');
-        if (response.importedTransactions.length) {
-          message.success(`${response.importedTransactions.length} invoices updated successfully`);
+        if (response.account?.txns && isArrayAndNotEmpty(response.account.txns)) {
+          message.success(`${response.account.txns?.length} invoices updated successfully`);
         }
       }
     } catch (err: any) {

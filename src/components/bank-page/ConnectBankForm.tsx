@@ -2,10 +2,11 @@ import { Button, Checkbox, Form, Input, Modal, Select, Space, Typography, messag
 import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/antd-types";
 import { useState } from "react";
-import UserModel, { UserBankModel } from "../../models/user-model";
+import UserModel from "../../models/user-model";
 import { BankAccountDetails, Transaction } from "../../utils/transactions";
 import bankServices from "../../services/banks";
-import { isArray } from "../../utils/helpers";
+import { isArray, isArrayAndNotEmpty } from "../../utils/helpers";
+import { BankAccountModel } from "../../models/bank-model";
 
 const { confirm } = Modal;
 
@@ -19,13 +20,8 @@ interface ConnectBankFormProps {
   handleOkButton?: (val: boolean) => void;
   setResult?: (res: any) => void;
   formType?: ConnectBankFormType;
-  bankDetails?: UserBankModel
+  bankDetails?: BankAccountModel;
 };
-
-const getLoginFields = (companyId: SupportedCompaniesTypes) => {
-  const company = SupportedScrapers[companyId];
-  return company.loginFields;
-}
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -50,9 +46,6 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
   };
 
-  console.log(props);
-  
-
   const onFinish = async (values: any) => {
     setIsLoading(true);
 
@@ -63,14 +56,14 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
 
     try {
-      let res: Partial<BankAccountDetails> = {};
+      let res: BankAccountDetails;
       if (props.formType === ConnectBankFormType.Update_Bank) {
-        res = await bankServices.updateBankDetails(props.bankDetails?._id, props.user._id, values);
+        res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
       } else {
         res = await bankServices.fetchBankData(values, props.user._id);
       }
-      if (res?.account && res.account?.txns && res.account.txns?.length) {
-        showTransImportConfirmation(res.account?.txns);
+      if (res?.account && res.account?.txns && isArrayAndNotEmpty(res.account.txns)) {
+        showTransImportConfirmation(res.account.txns);
       }
       props?.setResult(res);
       props.handleOkButton(true);

@@ -11,8 +11,9 @@ import { useState } from "react";
 const BankPage = () => {
   const { t } = useTranslation();
   const user = useSelector((state: RootState) => state.auth.user);
-  const bankAccounts = user.bank;
-  const hasBankAccounts = bankAccounts && isArrayAndNotEmpty(bankAccounts);
+  const banks = useSelector((state: RootState) => state.userBanks.account.banks);
+  const bankAccounts = banks;
+  const hasBankAccounts = bankAccounts && isArrayAndNotEmpty(banks);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOkBtnActive, setIsBtnActive] = useState<boolean>(false);
   const [modalResult, setModalResult] = useState(null);

@@ -214,13 +214,16 @@ const Invoices = () => {
               resetFilters={resetFilters}
             />
             <EditTable
-              columns={columns}
               dataSource={data}
-              rowKey="_id"
-              scrollAble
               type="invoices"
               onEditMode={onEdit}
               removeHandler={onRemove}
+              tableProps={{
+                rowKey: '_id',
+                columns,
+                scroll: { x: 800 },
+                bordered: true
+              }}
             />
             <Button onClick={() => setStep(Steps.New_Invoice)}>
               Add Invoice

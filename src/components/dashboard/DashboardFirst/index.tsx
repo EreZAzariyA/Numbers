@@ -5,8 +5,9 @@ import UserModel from "../../../models/user-model";
 import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
 import { asNumString } from "../../../utils/helpers";
 import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
-import CurrencyList from 'currency-list';
 import { useTranslation } from "react-i18next";
+import CurrencyList from 'currency-list'
+import { BankAccountModel } from "../../../models/bank-model";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -14,11 +15,12 @@ interface DashboardFirstProps {
   invoices: InvoiceModel[];
   categories: CategoryModel[];
   user: UserModel;
+  account: BankAccountModel;
 };
 
 const DashboardFirst = (props: DashboardFirstProps) => {
   const { t } = useTranslation();
-  const account = props.user.bank[0];
+  const { account } = props;
   const accountBalance = asNumString(account?.details?.balance);
   const currency = CurrencyList.get(account?.extraInfo?.accountCurrencyCode || "ILS");
   const creditCards = account?.creditCards || [];

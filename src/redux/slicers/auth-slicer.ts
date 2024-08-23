@@ -1,9 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode';
 import UserModel from '../../models/user-model';
+import bankServices from '../../services/banks';
 
 export interface AuthState {
-  token: string | '',
+  token: string | null,
   user?: UserModel | null
 };
 
@@ -61,7 +62,7 @@ const authSlicer = createSlice({
       }
       return state;
     }
-  }
+  },
 });
 
 export const {
