@@ -1,24 +1,24 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authSlicer from "./slicers/auth-slicer";
-import themeSlicer from "./slicers/theme-slicer";
-import invoicesSlicer from "./slicers/invoices";
+import authSlicer from "./slicers/authentication";
+import transactionsSlicer from "./slicers/transactions";
 import categoriesSlicer from "./slicers/categories";
-import langSlicer from "./slicers/lang-slicer";
-import bankSlicer from "./slicers/bank-slicer";
+import bankSlicer from "./slicers/banks";
 import authMiddleWare from "./middlewares/auth.mw";
+import userConfigSlicer from "./slicers/user-config";
+import { useDispatch } from "react-redux";
 
 const store = configureStore({
   reducer: {
     auth: authSlicer,
-    theme: themeSlicer,
     categories: categoriesSlicer,
-    invoices: invoicesSlicer,
-    language: langSlicer,
-    userBanks: bankSlicer
+    transactions: transactionsSlicer,
+    userBanks: bankSlicer,
+    config: userConfigSlicer,
   },
   middleware: (defaultMiddleware) => (defaultMiddleware().concat(authMiddleWare)),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export default store;

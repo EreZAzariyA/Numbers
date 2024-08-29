@@ -1,8 +1,9 @@
 import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "../utils/types";
 
-export interface BanksAccount {
+export interface MainBanksAccount {
+  _id: string;
   userId: string;
-  banks: BankAccountModel[]
+  banks: BankAccountModel[],
 };
 
 export class BankAccountModel {

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { ThemeColors } from "../redux/slicers/theme-slicer";
-import InvoiceModel from "../models/invoice";
+import TransactionModel from "../models/transaction";
 import dayjs, { Dayjs } from "dayjs";
 import store from "../redux/store";
 import { CategoryData } from "./interfaces";
@@ -9,6 +8,7 @@ import UserModel from "../models/user-model";
 import CategoryModel from "../models/category-model";
 import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
 import { BankAccountModel } from "../models/bank-model";
+import { ThemeColors } from "./enums";
 
 export type ColorType = {
   ICON: string;
@@ -31,11 +31,6 @@ export const Sizes: SizeType = {
   MENU_ICON: 25,
   SUB_MENU_ICON: 20
 };
-
-export const Languages = {
-  English: 'en',
-  Hebrew: 'he'
-}
 
 const getStyle = (theme: string): string => {
   if (theme === ThemeColors.LIGHT) {
@@ -112,17 +107,17 @@ export const asNumString = (num: number = 0, digits: number = 2): string => {
   return parseFloat(formattedNumber || '0').toLocaleString();
 };
 
-export const getInvoicesBySelectedMonth = (invoices: InvoiceModel[], selectedMonth: Dayjs): InvoiceModel[] => {
-  const invoicesByMonth: InvoiceModel[] = [];
-  if (isArrayAndNotEmpty(invoices)) {
-    invoices.forEach((i) => {
-      const invoiceDate = dayjs(i.date).format('YYYY-MM');
-      if (invoiceDate === selectedMonth?.format('YYYY-MM')) {
-        invoicesByMonth.push(i);
+export const getInvoicesBySelectedMonth = (transactions: TransactionModel[], selectedMonth: Dayjs): TransactionModel[] => {
+  const transactionsByMonth: TransactionModel[] = [];
+  if (isArrayAndNotEmpty(transactions)) {
+    transactions.forEach((i) => {
+      const transactionDate = dayjs(i.date).format('YYYY-MM');
+      if (transactionDate === selectedMonth?.format('YYYY-MM')) {
+        transactionsByMonth.push(i);
       }
     });
   }
-  return invoicesByMonth;
+  return transactionsByMonth;
 };
 
 export const getTotals = (arr: number[]): number => {
@@ -134,12 +129,12 @@ export const getTotals = (arr: number[]): number => {
   return total;
 };
 
-export const getInvoicesTotalsPrice = (invoices: InvoiceModel[], status?: TransactionStatusesType): {spent: number, income: number } => {
+export const getInvoicesTotalsPrice = (transactions: TransactionModel[], status?: TransactionStatusesType): {spent: number, income: number } => {
   const totals: number[] = [];
   const incomes: number[] = [];
 
-  if (isArrayAndNotEmpty(invoices)) {
-    let arr = [...invoices];
+  if (isArrayAndNotEmpty(transactions)) {
+    let arr = [...transactions];
     if (status) {
       arr = filterInvoicesByStatus(arr, status);
     }
@@ -158,47 +153,47 @@ export const getInvoicesTotalsPrice = (invoices: InvoiceModel[], status?: Transa
   };
 };
 
-export const getInvoicesPricePerCategory = (invoices: InvoiceModel[], status?: TransactionStatusesType) => {
-  const categories = store.getState().categories;
-  const invoicesByCategory: any = {};
+export const getInvoicesPricePerCategory = (transactions: TransactionModel[], status?: TransactionStatusesType) => {
+  const { categories } = store.getState().categories;
+  const transactionsByCategory: any = {};
   let arr;
 
   if (status) {
-    arr = filterInvoicesByStatus(invoices, status);
+    arr = filterInvoicesByStatus(transactions, status);
   }
 
   if (isArrayAndNotEmpty(arr) && isArrayAndNotEmpty(categories)) {
     for (const category of categories) {
-      const categoryInvoices: InvoiceModel[] = [];
+      const categoryInvoices: TransactionModel[] = [];
 
-      arr.forEach((invoice) => {
-        if (invoice.category_id === category._id) {
-          categoryInvoices.push(invoice);
+      arr.forEach((transaction) => {
+        if (transaction.category_id === category._id) {
+          categoryInvoices.push(transaction);
         }
       });
       const totalAmount = getInvoicesTotalsPrice(categoryInvoices);
-      invoicesByCategory[category.name] = totalAmount
+      transactionsByCategory[category.name] = totalAmount
     };
   }
 
-  return invoicesByCategory;
+  return transactionsByCategory;
 };
 
-export const getNumOfTransactionsPerCategory = (invoices: InvoiceModel[], categories: CategoryModel[], status?: TransactionStatusesType) => {
+export const getNumOfTransactionsPerCategory = (transactions: TransactionModel[], categories: CategoryModel[], status?: TransactionStatusesType) => {
   const numOfTransPerCategory: any = {};
-  let arr = [...invoices];
+  let arr = [...transactions];
   if (status) {
-    arr = filterInvoicesByStatus(invoices, status);
+    arr = filterInvoicesByStatus(transactions, status);
   }
 
   if (isArrayAndNotEmpty(arr) && isArrayAndNotEmpty(categories)) {
     for (const category of categories) {
-      const categoryInvoices: InvoiceModel[] = [];
+      const categoryInvoices: TransactionModel[] = [];
       let numOfTrans = 0;
 
-      arr.forEach((invoice) => {
-        if (invoice.category_id === category._id) {
-          categoryInvoices.push(invoice);
+      arr.forEach((transaction) => {
+        if (transaction.category_id === category._id) {
+          categoryInvoices.push(transaction);
           numOfTrans = numOfTrans + 1;
         }
       });
@@ -249,23 +244,26 @@ export const findCategoryWithLowestAmount = (data: CategoryData, status?: Transa
   return { category: minCategory, amount: minValue };
 };
 
-export const filterInvoicesByStatus = (invoices: InvoiceModel[], status: TransactionStatusesType): InvoiceModel[] => {
-  return invoices.filter((i) => i.status === status).sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
+export const filterInvoicesByStatus = (transactions: TransactionModel[] = [], status: TransactionStatusesType): TransactionModel[] => {
+  if (!!isArrayAndNotEmpty(transactions)) {
+    return transactions.filter((i) => i.status === status).sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
+  }
+  return transactions;
 };
-export const filterInvoicesByCategoryId = (invoices: InvoiceModel[], category_id: string): InvoiceModel[] => {
-  return invoices.filter((i) => i.category_id === category_id)
+export const filterInvoicesByCategoryId = (transactions: TransactionModel[], category_id: string): TransactionModel[] => {
+  return transactions.filter((i) => i.category_id === category_id)
 };
 
 export const getTimeToRefresh = (lastConnection: number) => {
   return dayjs(lastConnection).subtract(-3, 'hour');
 };
 
-export const sortInvoices = (invoices: InvoiceModel[], sortBy: 'date'): InvoiceModel[] => {
+export const sortInvoices = (transactions: TransactionModel[], sortBy: 'date'): TransactionModel[] => {
   if (sortBy === 'date') {
-    invoices.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
+    transactions.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
   }
 
-  return invoices;
+  return transactions;
 };
 
 export const getGreeting = () => {
@@ -286,19 +284,19 @@ export const getUserfName = (user: UserModel) => {
   return user.profile.first_name;
 };
 
-export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], invoices: InvoiceModel[]) => {
+export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: TransactionModel[]) => {
   const categoryMap = new Map();
   categories.forEach(category => {
     categoryMap.set(category._id, category.name);
   });
 
   const categoryInvoiceAmounts: any = {};
-  invoices.forEach(invoice => {
-    const categoryName = categoryMap.get(invoice.category_id);
+  transactions.forEach(transaction => {
+    const categoryName = categoryMap.get(transaction.category_id);
     if (!categoryInvoiceAmounts[categoryName]) {
         categoryInvoiceAmounts[categoryName] = 0;
     }
-    categoryInvoiceAmounts[categoryName] += invoice.amount;
+    categoryInvoiceAmounts[categoryName] += transaction.amount;
   });
 
   const result = Object.entries(categoryInvoiceAmounts).map(([name, amount]) => ({

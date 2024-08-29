@@ -1,13 +1,13 @@
 import axios from "axios";
-import store, { RootState } from "../redux/store";
-import { logoutAction } from "../redux/slicers/auth-slicer";
-import { message } from "antd";
+import store from "../redux/store";
+import { logoutAction } from "../redux/actions/authentication";
 import { getError } from "../utils/helpers";
+import { message } from "antd";
 
 class InterceptorsService {
   public createInterceptors(): void {
     axios.interceptors.request.use((request) => {
-      const token = (store.getState() as RootState).auth.token;
+      const token = store.getState().auth.token;
       if (token) {
         request.headers['Authorization'] = `Bearer ${token}`;
       }
@@ -27,7 +27,6 @@ class InterceptorsService {
       return message.error(getError(err));
     });
   };
-
 };
 
 const interceptorsService = new InterceptorsService();

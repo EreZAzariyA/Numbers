@@ -1,6 +1,10 @@
+import { Languages, ThemeColors } from "./enums";
 import { BankAccountDetails } from "./transactions";
 
 export type AccountDetails = Pick<BankAccountDetails, "account" | "bank">;
+export type LanguageType = typeof Languages[keyof typeof Languages];
+export type ThemeColorType = typeof ThemeColors[keyof typeof ThemeColors];
+
 
 export type AccountInfoType = {
   accountName: string;
