@@ -1,7 +1,7 @@
 {
   "menu": {
     "dashboard": "דף הבית",
-    "invoices": "הוצאות",
+    "transactions": "עסקות",
     "categories": "קטגוריות",
     "bankAccount": "חשבון בנק",
     "profile": "פרופיל",
@@ -16,7 +16,7 @@
   },
   "pages": {
     "dashboard": "דף הבית",
-    "invoices": "הוצאות",
+    "transactions": "עסקות",
     "categories": "קטגוריות",
     "bankAccount": "חשבון בנק",
     "profile": "פרופיל"

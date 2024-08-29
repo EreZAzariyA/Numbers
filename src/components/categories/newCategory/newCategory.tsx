@@ -13,16 +13,16 @@ const NewCategory = (props: NewCategoryProps) => {
   const [form] = Form.useForm();
   const [initialValues, setInitialValues] = useState<CategoryModel>({
     _id: props.category?._id || null,
-    user_id: props.category?.user_id || null,
     name: props.category?.name || null,
   });
+  const isUpdate = !!props.category;
 
   return (
     <div className="inner-page new-category-page">
       <Space direction="vertical" className="w-100">
         <Row justify={'center'}>
           <Col span={24}>
-            <div className="inner-page-title">New Category</div>
+            <div className="inner-page-title">{`${isUpdate ? 'Update' : 'New'} Category`}</div>
           </Col>
         </Row>
 
@@ -37,7 +37,7 @@ const NewCategory = (props: NewCategoryProps) => {
               <Form.Item
                 label="Name"
                 name={'name'}
-                rules={[{ required: true, message: 'Please enter category for invoices'}]}
+                rules={[{ required: true, message: 'Please enter category for transactions'}]}
               >
                 <Input onChange={(e) => setInitialValues({...initialValues, name: e.target.value})} />
               </Form.Item>

@@ -22,7 +22,7 @@ interface FiltersProps {
 export const Filters = (props: FiltersProps) => {
   const { t } = useTranslation();
   const { isPhone } = useResize();
-  const categories = useSelector((state: RootState) => state.categories);
+  const { categories, loading } = useSelector((state: RootState) => state.categories);
   const transactionStatus = [
     {
       name: TransactionStatuses.completed,
@@ -85,6 +85,7 @@ export const Filters = (props: FiltersProps) => {
               label: c.name,
               value: c._id,
             }))}
+            loading={loading}
           />
         </Col>
       )}

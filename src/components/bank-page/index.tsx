@@ -1,28 +1,22 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import ConnectBankForm from "./ConnectBankForm";
-import { RootState } from "../../redux/store";
 import { useTranslation } from "react-i18next";
+import { RootState } from "../../redux/store";
 import BankAccountPage from "./BankAccountPage";
-import { Modal, Result, Tabs, TabsProps, Typography } from "antd";
+import ConnectBankForm from "./ConnectBankForm";
 import { isArrayAndNotEmpty } from "../../utils/helpers";
 import { CompaniesNames } from "../../utils/definitions";
-import { useState } from "react";
+import { Modal, Result, Tabs, TabsProps, Typography } from "antd";
 
 const BankPage = () => {
   const { t } = useTranslation();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const banks = useSelector((state: RootState) => state.userBanks.account.banks);
-  const bankAccounts = banks;
-  const hasBankAccounts = bankAccounts && isArrayAndNotEmpty(banks);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { account, loading } = useSelector((state: RootState) => state.userBanks);
+  const hasBankAccounts = account && isArrayAndNotEmpty(account.banks);
+  const banksAccounts = hasBankAccounts ? account.banks : [];
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOkBtnActive, setIsBtnActive] = useState<boolean>(false);
   const [modalResult, setModalResult] = useState(null);
-
-  const onChange = (key: string) => {
-    if (key === 'add_account') {
-      setIsOpen(true);
-    }
-  };
 
   const onEdit = (action: 'add' | 'remove') => {
     if (action === 'add') {
@@ -35,10 +29,10 @@ const BankPage = () => {
     setModalResult(null);
   };
 
-  const items: TabsProps['items'] = !hasBankAccounts ? [] : bankAccounts.map((account) => ({
-    key: account.bankName,
-    label: <Typography.Text>{CompaniesNames[account.bankName] || account.bankName}</Typography.Text>,
-    children: <BankAccountPage key={account._id} user={user} bankAccount={account} />,
+  const items: TabsProps['items'] = banksAccounts.map((bank) => ({
+    key: bank.bankName,
+    label: <Typography.Text>{CompaniesNames[bank.bankName] || bank.bankName}</Typography.Text>,
+    children: <BankAccountPage key={bank._id} user={user} bankAccount={bank} loading={loading} />,
     closable: false
   }));
 
@@ -51,7 +45,11 @@ const BankPage = () => {
         <Tabs
           defaultActiveKey="1"
           items={items}
-          onChange={onChange}
+          onChange={(key) => {
+            if (key === 'add_account') {
+              setIsOpen(true);
+            }
+          }}
           onEdit={(_, action) => onEdit(action)}
           type="editable-card"
         />

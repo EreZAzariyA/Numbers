@@ -1,18 +1,18 @@
-import { Form, Table, Typography, Popconfirm, Row, Col, Divider, TableProps } from "antd";
-import { CategoryDataType, InvoiceDataType } from "../../utils/antd-types";
 import { useNavigate } from "react-router-dom";
+import TransactionModel from "../../models/transaction";
+import CategoryModel from "../../models/category-model";
+import { Form, Table, Typography, Popconfirm, Row, Col, Divider, TableProps } from "antd";
 
 interface EditTableProps<T> {
-  dataSource: TableProps<any>['dataSource'];
   type: string;
   handleAdd?: () => void;
   onEditMode?: (record: any) => void;
   removeHandler?: (record_id: string) => Promise<void>;
   isReady?: boolean;
-  tableProps?: TableProps<T>
+  tableProps: TableProps<T>;
 };
 
-export const EditTable = <T extends CategoryDataType | InvoiceDataType>(props: EditTableProps<T>) => {
+export const EditTable = <T extends CategoryModel | TransactionModel>(props: EditTableProps<T>) => {
   const [ form ] = Form.useForm();
   const navigate = useNavigate();
 
@@ -31,8 +31,8 @@ export const EditTable = <T extends CategoryDataType | InvoiceDataType>(props: E
         {props.type === 'categories' && (
           <>
             <Col>
-              <Typography.Link onClick={() => navigate({ pathname: '/invoices', hash: record._id })}>
-                Add invoice
+              <Typography.Link onClick={() => navigate({ pathname: '/transactions', hash: record._id })}>
+                Add transaction
               </Typography.Link>
             </Col>
             <Divider type="vertical" />
@@ -55,9 +55,6 @@ export const EditTable = <T extends CategoryDataType | InvoiceDataType>(props: E
   return (
     <Form form={form}>
       <Table
-        bordered
-        // dataSource={props.dataSource}
-        rootClassName="editable-row"
         {...props.tableProps}
       />
     </Form>

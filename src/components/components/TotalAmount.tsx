@@ -1,17 +1,17 @@
 import { Input } from "antd";
 import { asNumString, getInvoicesTotalsPrice } from "../../utils/helpers";
-import InvoiceModel from "../../models/invoice";
+import TransactionModel from "../../models/transaction";
 import { TotalAmountType } from "../../utils/enums";
 import React from "react";
 
 interface TotalAmountInputProps {
-  invoices: InvoiceModel[];
+  transactions: TransactionModel[];
   type?: TotalAmountType;
   style?: React.CSSProperties;
 };
 
 const TotalAmountInput = (props: TotalAmountInputProps) => {
-  const totalAmount = getInvoicesTotalsPrice(props.invoices);
+  const totalAmount = getInvoicesTotalsPrice(props.transactions);
   const amount = totalAmount[props.type];
 
   return (

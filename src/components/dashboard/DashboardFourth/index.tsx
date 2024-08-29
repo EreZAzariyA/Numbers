@@ -1,4 +1,4 @@
-import InvoiceModel from "../../../models/invoice";
+import TransactionModel from "../../../models/transaction";
 import { Graph } from "../../components/Charts/Graph";
 import { Tabs, Typography } from "antd";
 import { CompaniesNames } from "../../../utils/definitions";
@@ -7,7 +7,7 @@ import { ChartsTypes } from "../../components/Charts/charts-utils";
 import { BankAccountModel } from "../../../models/bank-model";
 
 interface DashboardFourthProps {
-  invoices: InvoiceModel[];
+  transactions: TransactionModel[];
   bankAccount: BankAccountModel[];
 };
 
@@ -25,7 +25,7 @@ const DashboardFourth = (props: DashboardFourthProps) => {
         <Tabs items={banks}/>
       ) : (
         <>
-          <Typography.Text className="sub-title pb-10">Add invoices to track your expenses</Typography.Text>
+          <Typography.Text className="sub-title pb-10">Add transactions to track your expenses</Typography.Text>
           <br />
           <br />
           <Graph data={[]} type={null} />

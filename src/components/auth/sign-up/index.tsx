@@ -1,18 +1,20 @@
-import { Button, Col, Form, Input, Row, message } from "antd";
+import { Button, Col, Form, Input, Row, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import authServices from "../../../services/authentication";
 import { getError } from "../../../utils/helpers";
 import UserModel from "../../../models/user-model";
+import { useAppDispatch } from "../../../redux/store";
+import { signupAction } from "../../../redux/actions/authentication";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const onFinish = async (values: UserModel) => {
     try {
-      const res = await authServices.signup(values);
-      if (res) {
+      const result = await dispatch(signupAction(values));
+      if (result.payload) {
         message.success("Sign-up Successfully");
         navigate('/auth/sign-in');
       }
@@ -22,15 +24,16 @@ const SignUp = () => {
   };
 
   return (
-    <div className="auth-form-main-container">
+    <div className="auth-form-main-container sign-up">
       <div className="auth-form-inner-container">
         <Form
           onFinish={onFinish}
-          className='auth-form sign-up'
+          className='auth-form'
           layout="vertical"
           labelAlign='left'
           scrollToFirstError
         >
+          <Typography.Text className="form-title">Sign-Up</Typography.Text>
           <Row gutter={[20, 10]} justify={'space-between'}>
             <Col span={12}>
               <Form.Item

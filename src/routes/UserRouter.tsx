@@ -6,7 +6,7 @@ import AuthView from "../layout/AuthView";
 import SignIn from "../components/auth/sign-in";
 import SignUp from "../components/auth/sign-up";
 import Dashboard from "../components/dashboard";
-import Invoices from "../components/invoices";
+import Transactions from "../components/transactions";
 import CategoriesPage from "../components/categories";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import PrivateRoute from "./PrivateRoute";
@@ -23,7 +23,7 @@ const UserRouter = () => (
           <Route path="/" element={<Navigate to={'/dashboard'} />} />
           <Route element={<PrivateRoute><DashboardView /></PrivateRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/invoices" element={<Invoices />} />
+            <Route path="/transactions" element={<Transactions />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/bank" element={<BankPage />} />
             <Route path="/profile" element={<Profile />} />

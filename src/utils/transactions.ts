@@ -1,4 +1,5 @@
 import { BankAccountModel } from "../models/bank-model";
+import TransactionModel from "../models/transaction";
 import { SupportedCompaniesTypes } from "./definitions";
 import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "./types";
 
@@ -31,9 +32,16 @@ export interface BankAccount {
   saving?: AccountSavesType;
 };
 
-export type BankAccountDetails = {
+export interface BankAccountDetails {
   bank: BankAccountModel;
   account: BankAccount;
+  importedTransactions?: TransactionModel[]
+};
+
+export interface RefreshedBankAccountDetails {
+  bank: BankAccountModel;
+  account: BankAccount;
+  importedTransactions?: TransactionModel[];
 };
 
 export interface Transaction {

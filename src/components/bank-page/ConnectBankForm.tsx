@@ -3,7 +3,7 @@ import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../.
 import { MenuItem, getMenuItem } from "../../utils/antd-types";
 import { useState } from "react";
 import UserModel from "../../models/user-model";
-import { BankAccountDetails, Transaction } from "../../utils/transactions";
+import { RefreshedBankAccountDetails, Transaction } from "../../utils/transactions";
 import bankServices from "../../services/banks";
 import { isArray, isArrayAndNotEmpty } from "../../utils/helpers";
 import { BankAccountModel } from "../../models/bank-model";
@@ -56,7 +56,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
 
     try {
-      let res: BankAccountDetails;
+      let res: RefreshedBankAccountDetails;
       if (props.formType === ConnectBankFormType.Update_Bank) {
         res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
       } else {

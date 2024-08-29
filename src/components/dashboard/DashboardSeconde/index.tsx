@@ -1,16 +1,16 @@
 import { Dayjs } from "dayjs";
 import TransactionsTable from "../../components/TransactionsTable/TransactionsTable";
-import InvoiceModel from "../../../models/invoice";
+import TransactionModel from "../../../models/transaction";
 import UserModel from "../../../models/user-model";
-import { filterInvoicesByStatus } from "../../../utils/helpers";
+import { filterInvoicesByStatus, isArrayAndNotEmpty } from "../../../utils/helpers";
 import { TransactionStatusesType } from "../../../utils/transactions";
 import "./DashboardSeconde.css";
 import { useTranslation } from "react-i18next";
 
 interface DashboardSecondeProps {
   user: UserModel;
-  invoices: InvoiceModel[];
-  invoicesByMonth?: InvoiceModel[];
+  transactions: TransactionModel[];
+  transactionsByMonth?: TransactionModel[];
   monthToDisplay: Dayjs;
 };
 
@@ -22,8 +22,12 @@ export enum TransactionsTableTypes {
 
 const DashboardSeconde = (props: DashboardSecondeProps) => {
   const { t } = useTranslation();
-  let invoices = filterInvoicesByStatus(props.invoices, TransactionStatusesType.COMPLETED);
-  invoices = invoices.slice(0, 6);
+  let transactions: TransactionModel[] = [];
+
+  if (!!isArrayAndNotEmpty(transactions)){
+    transactions  = filterInvoicesByStatus(props.transactions, TransactionStatusesType.COMPLETED);
+    transactions = transactions.slice(0, 6);
+  }
 
   return (
     <div className="home-seconde-main-container home-component">
@@ -38,7 +42,7 @@ const DashboardSeconde = (props: DashboardSecondeProps) => {
         </div>
         <div className="card-body">
           <TransactionsTable
-            invoices={invoices}
+            transactions={transactions}
             type={TransactionsTableTypes.Last_Transactions}
             date={props.monthToDisplay}
           />

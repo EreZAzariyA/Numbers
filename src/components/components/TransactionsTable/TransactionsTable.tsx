@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
-import InvoiceModel from "../../../models/invoice";
+import TransactionModel from "../../../models/transaction";
 import { TransactionsTableTypes } from "../../dashboard/DashboardSeconde";
 import { TransactionStatuses } from "../../../utils/transactions";
 import { asNumString } from "../../../utils/helpers";
@@ -9,7 +9,7 @@ import "./TransactionsTable.css"
 interface TransactionsTableProps {
   type?: string;
   status?: TransactionStatuses;
-  invoices: InvoiceModel[];
+  transactions: TransactionModel[];
   loading?: boolean;
   props?: TableProps;
   date?: Dayjs;
@@ -17,7 +17,7 @@ interface TransactionsTableProps {
 
 const TransactionsTable = (props: TransactionsTableProps) => {
   const tableType = (TransactionsTableTypes as any)[props.type] || props.type;
-  const columns: TableProps<InvoiceModel | any>['columns'] = [
+  const columns: TableProps<TransactionModel | any>['columns'] = [
     {
       title: 'Date',
       dataIndex: 'date',
@@ -45,7 +45,7 @@ const TransactionsTable = (props: TransactionsTableProps) => {
     },
   ];
 
-  let dataSet = [...props.invoices];
+  let dataSet = [...props.transactions];
 
   if (tableType === TransactionsTableTypes.Pending) {
     columns.push({
@@ -58,7 +58,7 @@ const TransactionsTable = (props: TransactionsTableProps) => {
     });
   }
   if (tableType === TransactionsTableTypes.Card_Withdrawals) {
-    const latestInvoices = [...props.invoices].slice(0, 5);
+    const latestInvoices = [...props.transactions].slice(0, 5);
     dataSet = latestInvoices;
   }
 

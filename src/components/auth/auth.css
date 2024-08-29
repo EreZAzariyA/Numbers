@@ -30,11 +30,29 @@
   min-height: 400px;
 
   padding: 30px 20px 10px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.345);
   border-radius: 10px;
   -webkit-box-shadow: 0px 0px 35px 3px rgba(0,0,0,0.5);
   -moz-box-shadow: 0px 0px 35px 3px rgba(0,0,0,0.5);
   box-shadow: 0px 0px 35px 3px rgba(0,0,0,0.5);
+}
+
+.auth-form-main-container.sign-in .auth-form {
+  width: min(100% - 10%, 350px);
+}
+
+.auth-form-main-container .auth-form .form-title {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 0;
+  color: var(--default-white);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.auth-form-main-container.sign-up .auth-form .form-title {
+  display: block;
+  margin-bottom: 30px;
 }
 
 .auth-form-main-container .auth-form label {

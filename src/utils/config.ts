@@ -1,12 +1,18 @@
 abstract class Config {
   public urls = {
     auth: {
-      signUp: "",
+      signup: "",
       signIn: "",
-      googleSignIn: ""
+      googleSignIn: "",
+      logout: ""
     },
-    users: "",
-    invoices: "",
+    users: {
+      config: {
+        theme: "",
+        language: ""
+      }
+    },
+    transactions: "",
     categories: "",
     bank: {
       fetchAllBanksAccounts: "",
@@ -21,12 +27,18 @@ abstract class Config {
   public constructor(baseUrl: string) {
     this.urls = {
       auth: {
-        signUp: baseUrl + "auth/signup",
+        signup: baseUrl + "auth/signup",
         signIn: baseUrl + "auth/signin",
-        googleSignIn: baseUrl + "auth/google"
+        googleSignIn: baseUrl + "auth/google",
+        logout: baseUrl + "auth/logout",
       },
-      users: baseUrl + "users/",
-      invoices: baseUrl + "invoices",
+      users: {
+        config: {
+          theme: baseUrl + "users/config/theme",
+          language: baseUrl + "users/config/language",
+        }
+      },
+      transactions: baseUrl + "transactions",
       categories: baseUrl + "categories",
       bank: {
         fetchAllBanksAccounts: baseUrl + "bank-account/fetch-all-banks-accounts",

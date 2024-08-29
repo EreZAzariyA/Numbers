@@ -1,7 +1,7 @@
 {
   "menu": {
     "dashboard": "Dashboard",
-    "invoices": "Invoices",
+    "transactions": "Transactions",
     "categories": "Categories",
     "bankAccount": "Bank Account",
     "profile": "Profile",
@@ -16,7 +16,7 @@
   },
   "pages": {
     "dashboard": "Dashboard",
-    "invoices": "Invoices",
+    "transactions": "Transactions",
     "categories": "Categories",
     "bankAccount": "Bank Account",
     "profile": "Profile"

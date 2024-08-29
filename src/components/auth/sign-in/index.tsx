@@ -1,58 +1,60 @@
 import { Link } from "react-router-dom";
-import authServices from "../../../services/authentication";
-import CredentialsModel from "../../../models/credentials-model";
+import { useSelector } from "react-redux";
+import { googleSignInAction, signinAction } from "../../../redux/actions/authentication";
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
-import { getError } from "../../../utils/helpers";
-import { Button, Form, Input, Space, message } from "antd";
+import CredentialsModel from "../../../models/credentials-model";
+import { RootState, useAppDispatch } from "../../../redux/store";
+import { Button, Form, Input, Space, Typography, message } from "antd";
 import { FcGoogle } from "react-icons/fc";
 import "../auth.css";
 
 const SignIn = () => {
+  const dispatch = useAppDispatch();
   const [form] = Form.useForm();
+  const { loading } = useSelector((state: RootState) => state.auth);
 
   const onFinish = async (credentials: CredentialsModel) => {
     try {
-      const res = await authServices.signin(credentials);
-      if (res) {
-        message.success("Logged-in successfully");
+      const result = await dispatch(signinAction(credentials)).unwrap()
+      if (signinAction.fulfilled.match(result)) {
+        message.success('Logged-in successfully');
       }
     } catch (err: any) {
-      message.error(getError(err));
+      message.error(err.data);
     }
   };
 
-  const onSuccess = async (tokenResponse: TokenResponse) => {
+  const onGoogleLoginSuccess = async (tokenResponse: TokenResponse) => {
     try {
-      const res = await authServices.googleSignIn(tokenResponse);
-      if (res) {
-        message.success("Logged-in successfully");
-      }
+      const result = dispatch(googleSignInAction(tokenResponse))
+      console.log({ result });
     } catch (err: any) {
       message.error(err.message);
     }
-  }
+  };
 
   const onError = (errResponse: any) => {
     console.log(errResponse);
   };
 
-  const login = useGoogleLogin({
+  const googleLogin = useGoogleLogin({
     flow: 'implicit',
-    onSuccess,
+    onSuccess: onGoogleLoginSuccess,
     onError
   });
 
   return (
-    <div className="auth-form-main-container">
+    <div className="auth-form-main-container sign-in">
       <div className="auth-form-inner-container">
         <Form
           form={form}
           onFinish={onFinish}
-          className='auth-form sign-in'
+          className='auth-form'
           layout="vertical"
           labelAlign='left'
           scrollToFirstError
         >
+          <Typography.Text className="form-title">Sign-In</Typography.Text>
           <Form.Item
             label={'Email'}
             name={'email'}
@@ -75,12 +77,12 @@ const SignIn = () => {
           </Form.Item>
 
           <Space direction="vertical">
-            <Button htmlType="submit">Sign-in</Button>
+            <Button htmlType="submit" loading={loading}>Sign-in</Button>
             <p>D`ont have account? <Link to={'/auth/sign-up'}>Sign-Up</Link></p>
           </Space>
 
           <div className="google-login">
-            <Button onClick={() => login()}>
+            <Button onClick={() => googleLogin()}>
               Login with google
               <FcGoogle size={20} />
             </Button>

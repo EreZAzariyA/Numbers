@@ -3,27 +3,23 @@ import TextArea from "antd/es/input/TextArea";
 import CategoryModel from "../../../models/category-model";
 import { DefaultOptionType } from "antd/es/select";
 import { useState } from "react";
-import InvoiceModel from "../../../models/invoice";
+import TransactionModel from "../../../models/transaction";
 import dayjs from "dayjs";
 
-interface NewInvoiceProps {
-  invoice?: InvoiceModel;
+interface NewTransactionProps {
+  transaction?: TransactionModel;
   categories?: CategoryModel[];
-  onFinish: (values: Partial<InvoiceModel>) => void;
+  onFinish: (values: TransactionModel) => void;
   newInvoiceCategoryId?: string;
   isLoading?: boolean;
 };
 
-const NewInvoice = (props: NewInvoiceProps) => {
+const NewTransaction = (props: NewTransactionProps) => {
   const [form] = Form.useForm();
 
-  const [initialValues, setInitialValues] = useState<Partial<InvoiceModel>>({
-    _id: props.invoice?._id || null,
-    user_id: props.invoice?.user_id || null,
-    category_id: props.invoice?.category_id || props.newInvoiceCategoryId || null,
-    description: props.invoice?.description || null,
-    amount: props.invoice?.amount || null,
-    date: dayjs(props.invoice?.date) || null,
+  const [initialValues, setInitialValues] = useState<TransactionModel>({
+    ...props.transaction,
+    date: dayjs(props.transaction?.date) || null,
   });
 
   const onChange: DatePickerProps['onChange'] = (value, dateString) => {
@@ -40,11 +36,11 @@ const NewInvoice = (props: NewInvoiceProps) => {
   }));
 
   return (
-    <div className="inner-page new-invoice-page">
+    <div className="inner-page">
       <Space direction="vertical" className="w-100">
         <Row justify={'center'}>
           <Col>
-            <div className="inner-page-title">New Invoice</div>
+            <div className="inner-page-title">New Transaction</div>
           </Col>
         </Row>
 
@@ -54,7 +50,7 @@ const NewInvoice = (props: NewInvoiceProps) => {
               form={form}
               initialValues={initialValues}
               onFinish={() => props.onFinish(initialValues)}
-              className="insert-form add-invoice-form"
+              className="insert-form"
               labelAlign="left"
             >
               <Form.Item
@@ -118,4 +114,4 @@ const NewInvoice = (props: NewInvoiceProps) => {
   );
 };
 
-export default NewInvoice;
+export default NewTransaction;

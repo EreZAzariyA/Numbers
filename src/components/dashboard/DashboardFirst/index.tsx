@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import InvoiceModel from "../../../models/invoice";
+import TransactionModel from "../../../models/transaction";
 import CategoryModel from "../../../models/category-model";
 import UserModel from "../../../models/user-model";
 import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
@@ -12,7 +12,7 @@ import { BankAccountModel } from "../../../models/bank-model";
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
   monthToDisplay: Dayjs;
-  invoices: InvoiceModel[];
+  transactions: TransactionModel[];
   categories: CategoryModel[];
   user: UserModel;
   account: BankAccountModel;

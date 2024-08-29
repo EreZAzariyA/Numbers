@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import { CategoryDataType } from "../../utils/antd-types";
+import { useState } from "react";
 import { Button, Col, Input, Row, Space, TableProps, message } from "antd";
 import NewCategory from "./newCategory/newCategory";
 import CategoryModel from "../../models/category-model";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import categoriesServices from "../../services/categories";
-import { getError } from "../../utils/helpers";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { getError, isArrayAndNotEmpty } from "../../utils/helpers";
 import { EditTable } from "../components/EditTable";
 import { useTranslation } from "react-i18next";
+import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/categories";
 
 enum Steps {
   New_Category = "New_Category",
@@ -17,23 +16,14 @@ enum Steps {
 
 const CategoriesPage = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const user = useSelector((state: RootState) => (state.auth.user));
-  const categories = useSelector((state: RootState) => (state.categories));
-  const [dataSource, setDataSource] = useState<CategoryModel[]>([]);
+  const { categories, loading } = useSelector((state: RootState) => (state.categories));
   const [selectedCategory, setSelectedCategory] = useState<CategoryModel>(null);
   const [step, setStep] = useState<string>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filterState, setFilterState] = useState({
     category: '',
   });
-
-  useEffect(() => {
-    let data = [...categories];
-    if (filterState.category) {
-      data = data.filter((d) => d.name.toLowerCase().startsWith(filterState.category.toLowerCase()));
-    }
-    setDataSource(data);
-  }, [filterState, categories]);
 
   const onBack = () => {
     setStep(null);
@@ -45,39 +35,51 @@ const CategoriesPage = () => {
     setStep(Steps.Update_Category);
   };
 
-  const onFinish = async (category: CategoryModel) => {
+  const onFinish = async (values: CategoryModel) => {
     if (!user) {
       message.error("User id is missing");
       return;
     }
 
-    setIsLoading(true);
     try {
-      let res = null;
-      let msg = '';
+      let result = null;
+      let msg = null;
+
       if (selectedCategory) {
-        res = await categoriesServices.updateCategory(category, user._id);
-        msg = 'Updated category successfully';
-        console.log('to update');
+        result = await dispatch(updateCategoryAction({
+          category: values,
+          user_id: user._id
+        }));
+
+        if (updateCategoryAction.fulfilled.match(result)) {
+          msg = `Category: ${result.payload.name} updated successfully`
+        }
       } else {
-        console.log('to add');
-        res = await categoriesServices.addCategory(category, user._id);
-        msg = 'Category added successfully'
+        result = await dispatch(addCategoryAction({
+          categoryName: values.name,
+          user_id: user._id
+        }));
+
+        if (addCategoryAction.fulfilled.match(result)) {
+          msg = `Category: ${result.payload.name} added successfully`
+        }
       }
-      if (res) {
-        message.success(msg);
-        onBack();
-      }
+
+      message.success(msg);
+      onBack();
     } catch (error: any) {
       console.log(error);
       message.error(getError(error));
     }
-    setIsLoading(false);
   };
 
   const onRemove = async (record_id: string): Promise<void> => {
     try {
-      await categoriesServices.removeCategory(record_id);
+      await dispatch(removeCategoryAction({
+        category_id: record_id,
+        user_id: user._id
+      }));
+
       message.success('Category removed...');
     } catch (err: any) {
       message.error(getError(err));
@@ -88,7 +90,22 @@ const CategoriesPage = () => {
     setFilterState({ category: null });
   };
 
-  const columns: TableProps<CategoryDataType>['columns'] = [
+  const filtering = (categories: CategoryModel[] = []) => {
+    if (!isArrayAndNotEmpty(categories)) {
+      return [];
+    }
+
+    let data = [...categories];
+
+    if (filterState.category) {
+      data = data.filter((d) => d.name.toLowerCase().startsWith(filterState.category.toLowerCase()));
+    }
+
+    return data;
+  };
+  const dataSource = filtering(categories);
+
+  const columns: TableProps<CategoryModel>['columns'] = [
     {
       title: 'Category',
       dataIndex: 'name',
@@ -127,13 +144,14 @@ const CategoriesPage = () => {
               </Row>
             </div>
             <EditTable
-              dataSource={dataSource}
               type="categories"
               onEditMode={onEdit}
               removeHandler={onRemove}
               tableProps={{
+                dataSource,
                 columns,
-                rowKey: '_id'
+                rowKey: '_id',
+                loading: loading
               }}
             />
             <Button onClick={() => setStep(Steps.New_Category)}>
@@ -144,14 +162,14 @@ const CategoriesPage = () => {
         {(step && step === Steps.New_Category) && (
           <NewCategory
             onFinish={onFinish}
-            isLoading={isLoading}
+            isLoading={loading}
           />
         )}
         {(step && step === Steps.Update_Category) && (
           <NewCategory
             onFinish={onFinish}
             category={selectedCategory}
-            isLoading={isLoading}
+            isLoading={loading}
           />
         )}
       </div>

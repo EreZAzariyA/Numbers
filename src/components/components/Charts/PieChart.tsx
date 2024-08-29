@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { ThemeColors } from "../../../redux/slicers/theme-slicer";
 import { PieChart as Charts, Pie, ResponsiveContainer, Cell, Sector } from "recharts";
 import CategoryModel from "../../../models/category-model";
-import InvoiceModel from "../../../models/invoice";
+import TransactionModel from "../../../models/transaction";
 import { asNumString, isArrayAndNotEmpty, setCategoriesAndInvoicesArray } from "../../../utils/helpers";
+import { ThemeColors } from "../../../utils/enums";
 
 interface ChartsProps {
   categories: CategoryModel[];
-  invoices: InvoiceModel[];
+  transactions: TransactionModel[];
 };
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -67,9 +67,9 @@ const renderActiveShape = (props: any) => {
 
 export const PieChart = (props: ChartsProps) => {
   const [state, setState] = useState({ activeIndex: 0 });
-  const theme = useSelector((state: RootState) => state.theme.themeColor);
+  const { theme, loading } = useSelector((state: RootState) => state.config.themeColor);
 
-  let data = setCategoriesAndInvoicesArray(props.categories, props.invoices);
+  let data = setCategoriesAndInvoicesArray(props.categories, props.transactions);
   if (!isArrayAndNotEmpty(data)) {
     data = [{ name: 'No Data', value: 0.001 }]
   }

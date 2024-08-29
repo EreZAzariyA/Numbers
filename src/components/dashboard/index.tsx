@@ -13,12 +13,12 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const { t } = useTranslation();
   const user = useSelector((state: RootState) => state.auth.user);
-  const invoices = useSelector((state: RootState) => state.invoices);
-  const categories = useSelector((state: RootState) => state.categories);
-  const banks = useSelector((state: RootState) => state.userBanks.account.banks);
+  const { transactions } = useSelector((state: RootState) => state.transactions);
+  const { categories } = useSelector((state: RootState) => state.categories);
+  const banks = useSelector((state: RootState) => state.userBanks.account?.banks);
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
-  const invoicesByMonth = getInvoicesBySelectedMonth(invoices, monthToDisplay);
+  const transactionsByMonth = getInvoicesBySelectedMonth(transactions, monthToDisplay);
   const creditCards = banks?.[0]?.creditCards || [];
 
   return (
@@ -46,15 +46,15 @@ const Dashboard = () => {
       <div className="page-inner-container">
         <DashboardFirst
           user={user}
-          invoices={invoicesByMonth}
+          transactions={transactionsByMonth}
           categories={categories}
           monthToDisplay={monthToDisplay}
-          account={banks[0]}
+          account={banks?.[0]}
         />
         <DashboardSeconde
           user={user}
-          invoices={invoices}
-          invoicesByMonth={invoicesByMonth}
+          transactions={transactions}
+          transactionsByMonth={transactionsByMonth}
           monthToDisplay={monthToDisplay}
         />
         <DashboardThird
