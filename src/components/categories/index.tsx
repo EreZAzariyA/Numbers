@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Button, Col, Input, Row, Space, TableProps, message } from "antd";
+import { App, Button, Col, Divider, Input, Popconfirm, Row, Space, Table, TableProps, Typography } from "antd";
 import NewCategory from "./newCategory/newCategory";
 import CategoryModel from "../../models/category-model";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { getError, isArrayAndNotEmpty } from "../../utils/helpers";
-import { EditTable } from "../components/EditTable";
 import { useTranslation } from "react-i18next";
-import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/categories";
+import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
+import { useNavigate } from "react-router-dom";
 
 enum Steps {
   New_Category = "New_Category",
@@ -15,8 +15,10 @@ enum Steps {
 };
 
 const CategoriesPage = () => {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { message } = App.useApp();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const user = useSelector((state: RootState) => (state.auth.user));
   const { categories, loading } = useSelector((state: RootState) => (state.categories));
   const [selectedCategory, setSelectedCategory] = useState<CategoryModel>(null);
@@ -36,39 +38,27 @@ const CategoriesPage = () => {
   };
 
   const onFinish = async (values: CategoryModel) => {
-    if (!user) {
-      message.error("User id is missing");
-      return;
-    }
+    let successMessage = '';
 
     try {
-      let result = null;
-      let msg = null;
-
       if (selectedCategory) {
-        result = await dispatch(updateCategoryAction({
+        await dispatch(updateCategoryAction({
           category: values,
-          user_id: user._id
-        }));
-
-        if (updateCategoryAction.fulfilled.match(result)) {
-          msg = `Category: ${result.payload.name} updated successfully`
-        }
+          user_id: user?._id
+        })).unwrap();
+        successMessage = `Category: ${values.name} updated successfully`
       } else {
-        result = await dispatch(addCategoryAction({
+        await dispatch(addCategoryAction({
           categoryName: values.name,
-          user_id: user._id
-        }));
-
-        if (addCategoryAction.fulfilled.match(result)) {
-          msg = `Category: ${result.payload.name} added successfully`
-        }
+          user_id: user?._id
+        })).unwrap();
+        successMessage = `Category: ${values.name} added successfully`;
       }
 
-      message.success(msg);
+      message.success(successMessage);
       onBack();
     } catch (error: any) {
-      console.log(error);
+      console.log({error});
       message.error(getError(error));
     }
   };
@@ -78,11 +68,11 @@ const CategoriesPage = () => {
       await dispatch(removeCategoryAction({
         category_id: record_id,
         user_id: user._id
-      }));
+      })).unwrap();
 
       message.success('Category removed...');
     } catch (err: any) {
-      message.error(getError(err));
+      message.error(err);
     }
   };
 
@@ -113,6 +103,37 @@ const CategoriesPage = () => {
       width: 80,
       fixed: 'left'
     },
+    {
+      title: 'Actions',
+      key: 'action',
+      width: 200,
+      render: (_: any, record: any) => (
+        <Row align={'middle'}>
+          <Col>
+            <Typography.Link onClick={() => onEdit(record)}>
+              Edit
+            </Typography.Link>
+          </Col>
+          <Divider type="vertical" />
+          <Col>
+            <Typography.Link onClick={() => navigate({ pathname: '/transactions', hash: record._id })}>
+              Add transaction
+            </Typography.Link>
+          </Col>
+          <Divider type="vertical" />
+          <Col>
+            <Popconfirm
+              title="Are you sure?"
+              onConfirm={() => onRemove(record?._id)}
+            >
+              <Typography.Link>
+                Delete
+              </Typography.Link>
+            </Popconfirm>
+          </Col>
+        </Row>
+      ),
+    }
   ];
 
   return (
@@ -143,16 +164,11 @@ const CategoriesPage = () => {
                 </Col>
               </Row>
             </div>
-            <EditTable
-              type="categories"
-              onEditMode={onEdit}
-              removeHandler={onRemove}
-              tableProps={{
-                dataSource,
-                columns,
-                rowKey: '_id',
-                loading: loading
-              }}
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              rowKey={'_id'}
+              loading={loading}
             />
             <Button onClick={() => setStep(Steps.New_Category)}>
               Add Category

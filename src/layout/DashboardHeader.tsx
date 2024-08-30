@@ -4,18 +4,15 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
-import { changeLanguageAction, changeThemeAction } from "../redux/actions/user-config";
-import { fetchBankAccounts } from "../redux/actions/banks";
-import { fetchCategoriesAction } from "../redux/actions/categories";
-import { fetchTransactions } from "../redux/actions/transactions";
-import { logoutAction } from "../redux/actions/authentication";
+import { changeLanguageAction } from "../redux/actions/user-config-actions";
+import { logoutAction } from "../redux/actions/auth-actions";
 import DarkModeButton from "../components/components/Darkmode-button";
 import Logo from "../components/components/logo/logo";
 import { MenuItem } from "../utils/antd-types";
 import { useResize } from "../utils/helpers";
-import { Languages, ThemeColors } from "../utils/enums";
+import { Languages } from "../utils/enums";
 import { LanguageType } from "../utils/types";
-import { Button, Col, Dropdown, Layout, MenuProps, Row, message } from "antd";
+import { App, Button, Col, Dropdown, Layout, MenuProps, Row } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { IoIosClose } from "react-icons/io";
 
@@ -30,24 +27,13 @@ const languages = {...Languages};
 const DashboardHeader = (props: DashboardHeaderProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { message } = App.useApp();
   const { pathname } = useLocation();
-  const { user, token } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { lang, loading } = useSelector((state: RootState) => state.config.language);
   const [current, setCurrent] = useState<string>('1');
   const [isOpen, setIsOpen] = useState(false);
   const { isMobile } = useResize();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      await dispatch(fetchTransactions(user._id));
-      await dispatch(fetchCategoriesAction(user._id));
-      await dispatch(fetchBankAccounts(user._id));
-    };
-
-    if (!!(token && user._id)) {
-      fetchUserData();
-    }
-  }, [user, token, dispatch]);
 
   useEffect(() => {
     const locationArray = pathname.split('/');
@@ -57,8 +43,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
 
   const onClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'sign-out') {
-      dispatch(logoutAction());
-      return;
+      return dispatch(logoutAction());
     }
     navigate(e.key);
     setCurrent(e.key);
@@ -71,19 +56,11 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
     }
 
     try {
-      const res = await dispatch(changeLanguageAction({ user_id: user._id, language: lang }));
-      i18n.changeLanguage(res.payload as string);
+      const res = await dispatch(changeLanguageAction({ user_id: user._id, language: lang })).unwrap();
+      i18n.changeLanguage(res);
     } catch (err: any) {
       message.error(err.message);
     }
-  };
-
-  const handleChangeTheme = async (isDark: boolean): Promise<void> => {
-    if (!user) {
-      return;
-    };
-    const newThemeToSet = isDark ? ThemeColors.DARK : ThemeColors.LIGHT;
-    dispatch(changeThemeAction({ user_id: user._id, theme: newThemeToSet }));
   };
 
   const langs: MenuItem[] = Object.entries(languages).map(([key, value]) => ({
@@ -142,7 +119,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
                 </Dropdown>
               </Col>
               <Col>
-                <DarkModeButton handleSwitch={handleChangeTheme} />
+                <DarkModeButton />
               </Col>
             </Row>
           </div>

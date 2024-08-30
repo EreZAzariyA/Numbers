@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BankAccountDetails, MainBanksAccount } from "../../models/bank-model";
-import { insertBulkTransactionsAction } from "../slicers/transactions";
+import { insertBulkTransactionsAction } from "../slicers/transaction-slicer";
 import config from "../../utils/config";
 import { RefreshedBankAccountDetails, ScraperCredentials } from "../../utils/transactions";
 import { isArrayAndNotEmpty } from "../../utils/helpers";
@@ -14,8 +14,8 @@ export enum BanksActions {
 
 export const fetchBankAccounts = createAsyncThunk(
   BanksActions.FETCH_BANK_ACCOUNT,
-  async (userId: string) => {
-    const response = await axios.get<MainBanksAccount>(config.urls.bank.fetchAllBanksAccounts + `/${userId}`);
+  async (user_id: string) => {
+    const response = await axios.get<MainBanksAccount>(config.urls.bank.fetchAllBanksAccounts + `/${user_id}`);
     const mainBanksAccount = response.data;
     return mainBanksAccount;
   }
@@ -30,14 +30,18 @@ export const connectBankAccount = createAsyncThunk<BankAccountDetails, { details
   }
 )
 
-export const refreshBankData = createAsyncThunk(
+export const refreshBankData = createAsyncThunk<RefreshedBankAccountDetails, { bank_id: string, user_id: string }>(
   'banks/refreshBankData',
-  async (props: { bank_id: string, user_id: string }, api): Promise<RefreshedBankAccountDetails> => {
-    const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.refreshBankData + `/${props.user_id}`, { bank_id: props.bank_id });
-    const data = response.data;
-    if (isArrayAndNotEmpty(data.importedTransactions)) {
-      api.dispatch(insertBulkTransactionsAction(data.importedTransactions));
+  async ({ bank_id, user_id }, thunkApi) => {
+    try {
+      const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.refreshBankData + `/${user_id}`, { bank_id });
+      const data = response.data;
+      if (isArrayAndNotEmpty(data.importedTransactions)) {
+        thunkApi.dispatch(insertBulkTransactionsAction(data.importedTransactions));
+      }
+      return thunkApi.fulfillWithValue(data);
+    } catch (err: any) {
+      return thunkApi.rejectWithValue(err);
     }
-    return data;
   }
 );

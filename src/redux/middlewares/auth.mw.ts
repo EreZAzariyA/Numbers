@@ -1,6 +1,7 @@
 import { Middleware } from "redux";
 
-const authMiddleWare: Middleware = (store) => (next) => (action) => {
+const authMiddleWare: Middleware = (store) => (next) => (action: any) => {
+
   return next(action);
 }
 

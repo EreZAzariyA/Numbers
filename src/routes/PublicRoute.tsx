@@ -4,18 +4,18 @@ import { Navigate, useLocation } from "react-router-dom";
 import { RootState } from "../redux/store";
 
 interface PublicRouteProps {
-  children: React.JSX.Element
+  element: React.JSX.Element
 };
 
 const PublicRoute = (props: PublicRouteProps) => {
   const location = useLocation();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { token } = useSelector((state: RootState) => state.auth);
 
-  if (!!user) {
+  if (!!token) {
     return <Navigate to={'/'} state={location} />
   }
 
-  return props.children;
+  return props.element;
 };
 
 export default PublicRoute;

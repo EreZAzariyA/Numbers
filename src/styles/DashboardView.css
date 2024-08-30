@@ -126,7 +126,7 @@
 }
 
 
-.dark-theme .dropdown-menu,
+/* .dark-theme .dropdown-menu,
 .dark-theme .ant-dropdown-menu-sub {
   background: var(--ant-default-dark);
 }
@@ -152,4 +152,4 @@
 
 .dropdown-menu .ant-dropdown-menu-item:not(:nth-child(1)) {
   margin-top: 5px;
-}
+} */

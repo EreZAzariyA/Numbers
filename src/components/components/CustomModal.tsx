@@ -11,7 +11,7 @@ interface ModalProps {
   okText?: string
 };
 
-const CustomModal = (props: ModalProps) => {
+export const CustomModal = (props: ModalProps) => {
   return (
     <Modal
       title={props.title || 'Modal'}

@@ -1,16 +1,16 @@
-import { Col, message, Row, Space, Spin, Tooltip, Typography } from "antd";
-import { CompaniesNames } from "../../../utils/definitions";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
-import { useState } from "react";
-import UserModel from "../../../models/user-model";
-import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
-import CustomModal from "../../components/CustomModal";
-import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
-import { BankAccountModel } from "../../../models/bank-model";
-import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
-import { refreshBankData } from "../../../redux/actions/banks";
+import UserModel from "../../../models/user-model";
+import { BankAccountModel } from "../../../models/bank-model";
+import { refreshBankData } from "../../../redux/actions/bank-actions";
+import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
+import { CustomModal } from "../../components/CustomModal";
+import { CompaniesNames } from "../../../utils/definitions";
+import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
+import { App, Col, Row, Space, Spin, Tooltip, Typography } from "antd";
 
 interface BankAccountPageProps {
   bankAccount: BankAccountModel;
@@ -21,6 +21,7 @@ dayjs.extend(relativeTime);
 
 const BankAccountPage = (props: BankAccountPageProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { message } = App.useApp();
   const { lastConnection, details, bankName, _id } = props.bankAccount;
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
   const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
@@ -33,14 +34,17 @@ const BankAccountPage = (props: BankAccountPageProps) => {
     if (props.loading) {
       return;
     }
-    const result = await dispatch(refreshBankData({
-      bank_id: _id,
-      user_id: props.user?._id
-    }));
 
-    if (refreshBankData.fulfilled.match(result)) {
-      const { importedTransactions = [] } = result.payload;
+    try {
+      const result = await dispatch(refreshBankData({
+        bank_id: _id,
+        user_id: props.user?._id
+      })).unwrap();
+
+      const { importedTransactions = [] } = result;
       message.success(`${importedTransactions.length} transactions updated successfully`);
+    } catch (err: any) {
+      message.error(err);
     }
   };
 

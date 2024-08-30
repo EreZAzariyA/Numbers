@@ -8,7 +8,7 @@ import bankServices from "../../services/banks";
 import { isArray, isArrayAndNotEmpty } from "../../utils/helpers";
 import { BankAccountModel } from "../../models/bank-model";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { connectBankAccount } from "../../redux/actions/banks";
+import { connectBankAccount } from "../../redux/actions/bank-actions";
 import { useSelector } from "react-redux";
 
 const { confirm } = Modal;

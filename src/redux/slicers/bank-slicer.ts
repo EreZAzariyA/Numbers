@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import { MainBanksAccount } from "../../models/bank-model";
-import { connectBankAccount, fetchBankAccounts, refreshBankData } from "../actions/banks";
+import { connectBankAccount, fetchBankAccounts, refreshBankData } from "../actions/bank-actions";
 
 interface BanksAccountState {
   account: MainBanksAccount;

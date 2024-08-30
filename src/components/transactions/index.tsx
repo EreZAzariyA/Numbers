@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { addTransaction, removeTransaction, updateTransaction } from "../../redux/actions/transactions";
+import { addTransaction, removeTransaction, updateTransaction } from "../../redux/actions/transaction-actions";
 import TransactionModel from "../../models/transaction";
 import NewTransaction from "./newTransaction/newTransaction";
 import TotalAmountInput from "../components/TotalAmount";
@@ -14,7 +14,7 @@ import { CompaniesNames } from "../../utils/definitions";
 import { TransactionStatuses } from "../../utils/transactions";
 import { TotalAmountType } from "../../utils/enums";
 import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
-import { Button, Space, TableProps, message } from "antd";
+import { App, Button, Space, TableProps } from "antd";
 
 enum Steps {
   New_Transaction = "New_Transaction",
@@ -24,6 +24,7 @@ enum Steps {
 const Transactions = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { message } = App.useApp();
   const { t } = useTranslation();
   const { hash } = useLocation();
   const { user } = useSelector((state: RootState) => state.auth);

@@ -1,7 +1,7 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode';
 import UserModel from '../../models/user-model';
-import { googleSignInAction, logoutAction, signinAction, signupAction } from '../actions/authentication';
+import { fetchUser, googleSignInAction, logoutAction, signinAction, signupAction } from '../actions/auth-actions';
 
 export interface AuthState {
   token: string | null;
@@ -11,7 +11,7 @@ export interface AuthState {
 };
 
 const token = localStorage.getItem('token') || null;
-const user: UserModel = !!token ? jwtDecode(token) : null;
+const user = !!token ? jwtDecode(token) as UserModel : null;
 
 const initialState: AuthState = {
   token,
@@ -21,6 +21,45 @@ const initialState: AuthState = {
 };
 
 const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
+  // Fetch-User
+  builder.addCase(fetchUser.pending, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  }))
+  .addCase(fetchUser.rejected, (state, action) => ({
+    ...state,
+    loading: false,
+    error: action.error
+  }))
+  .addCase(fetchUser.fulfilled, (state, action) => ({
+    ...state,
+    loading: false,
+    error: null,
+    user: action.payload.user,
+    token: action.payload.token
+  }));
+
+  // Sign-In
+  builder.addCase(signinAction.pending, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  }))
+  .addCase(signinAction.rejected, (state, action) => ({
+    ...state,
+    loading: false,
+    error: action.error
+  }))
+  .addCase(signinAction.fulfilled, (_, action) => {
+    return {
+      loading: false,
+      error: null,
+      token: action.payload,
+      user: jwtDecode(action.payload)
+    }
+  });
+
   // Sign-Up
   builder.addCase(signupAction.pending, (state) => ({
     ...state,
@@ -37,27 +76,6 @@ const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     loading: false,
     error: null,
   }));
-
-  // Sign-In
-  builder.addCase(signinAction.pending, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  }))
-  .addCase(signinAction.rejected, (state, action) => ({
-    ...state,
-    loading: false,
-    error: action.error
-  }))
-  .addCase(signinAction.fulfilled, (_, action) => {
-    localStorage.setItem('token', action.payload);
-    return {
-      loading: false,
-      error: null,
-      token: action.payload,
-      user: jwtDecode(action.payload)
-    }
-  })
 
   // Google Sign-In
   builder.addCase(googleSignInAction.pending, (state) => ({
@@ -97,7 +115,7 @@ const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     error: null,
     token: null,
     user: null
-  }))
+  }));
 };
 
 const authSlicer = createSlice({

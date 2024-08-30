@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from '@reduxjs/toolkit'
 import CategoryModel from '../../models/category-model';
-import { addCategoryAction, fetchCategoriesAction, removeCategoryAction, updateCategoryAction } from '../actions/categories';
+import { addCategoryAction, fetchCategoriesAction, removeCategoryAction, updateCategoryAction } from '../actions/category-actions';
 
 type InitialStateType = {
   categories: CategoryModel[];

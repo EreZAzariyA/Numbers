@@ -1,26 +1,25 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { googleSignInAction, signinAction } from "../../../redux/actions/authentication";
+import { googleSignInAction, signinAction } from "../../../redux/actions/auth-actions";
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import CredentialsModel from "../../../models/credentials-model";
 import { RootState, useAppDispatch } from "../../../redux/store";
-import { Button, Form, Input, Space, Typography, message } from "antd";
+import { App, Button, Form, Input, Space, Typography } from "antd";
 import { FcGoogle } from "react-icons/fc";
 import "../auth.css";
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
+  const { message } = App.useApp();
   const [form] = Form.useForm();
   const { loading } = useSelector((state: RootState) => state.auth);
 
   const onFinish = async (credentials: CredentialsModel) => {
     try {
-      const result = await dispatch(signinAction(credentials)).unwrap()
-      if (signinAction.fulfilled.match(result)) {
-        message.success('Logged-in successfully');
-      }
+      await dispatch(signinAction(credentials)).unwrap()
+      message.success('Logged-in successfully');
     } catch (err: any) {
-      message.error(err.data);
+      message.error(err);
     }
   };
 

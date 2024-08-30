@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getError } from "../../../utils/helpers";
 import UserModel from "../../../models/user-model";
 import { useAppDispatch } from "../../../redux/store";
-import { signupAction } from "../../../redux/actions/authentication";
+import { signupAction } from "../../../redux/actions/auth-actions";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 

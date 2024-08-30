@@ -1,7 +1,7 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import { LanguageType, ThemeColorType } from "../../utils/types";
 import { Languages, ThemeColors } from "../../utils/enums";
-import { changeLanguageAction, changeThemeAction } from "../actions/user-config";
+import { changeLanguageAction, changeThemeAction } from "../actions/user-config-actions";
 
 interface UserConfigState {
   language: {
@@ -16,8 +16,8 @@ interface UserConfigState {
   };
 };
 
-const defaultLanguage = Languages.EN;
-const defaultThemeColor = ThemeColors.LIGHT;
+const defaultLanguage = localStorage.getItem('language') as LanguageType || Languages.EN;
+const defaultThemeColor = localStorage.getItem('theme-color') as ThemeColorType || ThemeColors.LIGHT;
 const initialState: UserConfigState = {
   language: {
     lang: defaultLanguage,
@@ -89,8 +89,7 @@ const userConfigSlicer = createSlice({
   name: 'userConfig',
   reducers: {
     setUserTheme(state, action) {
-      if (!action.payload) return;
-      localStorage.setItem('themeColor', action.payload);
+      localStorage.setItem('theme-color', action.payload);
       return {
         ...state,
         themeColor: {
@@ -100,7 +99,6 @@ const userConfigSlicer = createSlice({
       }
     },
     setUserLang(state, action) {
-      if (!action.payload) return;
       localStorage.setItem('language', action.payload);
       return {
         ...state,
@@ -112,7 +110,7 @@ const userConfigSlicer = createSlice({
     },
     removeUserConfig(state) {
       localStorage.removeItem('language');
-      localStorage.removeItem('themeColor');
+      localStorage.removeItem('theme-color');
 
       return {
         language: {

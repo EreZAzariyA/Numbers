@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authSlicer from "./slicers/authentication";
-import transactionsSlicer from "./slicers/transactions";
-import categoriesSlicer from "./slicers/categories";
-import bankSlicer from "./slicers/banks";
+import authSlicer from "./slicers/auth-slicer";
+import transactionsSlicer from "./slicers/transaction-slicer";
+import categoriesSlicer from "./slicers/category-slicer";
+import bankSlicer from "./slicers/bank-slicer";
 import authMiddleWare from "./middlewares/auth.mw";
-import userConfigSlicer from "./slicers/user-config";
+import userConfigSlicer from "./slicers/user-config-slicer";
 import { useDispatch } from "react-redux";
 
 const store = configureStore({

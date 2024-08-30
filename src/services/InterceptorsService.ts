@@ -1,17 +1,16 @@
 import axios from "axios";
-import store from "../redux/store";
-import { logoutAction } from "../redux/actions/authentication";
 import { getError } from "../utils/helpers";
-import { message } from "antd";
+import store from "../redux/store";
+import { logoutAction } from "../redux/actions/auth-actions";
 
 class InterceptorsService {
   public createInterceptors(): void {
     axios.interceptors.request.use((request) => {
       const token = store.getState().auth.token;
-      if (token) {
-        request.headers['Authorization'] = `Bearer ${token}`;
+      if (!!token) {
+        request.headers["Authorization"] = `Bearer ${token}`;
       }
-
+      request.withCredentials = true;
       request.headers["ngrok-skip-browser-warning"] = true;
 
       return request;
@@ -21,10 +20,9 @@ class InterceptorsService {
       return response;
     }, (err) => {
       if (err.response?.status === 401) {
-        message.info('Please login again')
         return store.dispatch(logoutAction());
       }
-      return message.error(getError(err));
+      return Promise.reject(getError(err));
     });
   };
 };

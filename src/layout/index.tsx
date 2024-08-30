@@ -6,7 +6,7 @@ import { RootState, useAppDispatch } from "../redux/store";
 import DashboardHeader from "./DashboardHeader";
 import { Colors, Sizes, useResize } from "../utils/helpers";
 import { MenuItem, getMenuItem } from "../utils/antd-types";
-import { ConfigProvider, Layout, Menu, MenuProps, theme as AntdThemes } from "antd";
+import { Layout, Menu, MenuProps } from "antd";
 import { AiOutlineLogout, AiOutlineProfile } from "react-icons/ai";
 import { BiLogInCircle } from "react-icons/bi";
 import { CiCircleList } from "react-icons/ci";
@@ -15,8 +15,8 @@ import { CiBank } from "react-icons/ci";
 import { FaAddressCard } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
-import { Languages, ThemeColors } from "../utils/enums";
-import { logoutAction } from "../redux/actions/authentication";
+import { ThemeColors } from "../utils/enums";
+import { fetchUser, logoutAction } from "../redux/actions/auth-actions";
 
 const { Sider, Content } = Layout;
 
@@ -27,32 +27,16 @@ const DashboardView = () => {
   const { pathname } = useLocation();
   const { isMobile } = useResize();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { lang } = useSelector((state: RootState) => state.config.language);
   const { theme } = useSelector((state: RootState) => state.config.themeColor);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile);
   const [current, setCurrent] = useState<string>('dashboard');
 
-  const direction = lang === Languages.EN ? 'ltr': 'rtl';
   const isDarkTheme = theme === ThemeColors.DARK;
-  const algorithm = (isDarkTheme ? AntdThemes.darkAlgorithm : AntdThemes.defaultAlgorithm) ?? AntdThemes.defaultAlgorithm;
 
   useEffect(() => {
-    const body = document.querySelector('body');
-    body.classList.add(`${theme}-theme`);
+    dispatch(fetchUser());
+  }, [dispatch]);
 
-    return () => {
-      body.classList.remove(`${theme}-theme`);
-    }
-  }, [theme]);
-
-  useEffect(() => {
-    const body = document.querySelector('body');
-    body.classList.add(`${direction}-direction`);
-
-    return () => {
-      body.classList.remove(`${direction}-direction`);
-    }
-  }, [direction]);
 
   useEffect(() => {
     const path = pathname.split('/')?.[1];
@@ -127,39 +111,34 @@ const DashboardView = () => {
 
   const themeToSet = isDarkTheme ? ThemeColors.DARK : ThemeColors.LIGHT;
   return (
-    <ConfigProvider
-      direction={direction}
-      theme={{ algorithm }}
-    >
-      <Layout className="main-layout">
-        <DashboardHeader
-          collapsedHandler={() => setIsCollapsed(!isCollapsed)}
-          items={items}
-        />
-        <Layout hasSider>
-          {!isMobile && (
-            <Sider
-              collapsed={isCollapsed}
-              collapsedWidth={80}
+    <Layout className="main-layout">
+      <DashboardHeader
+        collapsedHandler={() => setIsCollapsed(!isCollapsed)}
+        items={items}
+      />
+      <Layout hasSider>
+        {!isMobile && (
+          <Sider
+            collapsed={isCollapsed}
+            collapsedWidth={80}
+            theme={themeToSet}
+            collapsible
+            onCollapse={(e) => setIsCollapsed(e)}
+          >
+            <Menu
+              mode="inline"
               theme={themeToSet}
-              collapsible
-              onCollapse={(e) => setIsCollapsed(e)}
-            >
-              <Menu
-                mode="inline"
-                theme={themeToSet}
-                items={items}
-                onClick={onClick}
-                selectedKeys={[current]}
-              />
-            </Sider>
-          )}
-          <Content className="site-layout">
-            <Outlet />
-          </Content>
-        </Layout>
+              items={items}
+              onClick={onClick}
+              selectedKeys={[current]}
+            />
+          </Sider>
+        )}
+        <Content className="site-layout">
+          <Outlet />
+        </Content>
       </Layout>
-    </ConfigProvider>
+    </Layout>
   );
 };
 

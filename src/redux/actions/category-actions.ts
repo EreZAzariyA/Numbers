@@ -22,12 +22,13 @@ export const fetchCategoriesAction = createAsyncThunk<CategoryModel[], string>(
 export const addCategoryAction = createAsyncThunk<CategoryModel, {user_id: string, categoryName: string}>(
   CategoriesActions.ADD_CATEGORY,
   async ({ user_id, categoryName }, thunkApi) => {
-    const response = await axios.post<CategoryModel>(config.urls.categories + `/${user_id}`, { categoryName });
-    const addedCategory = response.data;
-    if (!!addedCategory) {
-      return addedCategory;
+    try {
+      const response = await axios.post<CategoryModel>(config.urls.categories, { categoryName });
+      const addedCategory = response.data;
+      return thunkApi.fulfillWithValue(addedCategory);
+    } catch (err: any) {
+      return thunkApi.rejectWithValue(err);
     }
-    return thunkApi.rejectWithValue('Some error while trying to add category');
   }
 );
 

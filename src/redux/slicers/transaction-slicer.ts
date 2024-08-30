@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
 import TransactionModel from "../../models/transaction";
-import { addTransaction, fetchTransactions, removeTransaction, updateTransaction } from "../actions/transactions";
+import { addTransaction, fetchTransactions, removeTransaction, updateTransaction } from "../actions/transaction-actions";
 
 type InitialStateType = {
   transactions: TransactionModel[];

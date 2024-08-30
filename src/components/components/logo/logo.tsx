@@ -8,7 +8,7 @@ import { ThemeColors } from "../../../utils/enums";
 
 const Logo = () => {
   const navigate = useNavigate();
-  const { theme, loading } = useSelector((state: RootState) => state.config.themeColor);
+  const { theme } = useSelector((state: RootState) => state.config.themeColor);
 
   return (
     <div className="logo" onClick={() => navigate('/dashboard')}>
