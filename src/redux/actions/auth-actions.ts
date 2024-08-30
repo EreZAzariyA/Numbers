@@ -20,7 +20,7 @@ export enum AuthActions {
   LOGOUT = "auth/logout"
 };
 
-export const fetchUser = createAsyncThunk<{ user: UserModel, token: string }>(
+export const fetchUser = createAsyncThunk<{ user: UserModel, token: string }, null>(
   AuthActions.FETCH_USER,
   async (_ , thunkApi) => {
     try {
@@ -28,9 +28,6 @@ export const fetchUser = createAsyncThunk<{ user: UserModel, token: string }>(
       await thunkApi.dispatch(fetchCategoriesAction(user._id)).unwrap();
       await thunkApi.dispatch(fetchTransactions(user._id)).unwrap();
       await thunkApi.dispatch(fetchBankAccounts(user._id)).unwrap();
-
-      thunkApi.dispatch(setUserTheme(user.config["theme-color"]));
-      thunkApi.dispatch(setUserLang(user.config.lang));
 
       return thunkApi.fulfillWithValue({ user, token });
     } catch (err: any) {
@@ -88,8 +85,8 @@ export const googleSignInAction = createAsyncThunk(
 export const logoutAction = createAsyncThunk<void>(
   AuthActions.LOGOUT,
   async (_, api) => {
-    api.dispatch(removeUserConfig());
-    localStorage.removeItem('token');
     await axios.post<void>(config.urls.auth.logout);
+    localStorage.removeItem('token');
+    api.dispatch(removeUserConfig());
   }
 );

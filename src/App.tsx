@@ -5,7 +5,6 @@ import { ConfigProvider, theme as AntdThemes, App as AppContainer } from "antd";
 import UserRouter from "./routes/UserRouter";
 import { useEffect } from "react";
 
-
 const App = () => {
   const { lang } = useSelector((state: RootState) => state.config.language);
   const { theme } = useSelector((state: RootState) => state.config.themeColor);
