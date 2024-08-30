@@ -1,6 +1,7 @@
 abstract class Config {
   public urls = {
     auth: {
+      fetchUser: "",
       signup: "",
       signIn: "",
       googleSignIn: "",
@@ -17,7 +18,7 @@ abstract class Config {
     bank: {
       fetchAllBanksAccounts: "",
       fetchOneBankAccount: "",
-      fetchBankData: "",
+      connectBank: "",
       refreshBankData: "",
       updateBankDetails: "",
       importTransactions: "",
@@ -27,6 +28,7 @@ abstract class Config {
   public constructor(baseUrl: string) {
     this.urls = {
       auth: {
+        fetchUser: baseUrl + "auth/fetch-user",
         signup: baseUrl + "auth/signup",
         signIn: baseUrl + "auth/signin",
         googleSignIn: baseUrl + "auth/google",
@@ -43,7 +45,7 @@ abstract class Config {
       bank: {
         fetchAllBanksAccounts: baseUrl + "bank-account/fetch-all-banks-accounts",
         fetchOneBankAccount: baseUrl + "bank-account/fetch-bank-account",
-        fetchBankData: baseUrl + "bank-account/fetch-bank-data",
+        connectBank: baseUrl + "bank-account/connect-bank",
         refreshBankData: baseUrl + "bank-account/refresh-bank-data",
         updateBankDetails: baseUrl + "bank-account/update-bank-details",
         importTransactions: baseUrl + "bank-account/import-transactions",

@@ -3,10 +3,13 @@ import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../.
 import { MenuItem, getMenuItem } from "../../utils/antd-types";
 import { useState } from "react";
 import UserModel from "../../models/user-model";
-import { RefreshedBankAccountDetails, Transaction } from "../../utils/transactions";
+import { Transaction } from "../../utils/transactions";
 import bankServices from "../../services/banks";
 import { isArray, isArrayAndNotEmpty } from "../../utils/helpers";
 import { BankAccountModel } from "../../models/bank-model";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { connectBankAccount } from "../../redux/actions/banks";
+import { useSelector } from "react-redux";
 
 const { confirm } = Modal;
 
@@ -24,7 +27,8 @@ interface ConnectBankFormProps {
 };
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const { loading: isLoading } = useSelector((state: RootState) => state.userBanks);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: props.bankDetails?.bankName || false,
     companyId: props.bankDetails?.bankName || null,
@@ -47,29 +51,33 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   };
 
   const onFinish = async (values: any) => {
-    setIsLoading(true);
-
     if (!props.user._id) {
       message.error('User is not define');
-      setIsLoading(false);
       return;
     }
 
     try {
-      let res: RefreshedBankAccountDetails;
       if (props.formType === ConnectBankFormType.Update_Bank) {
-        res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
+        const res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
+        if (res?.account && res.account?.txns && isArrayAndNotEmpty(res.account.txns)) {
+          showTransImportConfirmation(res.account.txns);
+        }
+        props?.setResult(res);
+        props.handleOkButton(true);
       } else {
-        res = await bankServices.fetchBankData(values, props.user._id);
+        const result = await dispatch(connectBankAccount({ details: values, user_id: props.user._id }))
+
+        if (connectBankAccount.fulfilled.match(result)) {
+          if (isArrayAndNotEmpty(result.payload.account.txns)) {
+            showTransImportConfirmation(result.payload.account.txns);
+          }
+          props?.setResult(result.payload);
+          props.handleOkButton(true);
+        }
+
+        return;
       }
-      if (res?.account && res.account?.txns && isArrayAndNotEmpty(res.account.txns)) {
-        showTransImportConfirmation(res.account.txns);
-      }
-      props?.setResult(res);
-      props.handleOkButton(true);
-      setIsLoading(false);
     } catch (err: any) {
-      setIsLoading(false);
       message.error(err.message);
     }
   };

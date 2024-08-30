@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../utils/config";
-import { RefreshedBankAccountDetails, ScraperCredentials, Transaction } from "../utils/transactions";
+import { RefreshedBankAccountDetails, Transaction } from "../utils/transactions";
 import TransactionModel from "../models/transaction";
 import { SupportedCompaniesTypes } from "../utils/definitions";
 import { BankAccountModel, MainBanksAccount } from "../models/bank-model";
@@ -19,11 +19,11 @@ class BankServices {
     return banks;
   };
 
-  fetchBankData = async (details: ScraperCredentials, user_id: string): Promise<RefreshedBankAccountDetails> => {
-    const response = await axios.post<RefreshedBankAccountDetails>(config.urls.bank.fetchBankData + `/${user_id}`, details);
-    const data = response.data;
-    return data;
-  };
+  // fetchBankData = async (details: ScraperCredentials, user_id: string): Promise<RefreshedBankAccountDetails> => {
+  //   const response = await axios.post<RefreshedBankAccountDetails>(config.urls.bank.fetchBankData + `/${user_id}`, details);
+  //   const data = response.data;
+  //   return data;
+  // };
 
   updateBankDetails = async (bankName: string, user_id: string, newCredentials: any): Promise<RefreshedBankAccountDetails> => {
     const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.updateBankDetails + `/${user_id}`, { bankName, newCredentials });

@@ -1,5 +1,10 @@
+import { BankAccount } from "../utils/transactions";
 import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "../utils/types";
 
+export interface BankAccountDetails {
+  bank: MainBanksAccount;
+  account: BankAccount;
+};
 export interface MainBanksAccount {
   _id: string;
   userId: string;

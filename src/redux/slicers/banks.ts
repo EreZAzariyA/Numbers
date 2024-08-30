@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import { MainBanksAccount } from "../../models/bank-model";
-import { fetchBankAccounts, refreshBankData } from "../actions/banks";
+import { connectBankAccount, fetchBankAccounts, refreshBankData } from "../actions/banks";
 
 interface BanksAccountState {
   account: MainBanksAccount;
@@ -24,29 +24,51 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
     loading: true,
     error: null
   }))
-  builder.addCase(fetchBankAccounts.rejected, (state, action) => ({
+  .addCase(fetchBankAccounts.rejected, (state, action) => ({
     ...state,
     loading: false,
     error: action.error
   }))
-  builder.addCase(fetchBankAccounts.fulfilled, (state, action) => ({
+  .addCase(fetchBankAccounts.fulfilled, (state, action) => ({
     ...state,
     loading: false,
     error: null,
     account: action.payload
   }));
 
+  builder.addCase(connectBankAccount.pending, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  }))
+  .addCase(connectBankAccount.rejected, (state, action) => ({
+    ...state,
+    loading: false,
+    error: action.payload
+  }))
+  .addCase(connectBankAccount.fulfilled, (state, action) => ({
+    ...state,
+    loading: false,
+    error: null,
+    account: {
+      _id: action.payload.bank._id,
+      userId: action.payload.bank.userId,
+      banks: action.payload.bank.banks
+    }
+  }));
+
+
   builder.addCase(refreshBankData.pending, (state) => ({
     ...state,
     loading: true,
     error: null
   }))
-  builder.addCase(refreshBankData.rejected, (state, action) => ({
+  .addCase(refreshBankData.rejected, (state, action) => ({
     ...state,
     loading: false,
     error: action.error
   }))
-  builder.addCase(refreshBankData.fulfilled, (state, action) => {
+  .addCase(refreshBankData.fulfilled, (state, action) => {
     state.loading = false;
     state.error = null;
     const bankIndex = state.account.banks.findIndex((bank) => bank._id === action.payload.bank?._id);

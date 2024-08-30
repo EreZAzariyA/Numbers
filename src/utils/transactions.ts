@@ -32,12 +32,6 @@ export interface BankAccount {
   saving?: AccountSavesType;
 };
 
-export interface BankAccountDetails {
-  bank: BankAccountModel;
-  account: BankAccount;
-  importedTransactions?: TransactionModel[]
-};
-
 export interface RefreshedBankAccountDetails {
   bank: BankAccountModel;
   account: BankAccount;

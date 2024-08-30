@@ -9,9 +9,9 @@ interface PrivateRouteProps {
 
 const PrivateRoute = (props: PrivateRouteProps) => {
   const location = useLocation();
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
 
-  if (!token) {
+  if (!user) {
     return <Navigate to={'/auth/sign-in'} state={location} />
   }
 

@@ -1,6 +1,6 @@
+import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import TransactionModel from "../../models/transaction";
-import axios from "axios";
 import config from "../../utils/config";
 
 export enum TransactionsActions {
