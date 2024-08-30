@@ -15,36 +15,26 @@ const BankPage = () => {
   const { account, loading } = useSelector((state: RootState) => state.userBanks);
   const hasBankAccounts = account && isArrayAndNotEmpty(account.banks);
   const banksAccounts = hasBankAccounts ? account.banks : [];
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOkBtnActive, setIsBtnActive] = useState<boolean>(false);
   const [modalResult, setModalResult] = useState(null);
 
-
   const showModal = () => {
     modal.info({
-      open: isOpen,
-      onCancel: (e) => {
-        console.log({e});
-        setIsOpen(false);
-      },
+      destroyOnClose: false,
       onClose: (e) => {
-        console.log(e);
-      },
-      destroyOnClose: true,
-      cancelButtonProps: {
-        onClick: () => {
-          console.log('cancel');
-
-        }
+        console.log({e});
       },
       okButtonProps: {
         disabled: !isOkBtnActive
       },
       onOk: (e) => {
-        setIsOpen(false);
         setModalResult(null);
       },
-      children: (
+      okCancel: true,
+      cancelButtonProps:{
+        disabled: isOkBtnActive
+      },
+      content: (
         <>
           {!modalResult && (
             <ConnectBankForm
@@ -61,7 +51,7 @@ const BankPage = () => {
             />
           )}
         </>
-      )
+      ),
     });
   }
 

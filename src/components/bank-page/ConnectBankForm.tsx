@@ -115,9 +115,21 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         )}
       </Typography.Title>
 
-      <Form onFinish={onFinish} layout="vertical">
-        <Form.Item label="Select your bank" initialValue={props.bankDetails?.bankName} name={'companyId'}>
-          <Select options={bankList} placeholder='Select Bank' onSelect={(e) => onSelectCompany(e)} />
+      <Form
+        validateTrigger="onChange"
+        onFinish={onFinish}
+        layout="vertical"
+      >
+        <Form.Item
+          name={'companyId'}
+          label="Select your bank"
+          initialValue={props.bankDetails?.bankName}
+        >
+          <Select
+            options={bankList}
+            placeholder='Select Bank'
+            onSelect={(e) => onSelectCompany(e)}
+          />
         </Form.Item>
 
         {selectedCompany.isSelected && (
@@ -147,7 +159,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
           <Checkbox>Save my credentials</Checkbox>
         </Form.Item>
 
-        <Button loading={isLoading} type="link" htmlType="submit">Check</Button>
+        <Button loading={isLoading} disabled={!selectedCompany.companyId} type="link" htmlType="submit">Check</Button>
       </Form>
     </Space>
   );

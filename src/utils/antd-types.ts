@@ -7,7 +7,7 @@ export const getMenuItem = (
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: 'group',
-  value?: string
+  value?: string,
 ): MenuItem  => {
   return {
     key,

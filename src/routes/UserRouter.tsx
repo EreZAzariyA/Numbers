@@ -29,7 +29,7 @@ const UserRouter = () => (
         <Route path="*" element={<Navigate to={'page-not-found'} replace />} />
       </Route>
 
-      <Route path="/auth" element={<AuthView />}>
+      <Route path="/auth" element={<PublicRoute element={<AuthView />} />}>
         <Route path="sign-in" element={<PublicRoute element={<SignIn />} />} />
         <Route path="sign-up" element={<PublicRoute element={<SignUp />} />} />
 
