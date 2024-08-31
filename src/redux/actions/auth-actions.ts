@@ -58,7 +58,7 @@ export const signinAction = createAsyncThunk<string, CredentialsModel>(
       }
       const response = await axios.post<string>(config.urls.auth.signIn, credentials);
       const token = response.data;
-      localStorage.setItem('token', token);
+
       return thunkApi.fulfillWithValue(token);
     } catch (err: any) {
       return thunkApi.rejectWithValue(err);
@@ -83,9 +83,7 @@ export const googleSignInAction = createAsyncThunk(
 
 export const logoutAction = createAsyncThunk<void>(
   AuthActions.LOGOUT,
-  async (_, api) => {
+  async () => {
     await axios.post<void>(config.urls.auth.logout);
-    localStorage.removeItem('token');
-    api.dispatch(removeUserConfig());
   }
 );

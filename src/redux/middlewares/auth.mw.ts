@@ -1,20 +1,30 @@
 import { Middleware } from "redux";
-import { signinAction } from "../actions/auth-actions";
+import { logoutAction, signinAction } from "../actions/auth-actions";
 import { jwtDecode } from "jwt-decode";
 import UserModel from "../../models/user-model";
-import { setUserLang, setUserTheme } from "../slicers/user-config-slicer";
+import { removeUserConfig, setUserLang, setUserTheme } from "../slicers/user-config-slicer";
 
 const authMiddleWare: Middleware = (store) => (next) => (action: any) => {
   const { dispatch } = store;
+  console.log(action);
 
-  if (signinAction.fulfilled.match(action)) {
-    const user = jwtDecode(action.payload) as UserModel;
 
-    dispatch(setUserTheme(user.config["theme-color"]));
-    dispatch(setUserLang(user.config.lang));
+  switch(action.type) {
+    case signinAction.fulfilled.type:
+      localStorage.setItem('token', action.payload);
+      const user = jwtDecode(action.payload) as UserModel;
+
+      dispatch(setUserTheme(user.config["theme-color"]));
+      dispatch(setUserLang(user.config.lang));
+    break;
+
+    case logoutAction.fulfilled.type:
+      localStorage.removeItem('token');
+      dispatch(removeUserConfig());
+    break;
   }
 
-  return next(action);
-}
+  next(action);
+};
 
 export default authMiddleWare;

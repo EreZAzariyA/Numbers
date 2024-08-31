@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { changeLanguageAction } from "../redux/actions/user-config-actions";
-import { logoutAction } from "../redux/actions/auth-actions";
+import { fetchUser, logoutAction } from "../redux/actions/auth-actions";
 import DarkModeButton from "../components/components/Darkmode-button";
 import Logo from "../components/components/logo/logo";
 import { MenuItem } from "../utils/antd-types";
@@ -34,6 +34,18 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const [current, setCurrent] = useState<string>('1');
   const [isOpen, setIsOpen] = useState(false);
   const { isMobile } = useResize();
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        await dispatch(fetchUser());
+      } catch (err: any) {
+        message.error(err.message);
+      }
+    }
+
+    fetch();
+  }, []);
 
   useEffect(() => {
     const locationArray = pathname.split('/');
