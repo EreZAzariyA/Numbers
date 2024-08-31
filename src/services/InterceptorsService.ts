@@ -2,6 +2,8 @@ import axios from "axios";
 import { getError } from "../utils/helpers";
 import store from "../redux/store";
 import { logoutAction } from "../redux/actions/auth-actions";
+import { App, message } from "antd";
+
 
 class InterceptorsService {
   public createInterceptors(): void {
@@ -20,6 +22,7 @@ class InterceptorsService {
       return response;
     }, (err) => {
       if (err.response?.status === 401) {
+        message.info('Please login again.');
         return store.dispatch(logoutAction());
       }
       return Promise.reject(getError(err));

@@ -6,12 +6,12 @@ import BankAccountPage from "./BankAccountPage";
 import ConnectBankForm from "./ConnectBankForm";
 import { isArrayAndNotEmpty } from "../../utils/helpers";
 import { CompaniesNames } from "../../utils/definitions";
-import { App, Result, Tabs, TabsProps, Typography } from "antd";
+import { App, Result, Spin, Tabs, TabsProps, Typography } from "antd";
 
 const BankPage = () => {
   const { t } = useTranslation();
   const { modal } = App.useApp();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, loading: userLoading } = useSelector((state: RootState) => state.auth);
   const { account, loading } = useSelector((state: RootState) => state.userBanks);
   const hasBankAccounts = account && isArrayAndNotEmpty(account.banks);
   const banksAccounts = hasBankAccounts ? account.banks : [];
@@ -67,26 +67,31 @@ const BankPage = () => {
       <div className="title-container">
         <div className="page-title">{t('pages.bankAccount')}</div>
       </div>
-      <div className="page-inner-container">
-        <Tabs
-          defaultActiveKey="1"
-          items={items}
-          onChange={(key) => {
-            if (key === 'add_account') {
-              showModal();
-            }
-          }}
-          onEdit={(_, action) => {
-            if (action === 'add') {
-              showModal();
-            }
-          }}
-          type="editable-card"
-        />
-        {!hasBankAccounts && (
-          <p>Connect your bank account on the '+' button to see details</p>
-        )}
-      </div>
+      {userLoading && (
+        <Spin />
+      )}
+      {!userLoading && (
+        <div className="page-inner-container">
+          <Tabs
+            defaultActiveKey="1"
+            items={items}
+            onChange={(key) => {
+              if (key === 'add_account') {
+                showModal();
+              }
+            }}
+            onEdit={(_, action) => {
+              if (action === 'add') {
+                showModal();
+              }
+            }}
+            type="editable-card"
+          />
+          {!hasBankAccounts && (
+            <p>Connect your bank account on the '+' button to see details</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -16,7 +16,7 @@ import { FaAddressCard } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
 import { ThemeColors } from "../utils/enums";
-import { fetchUser, logoutAction } from "../redux/actions/auth-actions";
+import { logoutAction } from "../redux/actions/auth-actions";
 
 const { Sider, Content } = Layout;
 
@@ -32,11 +32,6 @@ const DashboardView = () => {
   const [current, setCurrent] = useState<string>('dashboard');
 
   const isDarkTheme = theme === ThemeColors.DARK;
-
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
-
 
   useEffect(() => {
     const path = pathname.split('/')?.[1];

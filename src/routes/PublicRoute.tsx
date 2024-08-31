@@ -12,7 +12,7 @@ const PublicRoute = (props: PublicRouteProps) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
   if (!!token) {
-    return <Navigate to={'/dashboard'} state={location} />
+    return <Navigate to={'/'} state={location} />
   }
 
   return props.element;

@@ -6,8 +6,8 @@ import UserRouter from "./routes/UserRouter";
 import { useEffect } from "react";
 
 const App = () => {
-  const { lang } = useSelector((state: RootState) => state.config.language);
   const { theme } = useSelector((state: RootState) => state.config.themeColor);
+  const { lang } = useSelector((state: RootState) => state.config.language);
 
   const direction = lang === Languages.EN ? 'ltr': 'rtl';
   const isDarkTheme = theme === ThemeColors.DARK;

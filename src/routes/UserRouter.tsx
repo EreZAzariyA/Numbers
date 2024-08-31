@@ -16,7 +16,7 @@ const UserRouter = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Navigate to={'dashboard'} replace />} />
-      <Route path="/auth" element={<Navigate to={'sign-in'} replace />} />
+      <Route path="auth/" element={<Navigate to={'sign-in'} replace />} />
 
       <Route element={<PrivateRoute element={<DashboardView />} /> }>
         <Route path="/dashboard" element={<Dashboard />} />

@@ -22,13 +22,12 @@ export enum AuthActions {
 
 export const fetchUser = createAsyncThunk<{ user: UserModel, token: string }, null>(
   AuthActions.FETCH_USER,
-  async (_ , thunkApi) => {
+  async (_, thunkApi) => {
     try {
       const { user, token } = (thunkApi.getState() as RootState).auth;
       await thunkApi.dispatch(fetchCategoriesAction(user._id)).unwrap();
       await thunkApi.dispatch(fetchTransactions(user._id)).unwrap();
       await thunkApi.dispatch(fetchBankAccounts(user._id)).unwrap();
-
       return thunkApi.fulfillWithValue({ user, token });
     } catch (err: any) {
       console.log({err});
