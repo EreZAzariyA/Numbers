@@ -76,11 +76,12 @@ export const Filters = (props: FiltersProps) => {
       {props.categoryFilter && (
         <Col>
           <Select
-            value={props.filterState.category_id}
+            mode="multiple"
             allowClear
+            value={props.filterState.categories}
             style={{ width: 250 }}
             placeholder={t('placeholders.0')}
-            onChange={(val) => props.handleFilterChange('category_id', val)}
+            onChange={(val) => props.handleFilterChange('categories', val)}
             options={[...categories].map((c) => ({
               label: c.name,
               value: c._id,

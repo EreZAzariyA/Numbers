@@ -45,7 +45,8 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
     }
 
     fetch();
-  }, []);
+
+  }, [dispatch, message]);
 
   useEffect(() => {
     const locationArray = pathname.split('/');

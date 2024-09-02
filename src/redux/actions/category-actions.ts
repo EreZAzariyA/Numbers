@@ -12,7 +12,7 @@ export enum CategoriesActions {
 
 export const fetchCategoriesAction = createAsyncThunk<CategoryModel[], string>(
   CategoriesActions.FETCH_CATEGORIES,
-  async (user_id: string) => {
+  async (user_id) => {
     const response = await axios.get<CategoryModel[]>(config.urls.categories + `/${user_id}`);
     const userCategories = response.data;
     return userCategories || [];
@@ -23,7 +23,7 @@ export const addCategoryAction = createAsyncThunk<CategoryModel, {user_id: strin
   CategoriesActions.ADD_CATEGORY,
   async ({ user_id, categoryName }, thunkApi) => {
     try {
-      const response = await axios.post<CategoryModel>(config.urls.categories, { categoryName });
+      const response = await axios.post<CategoryModel>(config.urls.categories + `/${user_id}`, { categoryName });
       const addedCategory = response.data;
       return thunkApi.fulfillWithValue(addedCategory);
     } catch (err: any) {

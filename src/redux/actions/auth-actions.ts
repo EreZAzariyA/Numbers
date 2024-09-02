@@ -4,13 +4,12 @@ import { TokenResponse } from "@react-oauth/google";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import UserModel from "../../models/user-model";
 import CredentialsModel from "../../models/credentials-model";
-import { removeUserConfig, setUserLang, setUserTheme } from "../slicers/user-config-slicer";
+import { setUserLang, setUserTheme } from "../slicers/user-config-slicer";
 import config from "../../utils/config";
-import { message } from "antd";
-import { fetchTransactions } from "./transaction-actions";
-import { fetchCategoriesAction } from "./category-actions";
-import { fetchBankAccounts } from "./bank-actions";
 import { RootState } from "../store";
+import { fetchCategoriesAction } from "./category-actions";
+import { fetchTransactions } from "./transaction-actions";
+import { fetchBankAccounts } from "./bank-actions";
 
 export enum AuthActions {
   FETCH_USER = "auth/fetch-user",
@@ -38,13 +37,13 @@ export const fetchUser = createAsyncThunk<{ user: UserModel, token: string }, nu
 
 export const signupAction = createAsyncThunk<string, UserModel>(
   AuthActions.SIGN_UP,
-  async (user, thunkApi): Promise<string> => {
+  async (user, thunkApi) => {
     try {
       const response = await axios.post<string>(config.urls.auth.signup, user);
       const token = response.data;
-      return token;
+      return thunkApi.fulfillWithValue(token);
     } catch (err: any) {
-      message.error(err.message);
+      return thunkApi.rejectWithValue(err);
     }
   }
 );

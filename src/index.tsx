@@ -42,15 +42,13 @@ import("./App").then((RootApp) => {
   const App = RootApp.default;
 
   root.render(
-    <React.StrictMode>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-        <Provider store={store}>
-          <CookiesProvider defaultSetOptions={{ path: '/' }}>
-            <App />
-          </CookiesProvider>
-        </Provider>
-      </GoogleOAuthProvider>
-    </React.StrictMode>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <CookiesProvider defaultSetOptions={{ path: '/' }}>
+          <App />
+        </CookiesProvider>
+      </Provider>
+    </GoogleOAuthProvider>
   );
 });
 

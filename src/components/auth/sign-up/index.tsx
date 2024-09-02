@@ -1,6 +1,5 @@
 import { Button, Col, Form, Input, Row, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { getError } from "../../../utils/helpers";
 import UserModel from "../../../models/user-model";
 import { useAppDispatch } from "../../../redux/store";
 import { signupAction } from "../../../redux/actions/auth-actions";
@@ -13,13 +12,11 @@ const SignUp = () => {
 
   const onFinish = async (values: UserModel) => {
     try {
-      const result = await dispatch(signupAction(values));
-      if (result.payload) {
-        message.success("Sign-up Successfully");
-        navigate('/auth/sign-in');
-      }
+      await dispatch(signupAction(values)).unwrap();
+      message.success("Sign-up Successfully");
+      navigate('/auth/sign-in');
     } catch (err: any) {
-      message.error(getError(err));
+      message.error(err);
     }
   };
 

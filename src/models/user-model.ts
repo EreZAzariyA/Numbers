@@ -1,5 +1,4 @@
 import { TokenResponse } from "@react-oauth/google";
-import { AccountSavesType, CreditCardType, PastOrFutureDebits } from "../utils/types";
 
 export class EmailModel {
   email: string;

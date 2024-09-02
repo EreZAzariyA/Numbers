@@ -24,8 +24,8 @@ const DashboardSeconde = (props: DashboardSecondeProps) => {
   const { t } = useTranslation();
   let transactions: TransactionModel[] = [];
 
-  if (!!isArrayAndNotEmpty(transactions)) {
-    transactions  = filterInvoicesByStatus(props.transactions, TransactionStatusesType.COMPLETED);
+  if (isArrayAndNotEmpty(props.transactions)) {
+    transactions  = filterInvoicesByStatus(props.transactionsByMonth, TransactionStatusesType.COMPLETED);
     transactions = transactions.slice(0, 6);
   }
 

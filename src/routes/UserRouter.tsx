@@ -15,26 +15,22 @@ import PrivateRoute from "./PrivateRoute";
 const UserRouter = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Navigate to={'dashboard'} replace />} />
-      <Route path="auth/" element={<Navigate to={'sign-in'} replace />} />
-
-      <Route element={<PrivateRoute element={<DashboardView />} /> }>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/transactions" element={<Transactions />} />
-        <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/bank" element={<BankPage />} />
-        <Route path="/profile" element={<Profile />} />
-
+      <Route path="/" element={<PrivateRoute element={<DashboardView />} /> }>
+        <Route index element={<Navigate to={'/dashboard'} replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="transactions" element={<Transactions />} />
+        <Route path="categories" element={<CategoriesPage />} />
+        <Route path="bank" element={<BankPage />} />
+        <Route path="profile" element={<Profile />} />
         <Route path="page-not-found" element={<PageNotFound />} />
         <Route path="*" element={<Navigate to={'page-not-found'} replace />} />
       </Route>
 
       <Route path="/auth" element={<PublicRoute element={<AuthView />} />}>
+        <Route index element={<Navigate to={'sign-in'} replace />} />
         <Route path="sign-in" element={<PublicRoute element={<SignIn />} />} />
         <Route path="sign-up" element={<PublicRoute element={<SignUp />} />} />
-
-        <Route path="page-not-found" element={<p>Page not found</p>} />
-        <Route path="*" element={<Navigate to={'page-not-found'} replace />} />
+        <Route path="*" element={<Navigate to={'sign-in'} replace />} />
       </Route>
     </Routes>
   </BrowserRouter>

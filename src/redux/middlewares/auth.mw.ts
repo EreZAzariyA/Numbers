@@ -4,10 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import UserModel from "../../models/user-model";
 import { removeUserConfig, setUserLang, setUserTheme } from "../slicers/user-config-slicer";
 
-const authMiddleWare: Middleware = (store) => (next) => (action: any) => {
+const authMiddleWare: Middleware = (store) => (next) => async (action: any) => {
   const { dispatch } = store;
-  console.log(action);
-
 
   switch(action.type) {
     case signinAction.fulfilled.type:

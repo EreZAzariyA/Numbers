@@ -7,15 +7,16 @@ import DashboardFirst from "./DashboardFirst";
 import DashboardSeconde from "./DashboardSeconde";
 import DashboardThird from "./DashboardThird";
 import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
-import { DatePicker, Row } from "antd";
+import { DatePicker, Row, Skeleton } from "antd";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const { t } = useTranslation();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const { user, loading } = useSelector((state: RootState) => state.auth);
   const { transactions } = useSelector((state: RootState) => state.transactions);
   const { categories } = useSelector((state: RootState) => state.categories);
-  const banks = useSelector((state: RootState) => state.userBanks.account?.banks);
+  const { account } = useSelector((state: RootState) => state.userBanks);
+  const banks = account?.banks || [];
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
   const transactionsByMonth = getInvoicesBySelectedMonth(transactions, monthToDisplay);
@@ -40,13 +41,13 @@ const Dashboard = () => {
       </div>
       <div className="sub-title-container">
         <Row>
-          Hey {getUserfName(user)}, {getGreeting()}
+          {loading ? <Skeleton active paragraph={{ rows: 0 }} /> : (
+            <span>Hey {getUserfName(user)}, {getGreeting()}</span>
+          )}
         </Row>
       </div>
       <div className="page-inner-container">
         <DashboardFirst
-          user={user}
-          transactions={transactionsByMonth}
           categories={categories}
           monthToDisplay={monthToDisplay}
           account={banks?.[0]}

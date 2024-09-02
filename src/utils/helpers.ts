@@ -9,6 +9,7 @@ import CategoryModel from "../models/category-model";
 import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
 import { BankAccountModel } from "../models/bank-model";
 import { ThemeColors } from "./enums";
+import { PastOrFutureDebitType } from "./types";
 
 export type ColorType = {
   ICON: string;
@@ -334,4 +335,21 @@ export const getBanksTotal = (banks: BankAccountModel[]) => {
 export const getLoginFields = (companyId: SupportedCompaniesTypes) => {
   const company = SupportedScrapers[companyId];
   return company.loginFields;
+};
+
+export const getDebitsByDate = (account: BankAccountModel, selectedMonth: Dayjs): Partial<PastOrFutureDebitType> => {
+  if (!isArrayAndNotEmpty(account?.pastOrFutureDebits)) {
+    return;
+  };
+
+  return account.pastOrFutureDebits.find((debit) => {
+    const date = getDataFromStringDate(debit.debitMonth);
+    return date === selectedMonth.format('MM-YYYY');
+  });
+}
+
+const getDataFromStringDate = (stringDate: string): string => {
+  const month = parseInt(stringDate.substring(0, 2)) - 1;
+  const year = parseInt(stringDate.substring(2));
+  return dayjs().set('year', year).set('month', month).format('MM-YYYY');
 }
