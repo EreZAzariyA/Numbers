@@ -1,12 +1,10 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { Provider } from 'react-redux';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import store from './redux/store';
-import { CookiesProvider } from 'react-cookie';
 import interceptorsService from './services/InterceptorsService';
 import en from './messages/en.json';
 import he from './messages/he.json';
@@ -44,9 +42,7 @@ import("./App").then((RootApp) => {
   root.render(
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <Provider store={store}>
-        <CookiesProvider defaultSetOptions={{ path: '/' }}>
-          <App />
-        </CookiesProvider>
+        <App />
       </Provider>
     </GoogleOAuthProvider>
   );

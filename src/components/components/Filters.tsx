@@ -80,7 +80,7 @@ export const Filters = (props: FiltersProps) => {
             allowClear
             value={props.filterState.categories}
             style={{ width: 250 }}
-            placeholder={t('placeholders.0')}
+            placeholder={t('filters.placeholders.0')}
             onChange={(val) => props.handleFilterChange('categories', val)}
             options={[...categories].map((c) => ({
               label: c.name,
@@ -97,7 +97,7 @@ export const Filters = (props: FiltersProps) => {
             value={props.filterState.text}
             allowClear
             style={{ width: 250 }}
-            placeholder={t('placeholders.3')}
+            placeholder={t('filters.placeholders.3')}
             onChange={(val) => props.handleFilterChange('text', val.target.value)}
           />
         </Col>
@@ -109,10 +109,10 @@ export const Filters = (props: FiltersProps) => {
             value={props.filterState.status}
             allowClear
             style={{ width: 250 }}
-            placeholder={t('placeholders.2')}
+            placeholder={t('filters.placeholders.2')}
             onChange={(val) => props.handleFilterChange('status', val)}
             options={[...transactionStatus].map((c) => ({
-              label: c.name,
+              label: t(`transactions.status.${c.name?.toLocaleLowerCase()}`),
               value: c.value.toLocaleLowerCase(),
             }))}
           />
@@ -125,7 +125,7 @@ export const Filters = (props: FiltersProps) => {
             value={props.filterState.companyId}
             allowClear
             style={{ width: 250 }}
-            placeholder={t('placeholders.4')}
+            placeholder={t('filters.placeholders.4')}
             onChange={(val) => props.handleFilterChange('companyId', val)}
             options={Object.entries(SupportedCompaniesTypes).map(([key, val]) => ({
               label: CompaniesNames[val],
@@ -136,7 +136,9 @@ export const Filters = (props: FiltersProps) => {
       )}
 
       <Col>
-        <Button className="reset-btn" onClick={props.resetFilters}>Reset</Button>
+        <Button className="reset-btn" onClick={props.resetFilters}>
+          {t('filters.reset')}
+        </Button>
       </Col>
     </Row>
   )

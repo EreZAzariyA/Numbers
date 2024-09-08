@@ -1,14 +1,15 @@
-import { Button, Col, Form, Input, Row, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import UserModel from "../../../models/user-model";
 import { useAppDispatch } from "../../../redux/store";
+import UserModel from "../../../models/user-model";
 import { signupAction } from "../../../redux/actions/auth-actions";
+import { App, Button, Col, Form, Input, Row, Typography } from "antd";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { message } = App.useApp();
 
   const onFinish = async (values: UserModel) => {
     try {

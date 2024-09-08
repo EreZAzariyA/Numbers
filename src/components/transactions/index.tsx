@@ -10,11 +10,10 @@ import NewTransaction from "./newTransaction/newTransaction";
 import TotalAmountInput from "../components/TotalAmount";
 import { EditTable } from "../components/EditTable";
 import { Filters } from "../components/Filters";
-import { CompaniesNames } from "../../utils/definitions";
-import { TransactionStatuses } from "../../utils/transactions";
+import { TransactionStatusesType } from "../../utils/transactions";
 import { TotalAmountType } from "../../utils/enums";
 import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
-import { App, Button, Space, TableProps } from "antd";
+import { App, Button, Space, TableProps, Tooltip } from "antd";
 
 enum Steps {
   New_Transaction = "New_Transaction",
@@ -34,13 +33,49 @@ const Transactions = () => {
   const newTransWithCategory_idFromCategories = hash.split('#')?.[1];
   const [step, setStep] = useState<string>(hash ? Steps.New_Transaction : null);
   const [filterState, setFilterState] = useState({
-    category_id: null,
+    categories: [],
     dates: null,
     month: dayjs(),
     status: 'completed',
     text: null,
     companyId: null
   });
+
+  const dataSource = filtering(transactions);
+
+  function filtering (transactions: TransactionModel[] = []): TransactionModel[] {
+    let data = [...transactions];
+
+    if (!isArrayAndNotEmpty(transactions)) {
+      return [];
+    }
+    if (isArrayAndNotEmpty(filterState.categories)) {
+      data = data.filter((d) => filterState.categories.includes(d.category_id));
+    }
+    if (filterState.companyId) {
+      data = data.filter((d) => d.companyId === filterState.companyId);
+    }
+    if (filterState.dates && filterState.dates.length === 2) {
+      data = data.filter((d) => (
+        dayjs(d.date).valueOf() >= dayjs(filterState.dates[0]).startOf('day').valueOf() &&
+        dayjs(d.date).valueOf() <= dayjs(filterState.dates[1]).endOf('day').valueOf()
+      ));
+    }
+    if (filterState.month) {
+      data = data.filter((d) => (
+        dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
+        dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
+      ));
+    }
+    if (filterState.status) {
+      data = data.filter((d) => d.status === filterState.status);
+    }
+    if (filterState.text) {
+      data = data.filter((d) => d.description.startsWith(filterState.text));
+    }
+
+    return data;
+  };
 
   const onFinish = async (transaction: TransactionModel) => {
     if (!user) {
@@ -107,54 +142,21 @@ const Transactions = () => {
 
   const resetFilters = () => {
     setFilterState({
-      category_id: null,
+      categories: [],
       dates: [],
       month: dayjs(),
-      status: 'completed',
+      status: TransactionStatusesType.COMPLETED,
       text: null,
       companyId: null,
     });
   };
 
-  const filtering = (transactions: TransactionModel[] = []) => {
-    if (!isArrayAndNotEmpty(transactions)) {
-      return [];
-    }
-    let data = [...transactions];
-    if (filterState.category_id) {
-      data = data.filter((d) => d.category_id === filterState.category_id);
-    }
-    if (filterState.companyId) {
-      data = data.filter((d) => d.companyId === filterState.companyId);
-    }
-    if (filterState.dates && filterState.dates.length === 2) {
-      data = data.filter((d) => (
-        dayjs(d.date).valueOf() >= dayjs(filterState.dates[0]).startOf('day').valueOf() &&
-        dayjs(d.date).valueOf() <= dayjs(filterState.dates[1]).endOf('day').valueOf()
-      ));
-    }
-    if (filterState.month) {
-      data = data.filter((d) => (
-        dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
-        dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
-      ));
-    }
-    if (filterState.status) {
-      data = data.filter((d) => d.status === filterState.status);
-    }
-    if (filterState.text) {
-      data = data.filter((d) => d.description.startsWith(filterState.text));
-    }
-
-    return data;
-  };
-  const dataSource = filtering(transactions);
-
   const columns: TableProps<TransactionModel>['columns'] = [
     {
-      title: 'Date',
+      title: t('transactions.table.header.date'),
       dataIndex: 'date',
       key: 'date',
+      width: 100,
       render: (text) => (
         <span>{new Date(text).toLocaleDateString()}</span>
       ),
@@ -162,9 +164,10 @@ const Transactions = () => {
       defaultSortOrder: 'ascend'
     },
     {
-      title: 'Category',
+      title: t('transactions.table.header.category'),
       dataIndex: 'category_id',
       key: 'category',
+      width: 120,
       render:(value) => {
         const category = categories.find((c) => c._id === value);
         return (
@@ -173,32 +176,50 @@ const Transactions = () => {
       }
     },
     {
-      title: 'Description',
+      title: t('transactions.table.header.description'),
       dataIndex: 'description',
       key: 'description',
-      width: 250
+      width: 130,
+      ellipsis: {
+        showTitle: false
+      },
+      render: (val) => (
+        <Tooltip title={val}>
+          {val}
+        </Tooltip>
+      )
     },
     {
-      title: 'Amount',
+      title: t('transactions.table.header.amount'),
       dataIndex: 'amount',
       key: 'amount',
+      width: 100,
       render: (val) => (
         asNumString(val)
       )
     },
     {
-      title: 'Status',
+      title: t('transactions.table.header.status'),
       dataIndex: 'status',
       key: 'status',
-      render: (val) => {
-        return (TransactionStatuses as any)[val]
-      }
+      width: 110,
+      render: (val) => (
+        <span>{t(`transactions.status.${val}`)}</span>
+      )
     },
     {
-      title: 'Company',
+      title: t('transactions.table.header.company'),
       dataIndex: 'companyId',
       key: 'companyId',
-      render: (val) => (CompaniesNames[val])
+      width: 100,
+      ellipsis: {
+        showTitle: false
+      },
+      render: (val) => (
+        <Tooltip title={t(`companies.${val}`)}>
+          {t(`companies.${val}`)}
+        </Tooltip>
+      )
     }
   ];
 

@@ -1,13 +1,12 @@
-import { useSelector } from "react-redux";
-import { RootState } from "./redux/store";
+import { useEffect } from "react";
+import { useAppSelector } from "./redux/store";
+import UserRouter from "./routes/UserRouter";
 import { Languages, ThemeColors } from "./utils/enums";
 import { ConfigProvider, theme as AntdThemes, App as AppContainer } from "antd";
-import UserRouter from "./routes/UserRouter";
-import { useEffect } from "react";
 
 const App = () => {
-  const { theme } = useSelector((state: RootState) => state.config.themeColor);
-  const { lang } = useSelector((state: RootState) => state.config.language);
+  const { theme } = useAppSelector((state) => state.config.themeColor);
+  const { lang } = useAppSelector((state) => state.config.language);
 
   const direction = lang === Languages.EN ? 'ltr': 'rtl';
   const isDarkTheme = theme === ThemeColors.DARK;

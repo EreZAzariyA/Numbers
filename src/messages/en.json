@@ -34,11 +34,52 @@
       "Credit cards"
     ]
   },
-  "placeholders": [
-    "Search By Category",
-    "Search For Category",
-    "Search By Status",
-    "Search By Text",
-    "Search By Company"
-  ]
+  "transactions": {
+    "table": {
+      "header": {
+        "date": "Date",
+        "category": "Category",
+        "description": "Description",
+        "amount": "Amount",
+        "status": "Status",
+        "company": "Company",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending"
+    }
+  },
+  "categories": {
+    "table": {
+      "header": {
+        "category": "Category",
+        "total-spent": "Total spent",
+        "actions": "Actions"
+      }
+    },
+    "buttons": {
+      "add-button": "Add Category",
+      "actions": [
+        "Add Transaction",
+        "Edit",
+        "Delete"
+      ]
+    }
+  },
+  "filters": {
+    "placeholders": [
+      "Search By Category",
+      "Search For Category",
+      "Search By Status",
+      "Search By Text",
+      "Search By Company"
+    ],
+    "reset": "Reset"
+  },
+  "companies": {
+    "discount": "Discount Bank",
+    "max": "Max"
+  }
 }

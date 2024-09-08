@@ -2,10 +2,9 @@ import i18n from "i18next";
 import "dayjs/locale/he";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import { changeLanguageAction } from "../redux/actions/user-config-actions";
-import { fetchUser, logoutAction } from "../redux/actions/auth-actions";
+import { fetchUserDataAction, logoutAction } from "../redux/actions/auth-actions";
 import DarkModeButton from "../components/components/Darkmode-button";
 import Logo from "../components/components/logo/logo";
 import { MenuItem } from "../utils/antd-types";
@@ -29,23 +28,22 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const dispatch = useAppDispatch();
   const { message } = App.useApp();
   const { pathname } = useLocation();
-  const { user } = useSelector((state: RootState) => state.auth);
-  const { lang, loading } = useSelector((state: RootState) => state.config.language);
+  const { user } = useAppSelector((state) => state.auth);
+  const { lang, loading } = useAppSelector((state) => state.config.language);
   const [current, setCurrent] = useState<string>('1');
   const [isOpen, setIsOpen] = useState(false);
   const { isMobile } = useResize();
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchUserData = async () => {
       try {
-        await dispatch(fetchUser());
+        await dispatch(fetchUserDataAction()).unwrap();
       } catch (err: any) {
-        message.error(err.message);
+        message.error(err);
       }
-    }
+    };
 
-    fetch();
-
+    fetchUserData();
   }, [dispatch, message]);
 
   useEffect(() => {
@@ -69,8 +67,11 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
     }
 
     try {
-      const res = await dispatch(changeLanguageAction({ user_id: user._id, language: lang })).unwrap();
-      i18n.changeLanguage(res);
+      const language = await dispatch(changeLanguageAction({
+        user_id: user._id,
+        language: lang
+      })).unwrap();
+      i18n.changeLanguage(language);
     } catch (err: any) {
       message.error(err.message);
     }
@@ -94,7 +95,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
                   selectable: true,
                   selectedKeys: [current],
                   onClick: onClick,
-                  className: "dropdown-menu"
+                  className: "dropdown-menu",
                 }}
                 arrow
                 overlayClassName="dropdown-container"

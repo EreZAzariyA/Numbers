@@ -6,6 +6,7 @@ import { filterInvoicesByStatus, isArrayAndNotEmpty } from "../../../utils/helpe
 import { TransactionStatusesType } from "../../../utils/transactions";
 import "./DashboardSeconde.css";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../../redux/store";
 
 interface DashboardSecondeProps {
   user: UserModel;
@@ -23,6 +24,7 @@ export enum TransactionsTableTypes {
 const DashboardSeconde = (props: DashboardSecondeProps) => {
   const { t } = useTranslation();
   let transactions: TransactionModel[] = [];
+  const { loading } = useAppSelector((state) => state.transactions);
 
   if (isArrayAndNotEmpty(props.transactions)) {
     transactions  = filterInvoicesByStatus(props.transactionsByMonth, TransactionStatusesType.COMPLETED);
@@ -45,6 +47,7 @@ const DashboardSeconde = (props: DashboardSecondeProps) => {
             transactions={transactions}
             type={TransactionsTableTypes.Last_Transactions}
             date={props.monthToDisplay}
+            loading={loading}
           />
         </div>
       </div>

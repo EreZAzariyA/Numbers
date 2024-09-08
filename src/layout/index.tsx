@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -15,7 +15,7 @@ import { CiBank } from "react-icons/ci";
 import { FaAddressCard } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
-import { ThemeColors } from "../utils/enums";
+import { Languages, ThemeColors } from "../utils/enums";
 import { logoutAction } from "../redux/actions/auth-actions";
 
 const { Sider, Content } = Layout;
@@ -27,11 +27,15 @@ const DashboardView = () => {
   const { pathname } = useLocation();
   const { isMobile } = useResize();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { theme } = useSelector((state: RootState) => state.config.themeColor);
+  const { themeColor: { theme }, language: { lang } } = useSelector((state: RootState) => state.config);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile);
   const [current, setCurrent] = useState<string>('dashboard');
 
   const isDarkTheme = theme === ThemeColors.DARK;
+  const isEN = lang === Languages.EN;
+  const style: React.CSSProperties = {
+    textAlign: isEN ? 'left' : 'right'
+  }
 
   useEffect(() => {
     const path = pathname.split('/')?.[1];
@@ -46,23 +50,27 @@ const DashboardView = () => {
     getMenuItem(
       t('menu.account.1'),
       'profile',
-      <AiOutlineProfile size={Sizes.SUB_MENU_ICON} />
+      <AiOutlineProfile size={Sizes.SUB_MENU_ICON} />,
+      null, style
     ),
     getMenuItem(
       t('menu.account.5'),
       'sign-out',
       <AiOutlineLogout color={Colors.DANGER} size={Sizes.SUB_MENU_ICON} />,
+      null, style
     )
   ] : [
     getMenuItem(
       'Sign-in',
       'auth/sign-in',
-      <BiLogInCircle size={Sizes.SUB_MENU_ICON} />
+      <BiLogInCircle size={Sizes.SUB_MENU_ICON} />,
+      null, style
     ),
     getMenuItem(
       'Sign-up',
       'auth/sign-up',
-      <FaAddressCard size={Sizes.SUB_MENU_ICON} />
+      <FaAddressCard size={Sizes.SUB_MENU_ICON} />,
+      null, style
     ),
   ];
 
@@ -70,28 +78,32 @@ const DashboardView = () => {
     getMenuItem(
       t('menu.dashboard'),
       'dashboard',
-      <RxDashboard size={Sizes.MENU_ICON} />
+      <RxDashboard size={Sizes.MENU_ICON} />,
+      null, style
     ),
     getMenuItem(
       t('menu.transactions'),
       'transactions',
-      <BsReceipt size={Sizes.MENU_ICON} />
+      <BsReceipt size={Sizes.MENU_ICON} />,
+      null, style
     ),
     getMenuItem(
       t('menu.categories'),
       'categories',
-      <CiCircleList size={Sizes.MENU_ICON} />
+      <CiCircleList size={Sizes.MENU_ICON} />,
+      null, style
     ),
     getMenuItem(
       t('menu.bankAccount'),
       'bank',
-      <CiBank size={Sizes.MENU_ICON} />
+      <CiBank size={Sizes.MENU_ICON} />,
+      null, style
     ),
     getMenuItem(
       t('menu.account.0'),
       'account',
       <VscAccount size={Sizes.MENU_ICON} />,
-      accountItems
+      accountItems, style
     )
   ];
 

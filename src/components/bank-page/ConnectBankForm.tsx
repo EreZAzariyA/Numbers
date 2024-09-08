@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input, Modal, Select, Space, Typography, message } from "antd";
+import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
 import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../utils/antd-types";
 import { useState } from "react";
@@ -10,8 +10,6 @@ import { BankAccountModel } from "../../models/bank-model";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { connectBankAccount } from "../../redux/actions/bank-actions";
 import { useSelector } from "react-redux";
-
-const { confirm } = Modal;
 
 export enum ConnectBankFormType {
   Connect_Bank = "Connect_Bank",
@@ -27,6 +25,7 @@ interface ConnectBankFormProps {
 };
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
+  const { message, modal } = App.useApp();
   const dispatch = useAppDispatch();
   const { loading: isLoading } = useSelector((state: RootState) => state.userBanks);
   const [selectedCompany, setSelectedCompany] = useState({
@@ -36,7 +35,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   });
 
   const bankList: MenuItem[] = Object.entries(SupportedCompaniesTypes).map(([bank, value]) => (
-    getMenuItem(CompaniesNames[bank] || bank, bank, null, null, null, value)
+    getMenuItem(CompaniesNames[bank] || bank, bank, null, null, null, null, value)
   ));
 
   const onSelectCompany = (companyId: SupportedCompaniesTypes) => {
@@ -83,7 +82,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   };
 
   const showTransImportConfirmation = async (transactions: Transaction[]): Promise<void> => {
-    confirm({
+    modal.confirm({
       okText: 'Import',
       onOk: () => onTransactionsImportOk(transactions),
       content: `We found ${transactions.length} transactions, would you like to import them?`

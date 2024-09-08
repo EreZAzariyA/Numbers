@@ -8,6 +8,10 @@ html,
   height: 100%;
 }
 
+#g_a11y_announcement {
+  right: 0 !important;
+}
+
 * {
   box-sizing: border-box;
 

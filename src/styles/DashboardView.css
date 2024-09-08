@@ -56,6 +56,10 @@
   column-gap: 50px;
 }
 
+.rtl-direction .ant-layout-sider .ant-menu .ant-menu-item {
+  text-align: right;
+}
+
 @media (max-width: 768px) {
   .main-layout .ant-layout-header {
     padding: 5px 10px 5px 0;

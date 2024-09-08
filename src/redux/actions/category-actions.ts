@@ -32,7 +32,7 @@ export const addCategoryAction = createAsyncThunk<CategoryModel, {user_id: strin
   }
 );
 
-export const updateCategoryAction = createAsyncThunk<CategoryModel, {user_id: string, category: CategoryModel}>(
+export const updateCategoryAction = createAsyncThunk<CategoryModel, { user_id: string, category: Partial<CategoryModel> }>(
   CategoriesActions.UPDATE_CATEGORY,
   async ({ user_id, category }, thunkApi) => {
     const response = await axios.put<CategoryModel>(config.urls.categories + `/${user_id}`, category);

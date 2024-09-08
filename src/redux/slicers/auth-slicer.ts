@@ -1,7 +1,7 @@
-import { ActionReducerMapBuilder, createSlice, SerializedError } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode';
+import { ActionReducerMapBuilder, createSlice, SerializedError } from '@reduxjs/toolkit'
 import UserModel from '../../models/user-model';
-import { fetchUser, googleSignInAction, logoutAction, signinAction, signupAction } from '../actions/auth-actions';
+import { fetchUserDataAction, googleSignInAction, logoutAction, signinAction, signupAction } from '../actions/auth-actions';
 
 export interface AuthState {
   token: string | null;
@@ -22,22 +22,20 @@ const initialState: AuthState = {
 
 const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
   // Fetch-User
-  builder.addCase(fetchUser.pending, (state) => ({
+  builder.addCase(fetchUserDataAction.pending, (state) => ({
     ...state,
     loading: true,
     error: null
   }))
-  .addCase(fetchUser.rejected, (state, action) => ({
+  .addCase(fetchUserDataAction.rejected, (state, action) => ({
     ...state,
     loading: false,
     error: action.error
   }))
-  .addCase(fetchUser.fulfilled, (state, action) => ({
+  .addCase(fetchUserDataAction.fulfilled, (state, action) => ({
     ...state,
     loading: false,
     error: null,
-    user: action.payload.user,
-    token: action.payload.token
   }));
 
   // Sign-In
@@ -121,23 +119,8 @@ const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
 const authSlicer = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-    updateUserToken(state, action) {
-      localStorage.setItem('token', action.payload);
-      state = {
-        token: action.payload,
-        user: jwtDecode(action.payload),
-        error: null,
-        loading: false
-      }
-      return state;
-    }
-  },
+  reducers: null,
   extraReducers
 });
-
-export const {
-  updateUserToken
-} = authSlicer.actions;
 
 export default authSlicer.reducer;

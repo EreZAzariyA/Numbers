@@ -15,7 +15,8 @@ const store = configureStore({
     userBanks: bankSlicer,
     config: userConfigSlicer,
   },
-  middleware: (defaultMiddleware) => (defaultMiddleware().concat(authMiddleWare)),
+  middleware: (defaultMiddleware) =>
+    defaultMiddleware().concat(authMiddleWare),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

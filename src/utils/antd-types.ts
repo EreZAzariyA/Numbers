@@ -3,9 +3,10 @@ import { MenuProps } from "antd";
 export type MenuItem = Required<MenuProps>['items'][number];
 export const getMenuItem = (
   label: React.ReactNode,
-  key?: React.Key | null,
-  icon?: React.ReactNode,
+  key: React.Key | null,
+  icon: React.ReactNode,
   children?: MenuItem[],
+  style?: React.CSSProperties,
   type?: 'group',
   value?: string,
 ): MenuItem  => {
@@ -13,12 +14,15 @@ export const getMenuItem = (
     key,
     icon,
     children,
+    style: {
+      ...style,
+      display: 'flex',
+      alignItems: 'center',
+      columnGap: '10px',
+    },
     label,
     type,
     value,
-    style: {
-      textAlign: 'left'
-    }
   } as MenuItem;
 };
 

@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { App, Button, Col, Divider, Input, Popconfirm, Row, Space, Table, TableProps, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 import NewCategory from "./newCategory/newCategory";
 import CategoryModel from "../../models/category-model";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../../redux/store";
-import { getError, isArrayAndNotEmpty } from "../../utils/helpers";
-import { useTranslation } from "react-i18next";
 import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
-import { useNavigate } from "react-router-dom";
+import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
+import { App, Button, Col, Divider, Input, Popconfirm, Row, Space, Table, TableProps, Typography } from "antd";
 
 enum Steps {
   New_Category = "New_Category",
@@ -16,15 +15,15 @@ enum Steps {
 
 const CategoriesPage = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { message } = App.useApp();
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const user = useSelector((state: RootState) => (state.auth.user));
-  const { categories, loading } = useSelector((state: RootState) => (state.categories));
-  const [selectedCategory, setSelectedCategory] = useState<CategoryModel>(null);
+  const { user } = useAppSelector((state) => state.auth);
+  const { categories, loading: isLoading } = useAppSelector((state) => state.categories);
+  const [selectedCategory, setSelectedCategory] = useState<Partial<CategoryModel>>(null);
   const [step, setStep] = useState<string>(null);
-  const [filterState, setFilterState] = useState({
-    category: '',
+  const [filterState, setFilterState] = useState<Partial<CategoryModel>>({
+    name: '',
   });
 
   const onBack = () => {
@@ -32,12 +31,12 @@ const CategoriesPage = () => {
     setSelectedCategory(null);
   };
 
-  const onEdit = (record: CategoryModel) => {
+  const onEdit = (record: Partial<CategoryModel>) => {
     setSelectedCategory(record);
     setStep(Steps.Update_Category);
   };
 
-  const onFinish = async (values: CategoryModel) => {
+  const onFinish = async (values: Partial<CategoryModel>) => {
     let successMessage = '';
 
     try {
@@ -77,7 +76,7 @@ const CategoriesPage = () => {
   };
 
   const resetFilters = () => {
-    setFilterState({ category: null });
+    setFilterState({ name: null });
   };
 
   const filtering = (categories: CategoryModel[] = []) => {
@@ -87,8 +86,8 @@ const CategoriesPage = () => {
 
     let data = [...categories];
 
-    if (filterState.category) {
-      data = data.filter((d) => d.name.toLowerCase().startsWith(filterState.category.toLowerCase()));
+    if (filterState.name) {
+      data = data.filter((d) => d.name.toLowerCase().startsWith(filterState.name.toLowerCase()));
     }
 
     return data;
@@ -97,27 +96,36 @@ const CategoriesPage = () => {
 
   const columns: TableProps<CategoryModel>['columns'] = [
     {
-      title: 'Category',
+      title: t('categories.table.header.category'),
       dataIndex: 'name',
       key: 'name',
       width: 80,
       fixed: 'left'
     },
     {
-      title: 'Actions',
+      title: t('categories.table.header.total-spent'),
+      dataIndex: 'spent',
+      key: 'spent',
+      width: 80,
+      render: (val: number) => (
+        <span>{asNumString(val)}</span>
+      )
+    },
+    {
+      title: t('categories.table.header.actions'),
       key: 'action',
       width: 200,
       render: (_: any, record: any) => (
         <Row align={'middle'}>
           <Col>
             <Typography.Link onClick={() => onEdit(record)}>
-              Edit
+              {t('categories.buttons.actions.1')}
             </Typography.Link>
           </Col>
           <Divider type="vertical" />
           <Col>
             <Typography.Link onClick={() => navigate({ pathname: '/transactions', hash: record._id })}>
-              Add transaction
+              {t('categories.buttons.actions.0')}
             </Typography.Link>
           </Col>
           <Divider type="vertical" />
@@ -127,7 +135,7 @@ const CategoriesPage = () => {
               onConfirm={() => onRemove(record?._id)}
             >
               <Typography.Link>
-                Delete
+                {t('categories.buttons.actions.2')}
               </Typography.Link>
             </Popconfirm>
           </Col>
@@ -153,14 +161,16 @@ const CategoriesPage = () => {
                 <Col>
                   <Input
                     type="text"
-                    placeholder={t('placeholders.1')}
+                    placeholder={t('filters.placeholders.1')}
                     allowClear
-                    value={filterState.category}
-                    onChange={(e) => setFilterState({...filterState, category: e.target.value})}
+                    value={filterState.name}
+                    onChange={(e) => setFilterState({ ...filterState, name: e.target.value })}
                   />
                 </Col>
                 <Col>
-                  <Button className="reset-btn" onClick={resetFilters}>Reset</Button>
+                  <Button className="reset-btn" onClick={resetFilters}>
+                    {t('filters.reset')}
+                  </Button>
                 </Col>
               </Row>
             </div>
@@ -168,24 +178,24 @@ const CategoriesPage = () => {
               dataSource={dataSource}
               columns={columns}
               rowKey={'_id'}
-              loading={loading}
+              loading={isLoading}
             />
             <Button onClick={() => setStep(Steps.New_Category)}>
-              Add Category
+              {t('categories.buttons.add-button')}
             </Button>
           </Space>
         )}
         {(step && step === Steps.New_Category) && (
           <NewCategory
             onFinish={onFinish}
-            isLoading={loading}
+            isLoading={isLoading}
           />
         )}
         {(step && step === Steps.Update_Category) && (
           <NewCategory
             onFinish={onFinish}
             category={selectedCategory}
-            isLoading={loading}
+            isLoading={isLoading}
           />
         )}
       </div>

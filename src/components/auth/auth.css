@@ -67,9 +67,3 @@
   left: 50%;
   transform: translateX(-50%);
 }
-.auth-form .google-login button {
-  border-radius: 0;
-
-  display: flex;
-  gap: 5px;
-}

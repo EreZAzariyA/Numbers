@@ -1,6 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { TokenResponse } from "@react-oauth/google";
+import { CredentialResponse } from "@react-oauth/google";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import UserModel from "../../models/user-model";
 import CredentialsModel from "../../models/credentials-model";
@@ -12,25 +12,23 @@ import { fetchTransactions } from "./transaction-actions";
 import { fetchBankAccounts } from "./bank-actions";
 
 export enum AuthActions {
-  FETCH_USER = "auth/fetch-user",
+  FETCH_USER_DATA = "auth/fetch-user-data",
   SIGN_UP = "auth/sign-up",
   SIGN_IN = "auth/sign-in",
   GOOGLE_SIGN_IN = "auth/google-sign-in",
   LOGOUT = "auth/logout"
 };
 
-export const fetchUser = createAsyncThunk<{ user: UserModel, token: string }, null>(
-  AuthActions.FETCH_USER,
+export const fetchUserDataAction = createAsyncThunk<void>(
+  AuthActions.FETCH_USER_DATA,
   async (_, thunkApi) => {
     try {
-      const { user, token } = (thunkApi.getState() as RootState).auth;
+      const { user } = (thunkApi.getState() as RootState).auth;
+      await thunkApi.dispatch(fetchBankAccounts(user._id)).unwrap();
       await thunkApi.dispatch(fetchCategoriesAction(user._id)).unwrap();
       await thunkApi.dispatch(fetchTransactions(user._id)).unwrap();
-      await thunkApi.dispatch(fetchBankAccounts(user._id)).unwrap();
-      return thunkApi.fulfillWithValue({ user, token });
     } catch (err: any) {
-      console.log({err});
-      thunkApi.rejectWithValue(err.message);
+      thunkApi.rejectWithValue(err);
     }
   }
 );
@@ -65,9 +63,9 @@ export const signinAction = createAsyncThunk<string, CredentialsModel>(
   }
 );
 
-export const googleSignInAction = createAsyncThunk(
+export const googleSignInAction = createAsyncThunk<string, CredentialResponse>(
   AuthActions.GOOGLE_SIGN_IN,
-  async (tokenResponse: TokenResponse, thunkApi) => {
+  async (tokenResponse, thunkApi) => {
     const response = await axios.post<string>(config.urls.auth.googleSignIn, tokenResponse);
     const token = response.data;
     if (!!token) {

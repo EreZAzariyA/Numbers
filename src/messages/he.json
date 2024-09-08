@@ -33,10 +33,51 @@
       "עוד תנועות"
     ]
   },
-  "placeholders": [
-    "חיפוש לפי קטגוריה",
-    "חיפוש קטגוריה",
-    "חיפוש לפי סטטוס",
-    "חיפוש לפי טקסט"
-  ]
+  "transactions": {
+    "table": {
+      "header": {
+        "date": "תאריך",
+        "category": "קטגוריה",
+        "description": "תיאור",
+        "amount": "סכום",
+        "status": "סטטוס",
+        "company": "חברה",
+        "actions": "פעולות"
+      }
+    },
+    "status": {
+      "completed": "הסתיים",
+      "pending": "ממתין"
+    }
+  },
+  "categories": {
+    "table": {
+      "header": {
+        "category": "קטגוריה",
+        "total-spent": "סך-הכל",
+        "actions": "פעולות"
+      }
+    },
+    "buttons": {
+      "add-button": "הוסף קטגוריה"
+    }
+  },
+  "actions": [
+    "Add Transaction",
+    "Edit",
+    "Delete"
+  ],
+  "filters": {
+    "placeholders": [
+      "חיפוש לפי קטגוריה",
+      "חיפוש קטגוריה",
+      "חיפוש לפי סטטוס",
+      "חיפוש לפי טקסט"
+    ],
+    "reset": "איפוס"
+  },
+  "companies": {
+    "discount": "בנק דיסקונט",
+    "max": "מקס"
+  }
 }

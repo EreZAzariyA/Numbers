@@ -4,14 +4,14 @@ import { useState } from "react";
 import CategoryModel from "../../../models/category-model";
 
 interface NewCategoryProps {
-  category?: CategoryModel;
-  onFinish: (values: CategoryModel) => void;
+  category?: Partial<CategoryModel>;
+  onFinish: (values: Partial<CategoryModel>) => void;
   isLoading?: boolean;
 };
 
 const NewCategory = (props: NewCategoryProps) => {
   const [form] = Form.useForm();
-  const [initialValues, setInitialValues] = useState<CategoryModel>({
+  const [initialValues, setInitialValues] = useState<Partial<CategoryModel>>({
     _id: props.category?._id || null,
     name: props.category?.name || null,
   });

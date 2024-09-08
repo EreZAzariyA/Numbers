@@ -320,7 +320,6 @@ export const getBanksTotal = (banks: BankAccountModel[]) => {
   let arr = [];
 
   if (!isArrayAndNotEmpty(banks)) {
-    console.log('empty');
     return;
   }
 

@@ -43,12 +43,12 @@ abstract class Config {
       transactions: baseUrl + "transactions",
       categories: baseUrl + "categories",
       bank: {
-        fetchAllBanksAccounts: baseUrl + "bank-account/fetch-all-banks-accounts",
-        fetchOneBankAccount: baseUrl + "bank-account/fetch-bank-account",
-        connectBank: baseUrl + "bank-account/connect-bank",
-        refreshBankData: baseUrl + "bank-account/refresh-bank-data",
-        updateBankDetails: baseUrl + "bank-account/update-bank-details",
-        importTransactions: baseUrl + "bank-account/import-transactions",
+        fetchAllBanksAccounts: baseUrl + "banks/fetch-all-banks-accounts",
+        fetchOneBankAccount: baseUrl + "banks/fetch-bank-account",
+        connectBank: baseUrl + "banks/connect-bank",
+        refreshBankData: baseUrl + "banks/refresh-bank-data",
+        updateBankDetails: baseUrl + "banks/update-bank-details",
+        importTransactions: baseUrl + "banks/import-transactions",
       }
     }
   };
