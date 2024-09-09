@@ -14,12 +14,7 @@ export const getMenuItem = (
     key,
     icon,
     children,
-    style: {
-      ...style,
-      display: 'flex',
-      alignItems: 'center',
-      columnGap: '10px',
-    },
+    style,
     label,
     type,
     value,

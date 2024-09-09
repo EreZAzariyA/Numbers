@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { RootState, useAppDispatch } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import DashboardHeader from "./DashboardHeader";
 import { Colors, Sizes, useResize } from "../utils/helpers";
 import { MenuItem, getMenuItem } from "../utils/antd-types";
@@ -26,12 +25,13 @@ const DashboardView = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const { isMobile } = useResize();
-  const { user } = useSelector((state: RootState) => state.auth);
-  const { themeColor: { theme }, language: { lang } } = useSelector((state: RootState) => state.config);
+  const { user } = useAppSelector((state) => state.auth);
+  const { themeColor: { theme }, language: { lang } } = useAppSelector((state) => state.config);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile);
   const [current, setCurrent] = useState<string>('dashboard');
 
   const isDarkTheme = theme === ThemeColors.DARK;
+  const themeToSet = isDarkTheme ? ThemeColors.DARK : ThemeColors.LIGHT;
   const isEN = lang === Languages.EN;
   const style: React.CSSProperties = {
     textAlign: isEN ? 'left' : 'right'
@@ -116,7 +116,6 @@ const DashboardView = () => {
     setCurrent(e.key);
   };
 
-  const themeToSet = isDarkTheme ? ThemeColors.DARK : ThemeColors.LIGHT;
   return (
     <Layout className="main-layout">
       <DashboardHeader
