@@ -7,7 +7,7 @@ import { RootState, useAppDispatch } from "../../redux/store";
 import { addTransaction, removeTransaction, updateTransaction } from "../../redux/actions/transaction-actions";
 import TransactionModel from "../../models/transaction";
 import NewTransaction from "./newTransaction/newTransaction";
-import TotalAmountInput from "../components/TotalAmount";
+import { TotalAmountInput } from "../components/TotalAmount";
 import { EditTable } from "../components/EditTable";
 import { Filters } from "../components/Filters";
 import { TransactionStatusesType } from "../../utils/transactions";
@@ -264,7 +264,7 @@ const Transactions = () => {
               }}
             />
             <Button onClick={() => setStep(Steps.New_Transaction)}>
-              Add Transaction
+              {t('transactions.buttons.add')}
             </Button>
           </Space>
         )}

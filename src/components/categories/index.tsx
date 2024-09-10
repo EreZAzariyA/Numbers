@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import NewCategory from "./newCategory/newCategory";
 import CategoryModel from "../../models/category-model";
 import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
 import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
-import { App, Button, Col, Divider, Input, Popconfirm, Row, Space, Table, TableProps, Typography } from "antd";
+import { App, Button, Col, Input, Row, Space, TableProps } from "antd";
+import { EditTable } from "../components/EditTable";
 
 enum Steps {
   New_Category = "New_Category",
@@ -15,7 +15,6 @@ enum Steps {
 
 const CategoriesPage = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { message } = App.useApp();
   const { t } = useTranslation();
   const { user } = useAppSelector((state) => state.auth);
@@ -31,7 +30,7 @@ const CategoriesPage = () => {
     setSelectedCategory(null);
   };
 
-  const onEdit = (record: Partial<CategoryModel>) => {
+  const onEdit = (record: Partial<CategoryModel>): void => {
     setSelectedCategory(record);
     setStep(Steps.Update_Category);
   };
@@ -111,37 +110,6 @@ const CategoriesPage = () => {
         <span>{asNumString(val)}</span>
       )
     },
-    {
-      title: t('categories.table.header.actions'),
-      key: 'action',
-      width: 200,
-      render: (_: any, record: any) => (
-        <Row align={'middle'}>
-          <Col>
-            <Typography.Link onClick={() => onEdit(record)}>
-              {t('categories.buttons.actions.1')}
-            </Typography.Link>
-          </Col>
-          <Divider type="vertical" />
-          <Col>
-            <Typography.Link onClick={() => navigate({ pathname: '/transactions', hash: record._id })}>
-              {t('categories.buttons.actions.0')}
-            </Typography.Link>
-          </Col>
-          <Divider type="vertical" />
-          <Col>
-            <Popconfirm
-              title="Are you sure?"
-              onConfirm={() => onRemove(record?._id)}
-            >
-              <Typography.Link>
-                {t('categories.buttons.actions.2')}
-              </Typography.Link>
-            </Popconfirm>
-          </Col>
-        </Row>
-      ),
-    }
   ];
 
   return (
@@ -174,14 +142,21 @@ const CategoriesPage = () => {
                 </Col>
               </Row>
             </div>
-            <Table
-              dataSource={dataSource}
-              columns={columns}
-              rowKey={'_id'}
-              loading={isLoading}
+            <EditTable
+              type="categories"
+              onEditMode={onEdit}
+              removeHandler={onRemove}
+              tableProps={{
+                dataSource,
+                rowKey: '_id',
+                columns,
+                scroll: { x: 800 },
+                bordered: true,
+                loading: isLoading,
+              }}
             />
             <Button onClick={() => setStep(Steps.New_Category)}>
-              {t('categories.buttons.add-button')}
+              {t('categories.buttons.add')}
             </Button>
           </Space>
         )}

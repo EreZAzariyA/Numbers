@@ -23,29 +23,29 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
     width: 200,
     render: (_: any, record: any) => (
       <Row align={'middle'}>
-        <Col>
-          <Typography.Link onClick={() => props.onEditMode(record)}>
-            Edit
-          </Typography.Link>
-        </Col>
-        <Divider type="vertical" />
         {props.type === 'categories' && (
           <>
             <Col>
               <Typography.Link onClick={() => navigate({ pathname: '/transactions', hash: record._id })}>
-                Add transaction
+                {t('actions.0')}
               </Typography.Link>
             </Col>
             <Divider type="vertical" />
           </>
         )}
         <Col>
+          <Typography.Link onClick={() => props.onEditMode(record)}>
+            {t('actions.1')}
+          </Typography.Link>
+        </Col>
+        <Divider type="vertical" />
+        <Col>
           <Popconfirm
             title="Are you sure?"
             onConfirm={() => props.removeHandler(record?._id)}
           >
             <Typography.Link>
-              Delete
+              {t('actions.2')}
             </Typography.Link>
           </Popconfirm>
         </Col>
@@ -56,6 +56,10 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
   return (
     <Table
       {...props.tableProps}
+      pagination={{
+        hideOnSinglePage: true,
+        showSizeChanger: true
+      }}
     />
   );
 };

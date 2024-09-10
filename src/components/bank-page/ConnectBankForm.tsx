@@ -1,24 +1,23 @@
-import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
-import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
-import { MenuItem, getMenuItem } from "../../utils/antd-types";
 import { useState } from "react";
 import UserModel from "../../models/user-model";
-import { Transaction } from "../../utils/transactions";
-import bankServices from "../../services/banks";
-import { isArray, isArrayAndNotEmpty } from "../../utils/helpers";
 import { BankAccountModel } from "../../models/bank-model";
-import { RootState, useAppDispatch } from "../../redux/store";
 import { connectBankAccount } from "../../redux/actions/bank-actions";
-import { useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import bankServices from "../../services/banks";
+import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
+import { Transaction } from "../../utils/transactions";
+import { MenuItem, getMenuItem } from "../../utils/antd-types";
+import { isArray, isArrayAndNotEmpty } from "../../utils/helpers";
+import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
 
 export enum ConnectBankFormType {
   Connect_Bank = "Connect_Bank",
   Update_Bank = "Update_Bank"
-}
+};
 
 interface ConnectBankFormProps {
   user: UserModel;
-  handleOkButton?: (val: boolean) => void;
+  setIsOkBtnActive?: (val: boolean) => void;
   setResult?: (res: any) => void;
   formType?: ConnectBankFormType;
   bankDetails?: BankAccountModel;
@@ -27,7 +26,7 @@ interface ConnectBankFormProps {
 const ConnectBankForm = (props: ConnectBankFormProps) => {
   const { message, modal } = App.useApp();
   const dispatch = useAppDispatch();
-  const { loading: isLoading } = useSelector((state: RootState) => state.userBanks);
+  const { loading: isLoading } = useAppSelector((state) => state.userBanks);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: props.bankDetails?.bankName || false,
     companyId: props.bankDetails?.bankName || null,
@@ -62,7 +61,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
           showTransImportConfirmation(res.account.txns);
         }
         props?.setResult(res);
-        props.handleOkButton(true);
+        props.setIsOkBtnActive(true);
       } else {
         const result = await dispatch(connectBankAccount({ details: values, user_id: props.user._id }))
 
@@ -71,7 +70,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
             showTransImportConfirmation(result.payload.account.txns);
           }
           props?.setResult(result.payload);
-          props.handleOkButton(true);
+          props.setIsOkBtnActive(true);
         }
 
         return;

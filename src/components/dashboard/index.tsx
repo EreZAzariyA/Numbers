@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
 import { RootState } from "../../redux/store";
 import DashboardFirst from "./DashboardFirst";
-import DashboardSeconde from "./DashboardSeconde";
+import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
 import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
 import { DatePicker, Row, Skeleton } from "antd";
@@ -52,7 +52,7 @@ const Dashboard = () => {
           monthToDisplay={monthToDisplay}
           account={banks?.[0]}
         />
-        <DashboardSeconde
+        <DashboardSecond
           user={user}
           transactions={transactions}
           transactionsByMonth={transactionsByMonth}

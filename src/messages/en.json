@@ -46,6 +46,9 @@
         "actions": "Actions"
       }
     },
+    "buttons": {
+      "add": "Add Transaction"
+    },
     "status": {
       "completed": "Completed",
       "pending": "Pending"
@@ -60,12 +63,7 @@
       }
     },
     "buttons": {
-      "add-button": "Add Category",
-      "actions": [
-        "Add Transaction",
-        "Edit",
-        "Delete"
-      ]
+      "add": "Add Category"
     }
   },
   "filters": {
@@ -78,6 +76,11 @@
     ],
     "reset": "Reset"
   },
+  "actions": [
+    "Add Transaction",
+    "Edit",
+    "Delete"
+  ],
   "companies": {
     "discount": "Discount Bank",
     "max": "Max"

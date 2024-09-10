@@ -1,14 +1,14 @@
 import { Dayjs } from "dayjs";
-import TransactionsTable from "../../components/TransactionsTable/TransactionsTable";
-import TransactionModel from "../../../models/transaction";
-import UserModel from "../../../models/user-model";
-import { filterInvoicesByStatus, isArrayAndNotEmpty } from "../../../utils/helpers";
-import { TransactionStatusesType } from "../../../utils/transactions";
-import "./DashboardSeconde.css";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../redux/store";
+import TransactionModel from "../../../models/transaction";
+import UserModel from "../../../models/user-model";
+import { TransactionsTable } from "../../components/TransactionsTable";
+import { filterInvoicesByStatus, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { TransactionStatusesType } from "../../../utils/transactions";
+import "./DashboardSecond.css";
 
-interface DashboardSecondeProps {
+interface DashboardSecondProps {
   user: UserModel;
   transactions: TransactionModel[];
   transactionsByMonth?: TransactionModel[];
@@ -21,7 +21,7 @@ export enum TransactionsTableTypes {
   Last_Transactions = "Transactions"
 };
 
-const DashboardSeconde = (props: DashboardSecondeProps) => {
+const DashboardSecond = (props: DashboardSecondProps) => {
   const { t } = useTranslation();
   let transactions: TransactionModel[] = [];
   const { loading } = useAppSelector((state) => state.transactions);
@@ -55,4 +55,4 @@ const DashboardSeconde = (props: DashboardSecondeProps) => {
   );
 };
 
-export default DashboardSeconde;
+export default DashboardSecond;

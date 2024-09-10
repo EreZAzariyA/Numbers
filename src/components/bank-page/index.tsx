@@ -15,8 +15,10 @@ const BankPage = () => {
   const { account, loading } = useSelector((state: RootState) => state.userBanks);
   const hasBankAccounts = account && isArrayAndNotEmpty(account.banks);
   const banksAccounts = hasBankAccounts ? account.banks : [];
-  const [isOkBtnActive, setIsBtnActive] = useState<boolean>(false);
+  const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
   const [modalResult, setModalResult] = useState(null);
+
+  console.log(isOkBtnActive);
 
   const showModal = () => {
     modal.info({
@@ -32,14 +34,14 @@ const BankPage = () => {
       },
       okCancel: true,
       cancelButtonProps:{
-        disabled: isOkBtnActive
+        disabled: loading
       },
       content: (
         <>
           {!modalResult && (
             <ConnectBankForm
               user={user}
-              handleOkButton={setIsBtnActive}
+              setIsOkBtnActive={setIsOkBtnActive}
               setResult={setModalResult}
             />
           )}
@@ -53,7 +55,7 @@ const BankPage = () => {
         </>
       ),
     });
-  }
+  };
 
   const items: TabsProps['items'] = banksAccounts.map((bank) => ({
     key: bank.bankName,

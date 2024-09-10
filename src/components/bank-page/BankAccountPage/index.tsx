@@ -27,6 +27,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
   const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
   // const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
   const isRefreshAvailable = true;
+  const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -86,10 +87,17 @@ const BankAccountPage = (props: BankAccountPageProps) => {
       <CustomModal
         title="Update bank account"
         isOpen={isOpen}
-        onCancel={() => setIsOpen(false)}
-        onOk={() => setIsOpen(false)}
+        cancelButtonProps={{
+          onClick: () => setIsOpen(false),
+          disabled: props.loading
+        }}
+        okButtonProps={{
+          disabled: !isOkBtnActive,
+          onClick: () => setIsOpen(false),
+        }}
       >
         <ConnectBankForm
+          setIsOkBtnActive={setIsOkBtnActive}
           user={props.user}
           formType={ConnectBankFormType.Update_Bank}
           bankDetails={props.bankAccount}

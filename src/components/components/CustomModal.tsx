@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { ButtonProps, Modal } from "antd";
 import { ReactNode } from "react";
 
 interface ModalProps {
@@ -7,8 +7,9 @@ interface ModalProps {
   isOpen: boolean;
   children: ReactNode;
   onOk?: () => void;
-  onCancel?: () => void;
-  okText?: string
+  okText?: string;
+  okButtonProps: ButtonProps;
+  cancelButtonProps: ButtonProps;
 };
 
 export const CustomModal = (props: ModalProps) => {
@@ -17,8 +18,9 @@ export const CustomModal = (props: ModalProps) => {
       title={props.title || 'Modal'}
       open={props.isOpen}
       onOk={props.onOk}
-      onCancel={props.onCancel}
       okText={props.okText}
+      cancelButtonProps={props.cancelButtonProps}
+      okButtonProps={props.okButtonProps}
     >
       {props.children}
     </Modal>

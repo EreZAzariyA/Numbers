@@ -45,6 +45,9 @@
         "actions": "פעולות"
       }
     },
+    "buttons": {
+      "add": "הוסף עסקה"
+    },
     "status": {
       "completed": "הסתיים",
       "pending": "ממתין"
@@ -59,13 +62,13 @@
       }
     },
     "buttons": {
-      "add-button": "הוסף קטגוריה"
+      "add": "הוסף קטגוריה"
     }
   },
   "actions": [
-    "Add Transaction",
-    "Edit",
-    "Delete"
+    "הוסף עסקה",
+    "עריכה",
+    "מחיקה"
   ],
   "filters": {
     "placeholders": [
