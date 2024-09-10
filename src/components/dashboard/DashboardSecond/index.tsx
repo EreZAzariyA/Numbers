@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../redux/store";
 import TransactionModel from "../../../models/transaction";
@@ -23,8 +24,8 @@ export enum TransactionsTableTypes {
 
 const DashboardSecond = (props: DashboardSecondProps) => {
   const { t } = useTranslation();
-  let transactions: TransactionModel[] = [];
   const { loading } = useAppSelector((state) => state.transactions);
+  let transactions: TransactionModel[] = [];
 
   if (isArrayAndNotEmpty(props.transactions)) {
     transactions  = filterInvoicesByStatus(props.transactionsByMonth, TransactionStatusesType.COMPLETED);
@@ -39,7 +40,9 @@ const DashboardSecond = (props: DashboardSecondProps) => {
             {t('dashboard.second.0')}
           </div>
           <div className="action">
-            {t('dashboard.second.1')}
+            <Link to={'/transactions'}>
+              {t('dashboard.second.1')}
+            </Link>
           </div>
         </div>
         <div className="card-body">
