@@ -82,8 +82,17 @@ const extraReducers = (builder: ActionReducerMapBuilder<InitialStateType>) => {
 const categoriesSlicer = createSlice({
   name: 'categories',
   initialState,
-  reducers: null,
+  reducers: {
+    categoriesHandleLogout() {
+      return {
+        categories: [],
+        error: null,
+        loading: false
+      }
+    }
+  },
   extraReducers
 });
 
+export const { categoriesHandleLogout } = categoriesSlicer.actions;
 export default categoriesSlicer.reducer;

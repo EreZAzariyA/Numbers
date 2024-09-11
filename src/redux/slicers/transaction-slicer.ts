@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
 import TransactionModel from "../../models/transaction";
-import { addTransaction, fetchTransactions, removeTransaction, updateTransaction } from "../actions/transaction-actions";
+import { addTransaction, fetchTransactions, importTransactions, removeTransaction, updateTransaction } from "../actions/transaction-actions";
 
 type InitialStateType = {
   transactions: TransactionModel[];
@@ -82,6 +82,20 @@ const extraReducers = (builder: ActionReducerMapBuilder<InitialStateType>) => {
     loading: false,
     transactions: state.transactions.filter((i) => i._id !== action.meta.arg.transaction_id)
   }));
+
+  builder.addCase(importTransactions.pending, (state) => ({
+    ...state,
+    loading: true
+  }))
+  builder.addCase(importTransactions.rejected, (state, action) => ({
+    ...state,
+    loading: false,
+    error: action.error
+  }))
+  builder.addCase(importTransactions.fulfilled, (state) => ({
+    ...state,
+    loading: false,
+  }));
 };
 
 const transactionsSlicer = createSlice({
@@ -89,15 +103,25 @@ const transactionsSlicer = createSlice({
   initialState,
   reducers: {
     insertBulkTransactionsAction(state, action: PayloadAction<TransactionModel[]>) {
-      state.transactions = [...state.transactions, ...action.payload];
-      return state;
+      return {
+        ...state,
+        transactions: [...state.transactions, ...action.payload]
+      };
     },
-    transactionsHandleLogout(state) {
-      state.transactions = [];
+    transactionsHandleLogout() {
+      return {
+        transactions: [],
+        error: null,
+        loading: false
+      }
     }
   },
   extraReducers
 });
 
-export const { insertBulkTransactionsAction } = transactionsSlicer.actions;
+export const {
+  insertBulkTransactionsAction,
+  transactionsHandleLogout,
+} = transactionsSlicer.actions;
+
 export default transactionsSlicer.reducer;

@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 import UserModel from "../../models/user-model";
 import { BankAccountModel } from "../../models/bank-model";
 import { connectBankAccount } from "../../redux/actions/bank-actions";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { importTransactions } from "../../redux/actions/transaction-actions";
 import bankServices from "../../services/banks";
 import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
 import { Transaction } from "../../utils/transactions";
@@ -54,27 +55,19 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
       return;
     }
 
+    let res;
+
     try {
       if (props.formType === ConnectBankFormType.Update_Bank) {
-        const res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
-        if (res?.account && res.account?.txns && isArrayAndNotEmpty(res.account.txns)) {
-          showTransImportConfirmation(res.account.txns);
-        }
-        props?.setResult(res);
-        props.setIsOkBtnActive(true);
+        res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
       } else {
-        const result = await dispatch(connectBankAccount({ details: values, user_id: props.user._id }))
-
-        if (connectBankAccount.fulfilled.match(result)) {
-          if (isArrayAndNotEmpty(result.payload.account.txns)) {
-            showTransImportConfirmation(result.payload.account.txns);
-          }
-          props?.setResult(result.payload);
-          props.setIsOkBtnActive(true);
-        }
-
-        return;
+        res = await dispatch(connectBankAccount({ details: values, user_id: props.user._id })).unwrap();
       }
+      if (isArrayAndNotEmpty(res.account.txns)) {
+        showTransImportConfirmation(res.account.txns);
+      }
+      props?.setResult(res);
+      props.setIsOkBtnActive(true);
     } catch (err: any) {
       message.error(err.message);
     }
@@ -83,15 +76,20 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   const showTransImportConfirmation = async (transactions: Transaction[]): Promise<void> => {
     modal.confirm({
       okText: 'Import',
-      onOk: () => onTransactionsImportOk(transactions),
+      onOk: async () => await onTransactionsImportOk(transactions),
       content: `We found ${transactions.length} transactions, would you like to import them?`
     });
   };
 
   const onTransactionsImportOk = async (transactions: Transaction[]): Promise<void> => {
     try {
-      const res = await bankServices.importTrans(transactions, props.user._id, (SupportedCompaniesTypes as any)[selectedCompany.companyId]);
+      const res = await dispatch(importTransactions({
+        transactions: transactions,
+        user_id: props.user._id,
+        companyId: (SupportedCompaniesTypes as any)[selectedCompany.companyId]
+      })).unwrap();
       if (res && isArray(res)) {
+        console.log(res);
         message.success(`imported transactions: ${res?.length || 0}`);
       }
     } catch (err: any) {

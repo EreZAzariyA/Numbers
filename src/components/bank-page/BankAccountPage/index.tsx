@@ -1,13 +1,13 @@
+import dayjs from "dayjs";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
 import { AppDispatch } from "../../../redux/store";
-import UserModel from "../../../models/user-model";
-import { BankAccountModel } from "../../../models/bank-model";
-import { refreshBankData } from "../../../redux/actions/bank-actions";
 import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
 import { CustomModal } from "../../components/CustomModal";
+import { refreshBankData } from "../../../redux/actions/bank-actions";
+import UserModel from "../../../models/user-model";
+import { BankAccountModel } from "../../../models/bank-model";
 import { CompaniesNames } from "../../../utils/definitions";
 import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
 import { App, Col, Row, Space, Spin, Tooltip, Typography } from "antd";
@@ -49,52 +49,65 @@ const BankAccountPage = (props: BankAccountPageProps) => {
     }
   };
 
-  const editAccountDetails = async () => {
+  const editAccountDetails = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div>
-      <Row justify={'center'}>
-        <Col span={24}>
-          <Space direction="vertical">
+    <>
+      <Row justify={'center'} align={'middle'}>
+        <Col span={12}>
+          <Space align="center" direction="vertical" className="w-100" size={"small"}>
             <Typography.Title level={4} style={{ margin: 0 }}>
               {CompaniesNames[bankName] || bankName}
             </Typography.Title>
 
-            {props.loading ? <Spin /> : (
-              <Space direction="vertical">
-                <Typography.Text>Last Update: {lastConnectionDateString}</Typography.Text>
-                {details && (
-                  <Typography.Text>Balance: {asNumString(details.balance)}</Typography.Text>
-                )}
+            <Typography.Text>
+              <span>Last Update: </span>
+              {props.loading ? (
+                <Spin />
+              ) : (
+                lastConnectionDateString
+              )}
+            </Typography.Text>
 
-                <Row align={'middle'} justify={'center'} gutter={[10, 10]}>
-                  <Col>
-                    <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
-                      <Typography.Link disabled={!isRefreshAvailable} onClick={refreshData}>Refresh</Typography.Link>
-                    </Tooltip>
-                  </Col>
-                  <Col>
-                    <Typography.Link onClick={editAccountDetails}>Edit-details</Typography.Link>
-                  </Col>
-                </Row>
-              </Space>
-            )}
+            <Typography.Text>
+              <span>Balance: </span>
+              {props.loading ? (
+              <Spin />
+              ) : (
+                asNumString(details.balance)
+              )}
+            </Typography.Text>
+
+            <Row align={'middle'} justify={'center'} gutter={[10, 10]}>
+              <Col>
+                <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
+                  <Typography.Link disabled={!isRefreshAvailable || props.loading} onClick={refreshData}>Refresh</Typography.Link>
+                </Tooltip>
+              </Col>
+              <Col>
+                <Typography.Link disabled={props.loading} onClick={editAccountDetails}>Edit-details</Typography.Link>
+              </Col>
+            </Row>
           </Space>
         </Col>
       </Row>
       <CustomModal
         title="Update bank account"
-        isOpen={isOpen}
+        open={isOpen}
+        onCancel={() => setIsOpen(false)}
         cancelButtonProps={{
           onClick: () => setIsOpen(false),
           disabled: props.loading
         }}
+        confirmLoading={props.loading}
+
         okButtonProps={{
           disabled: !isOkBtnActive,
           onClick: () => setIsOpen(false),
         }}
+        onClose={() => setIsOpen(false)}
       >
         <ConnectBankForm
           setIsOkBtnActive={setIsOkBtnActive}
@@ -103,7 +116,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
           bankDetails={props.bankAccount}
         />
       </CustomModal>
-    </div>
+    </>
   );
 };
 

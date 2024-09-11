@@ -57,7 +57,6 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
     }
   }));
 
-
   builder.addCase(refreshBankData.pending, (state) => ({
     ...state,
     loading: true,
@@ -79,9 +78,17 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
 const bankSlicer = createSlice({
   initialState,
   name: 'banks',
-  reducers: null,
+  reducers: {
+    banksHandleLogout() {
+      return {
+        account: null,
+        error: null,
+        loading: false,
+      };
+    }
+  },
   extraReducers
 });
 
-
+export const { banksHandleLogout } = bankSlicer.actions;
 export default bankSlicer.reducer;

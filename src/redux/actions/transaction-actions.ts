@@ -2,12 +2,15 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import TransactionModel from "../../models/transaction";
 import config from "../../utils/config";
+import { insertBulkTransactionsAction } from "../slicers/transaction-slicer";
+import { Transaction } from "../../utils/transactions";
 
 export enum TransactionsActions {
-  FETCH_TRANSACTIONS = 'transactions/fetchTransactions',
-  ADD_TRANSACTION = 'transactions/addTransaction',
-  UPDATE_TRANSACTION = 'transactions/updateTransaction',
-  REMOVE_TRANSACTION = 'transactions/removeTransaction',
+  FETCH_TRANSACTIONS = 'transactions/fetch-transactions',
+  ADD_TRANSACTION = 'transactions/add-transaction',
+  UPDATE_TRANSACTION = 'transactions/update-transaction',
+  REMOVE_TRANSACTION = 'transactions/remove-transaction',
+  IMPORT_TRANSACTIONS = 'transactions/import-transactions',
 };
 
 export const fetchTransactions = createAsyncThunk<TransactionModel[], string>(
@@ -47,5 +50,19 @@ export const removeTransaction = createAsyncThunk<void, { user_id: string, trans
   TransactionsActions.REMOVE_TRANSACTION,
   async (data) => {
     await axios.delete<void>(config.urls.transactions, { data });
+  }
+);
+
+export const importTransactions = createAsyncThunk<TransactionModel[], { transactions: Transaction[], user_id: string, companyId: string }>(
+  TransactionsActions.IMPORT_TRANSACTIONS,
+  async ({ user_id, transactions, companyId }, thunkApi) => {
+    try {
+      const response = await axios.post<TransactionModel[]>(config.urls.bank.importTransactions + `/${user_id}`, { transactions, companyId });
+      const trans = response.data;
+      thunkApi.dispatch(insertBulkTransactionsAction(trans));
+      return thunkApi.fulfillWithValue(trans);
+    } catch (err: any) {
+      thunkApi.rejectWithValue(err);
+    }
   }
 );

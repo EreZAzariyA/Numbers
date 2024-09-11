@@ -7,7 +7,7 @@ import { TransactionStatusesType } from "./transactions";
 import UserModel from "../models/user-model";
 import CategoryModel from "../models/category-model";
 import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
-import { BankAccountModel } from "../models/bank-model";
+import { BankAccountModel, MainBanksAccount } from "../models/bank-model";
 import { ThemeColors } from "./enums";
 import { PastOrFutureDebitType } from "./types";
 
@@ -336,15 +336,25 @@ export const getLoginFields = (companyId: SupportedCompaniesTypes) => {
   return company.loginFields;
 };
 
-export const getDebitsByDate = (account: BankAccountModel, selectedMonth: Dayjs): Partial<PastOrFutureDebitType> => {
-  if (!isArrayAndNotEmpty(account?.pastOrFutureDebits)) {
-    return;
-  };
+export const getDebitsByDate = (account: MainBanksAccount, selectedMonth: Dayjs): Partial<PastOrFutureDebitType[]> => {
+  const banks = account?.banks;
+  const debits: Partial<PastOrFutureDebitType[]> = [];
+  if (!isArrayAndNotEmpty(banks)) return debits;
 
-  return account.pastOrFutureDebits.find((debit) => {
-    const date = getDataFromStringDate(debit.debitMonth);
-    return date === selectedMonth.format('MM-YYYY');
-  });
+  for (const bank of banks) {
+    if (!isArrayAndNotEmpty(bank?.pastOrFutureDebits)) {
+      continue;
+    };
+
+    const debit = bank.pastOrFutureDebits.find((debit) => {
+      const date = getDataFromStringDate(debit.debitMonth);
+      return date === selectedMonth.format('MM-YYYY');
+    });
+
+    debits.push(debit);
+  }
+
+  return debits
 }
 
 const getDataFromStringDate = (stringDate: string): string => {

@@ -31,7 +31,7 @@ export const connectBankAccount = createAsyncThunk<BankAccountDetails, { details
 )
 
 export const refreshBankData = createAsyncThunk<RefreshedBankAccountDetails, { bank_id: string, user_id: string }>(
-  'banks/refreshBankData',
+  BanksActions.REFRESH_BANK_ACCOUNT,
   async ({ bank_id, user_id }, thunkApi) => {
     try {
       const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.refreshBankData + `/${user_id}`, { bank_id });

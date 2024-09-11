@@ -1,12 +1,13 @@
 import { Dayjs } from "dayjs";
-import CategoryModel from "../../../models/category-model";
-import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
-import { asNumString, getDebitsByDate } from "../../../utils/helpers";
-import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
-import { useTranslation } from "react-i18next";
 import CurrencyList from 'currency-list'
-import { BankAccountModel } from "../../../models/bank-model";
+import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../redux/store";
+import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
+import CategoryModel from "../../../models/category-model";
+import { BankAccountModel } from "../../../models/bank-model";
+import { asNumString, getDebitsByDate, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
+import { CreditCardType } from "../../../utils/types";
 import { Skeleton } from "antd";
 
 interface DashboardFirstProps {
@@ -21,13 +22,26 @@ const DashboardFirst = (props: DashboardFirstProps) => {
   const { account, loading } = useAppSelector((state) => state.userBanks);
 
   const bankAccount = account?.banks?.[0];
-  const accountBalance = asNumString(bankAccount?.details?.balance);
+  const banks = account?.banks;
+
+  let totalBanksBalance = 0;
+  let cards: CreditCardType[] = [];
+  if (isArrayAndNotEmpty(banks)) {
+    banks.forEach((b) => {
+      totalBanksBalance += b.details?.balance || 0;
+      if (isArrayAndNotEmpty(b?.creditCards)) {
+        for (const card of b.creditCards) {
+          cards.push(card);
+        }
+      }
+    });
+  }
+  const banksTotalBalance = asNumString(totalBanksBalance);
   const currency = CurrencyList.get(bankAccount?.extraInfo?.accountCurrencyCode || "ILS");
-  const creditCards = bankAccount?.creditCards || [];
-  const used = calculateCreditCardsUsage(creditCards);
+  const used = calculateCreditCardsUsage(cards);
   const savingsBalance = bankAccount?.savings;
 
-  const debits = getDebitsByDate(bankAccount, props.monthToDisplay);
+  const debits = getDebitsByDate(account, props.monthToDisplay);
 
   return (
     <div className="home-first-main-container home-component">
@@ -41,7 +55,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
             <div className="balance">
                 {loading ? <Skeleton paragraph={{ rows: 0 }} /> : (
                   <>
-                    <span>{currency?.symbol}</span> {accountBalance}
+                    <span>{currency?.symbol}</span> {banksTotalBalance}
                   </>
                 )}
               </div>
