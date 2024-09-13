@@ -9,7 +9,7 @@ import CategoryModel from "../models/category-model";
 import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
 import { BankAccountModel, MainBanksAccount } from "../models/bank-model";
 import { ThemeColors } from "./enums";
-import { PastOrFutureDebitType } from "./types";
+import { CreditCardType, PastOrFutureDebitType } from "./types";
 
 export type ColorType = {
   ICON: string;
@@ -85,7 +85,7 @@ export const isArray = (arr: any[]): boolean => {
   return Array.isArray(arr);
 };
 export const isArrayAndNotEmpty = (arr: any[]): boolean => {
-  return isArray(arr) && arr.length > 0;
+  return isArray(arr) && arr?.length > 0;
 };
 
 export const getError = (err: any) => {
@@ -120,6 +120,24 @@ export const getInvoicesBySelectedMonth = (transactions: TransactionModel[], sel
   }
   return transactionsByMonth;
 };
+
+export const getAccountCreditCards = (mainAccount: MainBanksAccount): CreditCardType[] => {
+  const banks = mainAccount?.banks;
+  if (!isArrayAndNotEmpty(banks)) {
+    return [];
+  }
+
+  const creditCards: CreditCardType[] = [];
+  for (const bank of banks) {
+    if (isArrayAndNotEmpty(bank?.creditCards)) {
+      bank.creditCards.forEach((card) => {
+        creditCards.push(card);
+      });
+    }
+  }
+
+  return creditCards;
+}
 
 export const getTotals = (arr: number[]): number => {
   let total = 0;
@@ -157,7 +175,7 @@ export const getInvoicesTotalsPrice = (transactions: TransactionModel[], status?
 export const getInvoicesPricePerCategory = (transactions: TransactionModel[], status?: TransactionStatusesType) => {
   const { categories } = store.getState().categories;
   const transactionsByCategory: any = {};
-  let arr;
+  let arr = [...transactions] || [];
 
   if (status) {
     arr = filterInvoicesByStatus(transactions, status);
@@ -173,7 +191,7 @@ export const getInvoicesPricePerCategory = (transactions: TransactionModel[], st
         }
       });
       const totalAmount = getInvoicesTotalsPrice(categoryInvoices);
-      transactionsByCategory[category.name] = totalAmount
+      transactionsByCategory[category.name] = totalAmount;
     };
   }
 
@@ -361,4 +379,55 @@ const getDataFromStringDate = (stringDate: string): string => {
   const month = parseInt(stringDate.substring(0, 2)) - 1;
   const year = parseInt(stringDate.substring(2));
   return dayjs().set('year', year).set('month', month).format('MM-YYYY');
-}
+};
+
+export const getTransactionsByCategory = (categoryId: string): TransactionModel[] => {
+  const trans = store.getState().transactions.transactions;
+  const transactions: TransactionModel[] = [];
+
+  for (const transaction of trans) {
+    if (transaction.category_id === categoryId) {
+      transactions.push(transaction);
+    }
+  }
+
+  return transactions;
+};
+
+export const filtering = (transactions: TransactionModel[] = [], filterState: any): TransactionModel[] => {
+  let data = [...transactions];
+
+  if (!isArrayAndNotEmpty(transactions)) {
+    return [];
+  }
+  if (isArrayAndNotEmpty(filterState.categories)) {
+    data = data.filter((d) => filterState.categories.includes(d.category_id));
+  }
+  if (filterState.companyId) {
+    data = data.filter((d) => d.companyId === filterState.companyId);
+  }
+  if (filterState.dates && filterState.dates.length === 2) {
+    data = data.filter((d) => (
+      dayjs(d.date).valueOf() >= dayjs(filterState.dates[0]).startOf('day').valueOf() &&
+      dayjs(d.date).valueOf() <= dayjs(filterState.dates[1]).endOf('day').valueOf()
+    ));
+  }
+  if (filterState.month) {
+    data = data.filter((d) => (
+      dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
+      dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
+    ));
+  }
+  if (filterState.status) {
+    data = data.filter((d) => d.status === filterState.status);
+  }
+  if (filterState.text) {
+    data = data.filter((d) => d.description.startsWith(filterState.text));
+  }
+  if (filterState.byIncome) {
+    const byIncome = filterState.byIncome === 'income';
+    data = [...data].filter((d) => (byIncome ? d.amount > 0 : d.amount < 0));
+  }
+
+  return data;
+};

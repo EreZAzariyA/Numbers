@@ -33,7 +33,7 @@ const customizedYAxisTick = (props: any) => {
 
   return (
     <g transform={`translate(${x},${y})`}>
-      <text x={0} y={0} dy={16} textAnchor="end" fill="#666">
+      <text x={0} y={0} dy={16} textAnchor="start" fill="#666">
         {asNumString(payload.value)}
       </text>
     </g>
@@ -46,26 +46,27 @@ export const BarCharts = (props: BarChartsProps) => {
   let data: any[] = [];
   if (props.type === ChartsTypes.INVOICES_PER_CATEGORY && isArrayAndNotEmpty(Object.keys(props.data))) {
     data = Object.entries(props.data)
-    .filter((val) => val[1].totalAmount.spent !== 0)
     .map(([key, value]) => ({
       name: key,
-      spent: Math.abs(value.totalAmount.spent),
-      income: value.totalAmount.income,
+      spent: Math.abs(value?.spent),
+      income: value?.income,
     }));
+  } else if (props.type === ChartsTypes.PAST_DEBIT) {
+
   } else {
-    data = [{name: 'No Data', spent: 0, income: 0}]
+    data = [{ name: 'No Data', spent: 0, income: 0 }];
   }
+
+  data = [...data].filter((d) => d.spent !== 0);
 
   const activeItem = data[activeIndex];
 
   return (
     <>
-      <ResponsiveContainer width="100%" height={250}>
-        <BarChart
-          data={data}
-        >
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" tick={customizedXAxisTick} padding={{ left: 0, right: 0 }} />
+          <XAxis dataKey="name" tick={customizedXAxisTick} />
           <YAxis dataKey={"spent"} tick={customizedYAxisTick} />
           <Tooltip formatter={(val) => (val.toLocaleString())} />
           <Bar dataKey="spent" name='Spent' onClick={(_, i) => setActiveIndex(i)} minPointSize={1}>

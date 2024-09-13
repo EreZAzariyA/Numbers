@@ -1,26 +1,24 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
-import { RootState } from "../../redux/store";
+import { useAppSelector } from "../../redux/store";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
-import { getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
+import { getAccountCreditCards, getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
 import { DatePicker, Row, Skeleton } from "antd";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const { t } = useTranslation();
-  const { user, loading } = useSelector((state: RootState) => state.auth);
-  const { transactions } = useSelector((state: RootState) => state.transactions);
-  const { categories } = useSelector((state: RootState) => state.categories);
-  const { account } = useSelector((state: RootState) => state.userBanks);
-  const banks = account?.banks || [];
+  const { user, loading } = useAppSelector((state) => state.auth);
+  const { transactions } = useAppSelector((state) => state.transactions);
+  const { categories, loading: categoriesLoading } = useAppSelector((state) => state.categories);
+  const { account, loading: accountLoading } = useAppSelector((state) => state.userBanks);
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
   const transactionsByMonth = getInvoicesBySelectedMonth(transactions, monthToDisplay);
-  const creditCards = banks?.[0]?.creditCards || [];
+  const creditCards = getAccountCreditCards(account);
 
   return (
     <div className="page-container dashboard">
@@ -50,7 +48,9 @@ const Dashboard = () => {
         <DashboardFirst
           categories={categories}
           monthToDisplay={monthToDisplay}
-          account={banks?.[0]}
+          account={account}
+          loading={categoriesLoading && accountLoading}
+          transactionsByMonth={transactionsByMonth}
         />
         <DashboardSecond
           user={user}

@@ -1,13 +1,12 @@
 import { Col, Divider, Form, Input, InputNumber, Row } from "antd";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useAppSelector } from "../../redux/store";
 import { useTranslation } from "react-i18next";
 import { asNumString, getBanksTotal } from "../../utils/helpers";
 
 const Profile = () => {
   const { t } = useTranslation();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const banks = useSelector((state: RootState) => state.userBanks.account?.banks);
+  const user = useAppSelector((state) => state.auth.user);
+  const banks = useAppSelector((state) => state.userBanks.account?.banks);
 
   const verifiedEmail = user.emails.find((email) => (email.isValidate || email.isActive));
   const initialValues = {

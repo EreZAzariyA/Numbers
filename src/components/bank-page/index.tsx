@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { RootState } from "../../redux/store";
+import { useAppSelector } from "../../redux/store";
 import BankAccountPage from "./BankAccountPage";
 import ConnectBankForm from "./ConnectBankForm";
 import { CustomModal } from "../components/CustomModal";
@@ -11,19 +10,21 @@ import { Result, Spin, Tabs, TabsProps, Typography } from "antd";
 
 const BankPage = () => {
   const { t } = useTranslation();
-  const { user, loading: userLoading } = useSelector((state: RootState) => state.auth);
-  const { account, loading } = useSelector((state: RootState) => state.userBanks);
+  const { user, loading: userLoading } = useAppSelector((state) => state.auth);
+  const { account, loading, mainAccountLoading } = useAppSelector((state) => state.userBanks);
   const hasBankAccounts = account && isArrayAndNotEmpty(account.banks);
   const banksAccounts = hasBankAccounts ? account.banks : [];
   const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
   const [modalResult, setModalResult] = useState(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const items: TabsProps['items'] = banksAccounts.map((bank) => ({
+  const sortedArr = [...banksAccounts].sort((a, b) => (b.isMainAccount ? 1 : 0) - (a.isMainAccount ? 1 : 0));
+  const items: TabsProps['items'] = sortedArr
+  .map((bank) => ({
     key: bank.bankName,
     label: <Typography.Text>{CompaniesNames[bank.bankName] || bank.bankName}</Typography.Text>,
-    children: <BankAccountPage key={bank._id} user={user} bankAccount={bank} loading={loading} />,
-    closable: false
+    children: <BankAccountPage key={bank._id} user={user} bankAccount={bank} loading={loading} mainAccountLoading={mainAccountLoading} />,
+    closable: false,
   }));
 
   return (

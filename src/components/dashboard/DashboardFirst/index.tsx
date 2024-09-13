@@ -1,28 +1,31 @@
 import { Dayjs } from "dayjs";
-import CurrencyList from 'currency-list'
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../../../redux/store";
+import CurrencyList from 'currency-list'
 import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
 import CategoryModel from "../../../models/category-model";
-import { BankAccountModel } from "../../../models/bank-model";
-import { asNumString, getDebitsByDate, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { MainBanksAccount } from "../../../models/bank-model";
+import { asNumString, isArrayAndNotEmpty, useResize } from "../../../utils/helpers";
 import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
 import { CreditCardType } from "../../../utils/types";
-import { Skeleton } from "antd";
+import { Divider, Skeleton } from "antd";
+import TransactionModel from "../../../models/transaction";
+import { CreditCardsUsed } from "./CreditCardsUsed";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
   monthToDisplay: Dayjs;
   categories: CategoryModel[];
-  account: BankAccountModel;
+  account: MainBanksAccount;
+  loading: boolean;
+  transactionsByMonth: TransactionModel[];
 };
 
 const DashboardFirst = (props: DashboardFirstProps) => {
+  const { isMobile } = useResize();
   const { t } = useTranslation();
-  const { account, loading } = useAppSelector((state) => state.userBanks);
-
-  const bankAccount = account?.banks?.[0];
-  const banks = account?.banks;
+  const banks = props.account?.banks || [];
+  const hasBanksAccount = isArrayAndNotEmpty(banks);
+  const bankAccount = banks.find((b) => b.isMainAccount) ?? banks?.[1];
 
   let totalBanksBalance = 0;
   let cards: CreditCardType[] = [];
@@ -41,8 +44,6 @@ const DashboardFirst = (props: DashboardFirstProps) => {
   const used = calculateCreditCardsUsage(cards);
   const savingsBalance = bankAccount?.savings;
 
-  const debits = getDebitsByDate(account, props.monthToDisplay);
-
   return (
     <div className="home-first-main-container home-component">
       <div className="card-container">
@@ -50,20 +51,29 @@ const DashboardFirst = (props: DashboardFirstProps) => {
           <div className="card-title">{t('dashboard.first.0')}</div>
         </div>
         <div className="card-body">
-          <div className="sub-title-container">
-            <div className="card-subtitle">{t('dashboard.first.1')}</div>
-            <div className="balance">
-                {loading ? <Skeleton paragraph={{ rows: 0 }} /> : (
-                  <>
-                    <span>{currency?.symbol}</span> {banksTotalBalance}
-                  </>
-                )}
+          <div className="balances">
+            <div className="sub-title-container">
+              <div className="card-subtitle">{t('dashboard.first.1')}</div>
+              <div className="balance">
+                  {props.loading ? <Skeleton paragraph={{ rows: 0 }} /> : (
+                    <><span>{currency?.symbol}</span> {banksTotalBalance}</>
+                  )}
+                </div>
+            </div>
+            {!isMobile && (
+              <Divider style={{ margin: '5px 0 20px' }} />
+            )}
+            {hasBanksAccount ? (
+              <div className="cards">
+                <CreditCardsAndSavings currency={currency?.symbol} cardsUsed={used} savingsBalance={savingsBalance} />
               </div>
+            ) : <span>Connect your bank account to see more details</span>}
           </div>
-
-          <div className="cards">
-            <CreditCardsAndSavings currency={currency?.symbol} cardsUsed={used} savingsBalance={savingsBalance} />
-          </div>
+          <Divider type="vertical" style={{ height: 'unset' }} />
+          <CreditCardsUsed creditCards={cards} />
+          {/* <div className="charts">
+            <BarCharts type={ChartsTypes.INVOICES_PER_CATEGORY} data={data} />
+          </div> */}
         </div>
       </div>
     </div>

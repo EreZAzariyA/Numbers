@@ -1,10 +1,11 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import { MainBanksAccount } from "../../models/bank-model";
-import { connectBankAccount, fetchBankAccounts, refreshBankData } from "../actions/bank-actions";
+import { connectBankAccount, fetchBankAccounts, refreshBankData, setBankAsMainAccount } from "../actions/bank-actions";
 
 interface BanksAccountState {
   account: MainBanksAccount;
   loading: boolean;
+  mainAccountLoading?: boolean;
   error: SerializedError | null;
 };
 
@@ -15,6 +16,7 @@ const initialState: BanksAccountState = {
     banks: [],
   },
   loading: false,
+  mainAccountLoading: false,
   error: null
 };
 
@@ -73,6 +75,33 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
     const bankIndex = state.account.banks.findIndex((bank) => bank._id === action.payload.bank?._id);
     state.account.banks[bankIndex] = action.payload.bank;
   });
+
+  builder.addCase(setBankAsMainAccount.pending, (state) => ({
+    ...state,
+    mainAccountLoading: true
+  }))
+  .addCase(setBankAsMainAccount.rejected, (state, action) => ({
+    ...state,
+    mainAccountLoading: false,
+    error: action.error
+  }))
+  .addCase(setBankAsMainAccount.fulfilled, (state, action) => {
+
+    const banks = state.account.banks.map((bank) => ({
+      ...bank,
+      isMainAccount: bank._id === action.meta.arg.bank_id,
+    }));
+
+    return {
+      ...state,
+      mainAccountLoading: false,
+      error: null,
+      account: {
+        ...state.account,
+        banks,
+      }
+    }
+  })
 };
 
 const bankSlicer = createSlice({

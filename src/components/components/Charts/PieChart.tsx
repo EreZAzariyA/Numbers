@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/store";
 import { PieChart as Charts, Pie, ResponsiveContainer, Cell, Sector } from "recharts";
 import CategoryModel from "../../../models/category-model";
 import TransactionModel from "../../../models/transaction";
@@ -67,7 +66,7 @@ const renderActiveShape = (props: any) => {
 
 export const PieChart = (props: ChartsProps) => {
   const [state, setState] = useState({ activeIndex: 0 });
-  const { theme, loading } = useSelector((state: RootState) => state.config.themeColor);
+  const { theme } = useAppSelector((state) => state.config.themeColor);
 
   let data = setCategoriesAndInvoicesArray(props.categories, props.transactions);
   if (!isArrayAndNotEmpty(data)) {

@@ -1,19 +1,17 @@
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
-import { RootState, useAppDispatch } from "../../redux/store";
+import { useLocation } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { addTransaction, removeTransaction, updateTransaction } from "../../redux/actions/transaction-actions";
 import TransactionModel from "../../models/transaction";
 import NewTransaction from "./newTransaction/newTransaction";
-import { TotalAmountInput } from "../components/TotalAmount";
 import { EditTable } from "../components/EditTable";
 import { Filters } from "../components/Filters";
 import { TransactionStatusesType } from "../../utils/transactions";
-import { TotalAmountType } from "../../utils/enums";
 import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
 import { App, Button, Space, TableProps, Tooltip } from "antd";
+import { TotalsContainer } from "../components/TotalsContainer";
 
 enum Steps {
   New_Transaction = "New_Transaction",
@@ -21,14 +19,13 @@ enum Steps {
 };
 
 const Transactions = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { message } = App.useApp();
   const { t } = useTranslation();
   const { hash } = useLocation();
-  const { user } = useSelector((state: RootState) => state.auth);
-  const { transactions, loading } = useSelector((state: RootState) => state.transactions);
-  const { categories } = useSelector((state: RootState) => state.categories);
+  const { user } = useAppSelector((state) => state.auth);
+  const { transactions, loading } = useAppSelector((state) => state.transactions);
+  const { categories } = useAppSelector((state) => state.categories);
   const [selectedTransaction, setSelectedTransaction] = useState<TransactionModel>(null);
   const newTransWithCategory_idFromCategories = hash.split('#')?.[1];
   const [step, setStep] = useState<string>(hash ? Steps.New_Transaction : null);
@@ -84,7 +81,7 @@ const Transactions = () => {
     }
 
     try {
-      let successMessage = '';
+      let successMessage = null;
 
       if (step === Steps.Update_Transaction) {
         const result = await dispatch(updateTransaction({ transaction }));
@@ -99,11 +96,7 @@ const Transactions = () => {
       }
 
       message.success(successMessage);
-      if (newTransWithCategory_idFromCategories) {
-        navigate('/transactions');
-      } else {
-        onBack();
-      }
+      onBack();
     } catch (error: any) {
       console.log({error});
       message.error(error.message);
@@ -136,7 +129,7 @@ const Transactions = () => {
     }
   };
 
-  const handleFilterChange = (field: string, value: string | number[] | Dayjs[]): void => {
+  const handleFilterChange = (field: string, value: string | number[] | Dayjs[] | Dayjs): void => {
     setFilterState({ ...filterState, [field]: value });
   };
 
@@ -194,9 +187,14 @@ const Transactions = () => {
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
-      render: (val) => (
-        asNumString(val)
-      )
+      sorter: (a, b) => (Math.abs(b.amount) - Math.abs(a.amount)),
+      render: (val, record) => {
+        console.log(record.amount);
+
+        return (
+          asNumString(val)
+        );
+      }
     },
     {
       title: t('transactions.table.header.status'),
@@ -230,10 +228,7 @@ const Transactions = () => {
         {step ? (
           <Button danger className="btn-18" type="link" size="small" onClick={onBack}>Back</Button>
         ) : (
-          <Space>
-            <TotalAmountInput transactions={dataSource} type={TotalAmountType.SPENT} style={{ width: 100 }} />
-            <TotalAmountInput transactions={dataSource} type={TotalAmountType.INCOME} style={{ width: 100 }} />
-          </Space>
+          <TotalsContainer transactions={dataSource} />
         )}
       </div>
       <div className="page-inner-container">

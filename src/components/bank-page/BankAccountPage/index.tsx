@@ -5,29 +5,31 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { AppDispatch } from "../../../redux/store";
 import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
 import { CustomModal } from "../../components/CustomModal";
-import { refreshBankData } from "../../../redux/actions/bank-actions";
+import { refreshBankData, setBankAsMainAccount } from "../../../redux/actions/bank-actions";
 import UserModel from "../../../models/user-model";
 import { BankAccountModel } from "../../../models/bank-model";
 import { CompaniesNames } from "../../../utils/definitions";
 import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
-import { App, Col, Row, Space, Spin, Tooltip, Typography } from "antd";
+import { App, Button, Col, Row, Space, Spin, Tooltip, Typography } from "antd";
 
 interface BankAccountPageProps {
   bankAccount: BankAccountModel;
   user: UserModel;
   loading: boolean;
+  mainAccountLoading: boolean;
 };
 dayjs.extend(relativeTime);
 
 const BankAccountPage = (props: BankAccountPageProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { message } = App.useApp();
-  const { lastConnection, details, bankName, _id } = props.bankAccount;
+  const { lastConnection, details, bankName, _id: bank_id } = props.bankAccount;
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
   const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
   // const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
   const isRefreshAvailable = true;
   const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
+  const isMainAccount = !!props.bankAccount.isMainAccount;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -38,7 +40,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
 
     try {
       const result = await dispatch(refreshBankData({
-        bank_id: _id,
+        bank_id,
         user_id: props.user?._id
       })).unwrap();
 
@@ -51,6 +53,18 @@ const BankAccountPage = (props: BankAccountPageProps) => {
 
   const editAccountDetails = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleSetAsMainAccount = async () => {
+    try {
+      await dispatch(setBankAsMainAccount({
+        bank_id,
+        user_id: props.user?._id
+      })).unwrap();
+      message.success(`${CompaniesNames[bankName]} is now the main account`);
+    } catch (err: any) {
+      message.error(err);
+    }
   };
 
   return (
@@ -88,6 +102,11 @@ const BankAccountPage = (props: BankAccountPageProps) => {
               </Col>
               <Col>
                 <Typography.Link disabled={props.loading} onClick={editAccountDetails}>Edit-details</Typography.Link>
+              </Col>
+            </Row>
+            <Row align={'middle'} justify={'center'}>
+              <Col>
+                <Button disabled={isMainAccount} loading={props.mainAccountLoading} onClick={handleSetAsMainAccount}>Set as main account</Button>
               </Col>
             </Row>
           </Space>

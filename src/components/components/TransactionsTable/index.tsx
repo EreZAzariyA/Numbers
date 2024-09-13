@@ -17,17 +17,21 @@ interface TransactionsTableProps {
   loading?: boolean;
   props?: TableProps;
   date?: Dayjs;
+  withTotals?: boolean;
 };
 
 export const TransactionsTable = (props: TransactionsTableProps) => {
   const { t } = useTranslation();
   const tableType = (TransactionsTableTypes as any)[props.type] || props.type;
 
-  let dataSet = [...props.transactions];
+  let dataSource = [...props.transactions];
 
   if (tableType === TransactionsTableTypes.Card_Withdrawals) {
     const latestInvoices = [...props.transactions].slice(0, 5);
-    dataSet = latestInvoices;
+    dataSource = latestInvoices;
+  }
+  if (props.status) {
+    dataSource = [...props.transactions].filter((t) => t.status.toLowerCase() === props.status.toLowerCase());
   }
 
   const columns: TableProps<TransactionModel | any>['columns'] = [
@@ -70,10 +74,9 @@ export const TransactionsTable = (props: TransactionsTableProps) => {
   return (
     <Table
       columns={columns}
-      dataSource={dataSet}
+      dataSource={dataSource}
       rowKey="_id"
       bordered
-      pagination={false}
       loading={props.loading}
       {...props.props}
     />

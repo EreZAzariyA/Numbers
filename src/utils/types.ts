@@ -2,7 +2,7 @@ import { Languages, ThemeColors } from "./enums";
 
 export type LanguageType = typeof Languages[keyof typeof Languages];
 export type ThemeColorType = ThemeColors.LIGHT | ThemeColors.DARK;
-
+export type CreditCardFrameworkType = Record<string, { cardFramework: number, cardFrameworkUsed: number }>;
 
 export type AccountInfoType = {
   accountName: string;
@@ -27,9 +27,11 @@ export type PastOrFutureDebitType = {
 export type CreditCardType = {
   cardFamilyDescription: string;
   cardFrameworkNotUsed: number;
+  cardFramework: number;
   cardFrameworkUsed: number;
   cardHolderFirstName: string;
   cardHolderLastName: string;
+  cardStatusCode: number;
   cardName: string;
   cardNumber: string;
   cardTypeDescription: string;

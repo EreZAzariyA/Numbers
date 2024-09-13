@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import NewCategory from "./newCategory/newCategory";
 import CategoryModel from "../../models/category-model";
 import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
-import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
-import { App, Button, Col, Input, Row, Space, TableProps } from "antd";
+import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty } from "../../utils/helpers";
+import { App, Button, Col, Input, Row, Space, TableProps, Tooltip } from "antd";
 import { EditTable } from "../components/EditTable";
 
 enum Steps {
@@ -98,17 +98,38 @@ const CategoriesPage = () => {
       title: t('categories.table.header.category'),
       dataIndex: 'name',
       key: 'name',
-      width: 80,
-      fixed: 'left'
+      fixed: 'left',
+      width: 60,
+      ellipsis: {
+        showTitle: false
+      },
+      render: (val) => (
+        <Tooltip title={val}>
+          {val}
+        </Tooltip>
+      )
     },
     {
       title: t('categories.table.header.total-spent'),
       dataIndex: 'spent',
       key: 'spent',
-      width: 80,
-      render: (val: number) => (
-        <span>{asNumString(val)}</span>
-      )
+      width: 70,
+      ellipsis: {
+        showTitle: false
+      },
+      render: (_, record) => {
+        const transactions = getTransactionsByCategory(record._id);
+        let totalAmount = 0;
+        transactions.forEach((t) => {
+          totalAmount += t.amount;
+        });
+        const value = `${asNumString(totalAmount)} (${transactions.length})`;
+        return (
+          <Tooltip title={value}>
+            {value}
+          </Tooltip>
+        );
+      }
     },
   ];
 

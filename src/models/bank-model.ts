@@ -14,6 +14,7 @@ export interface MainBanksAccount {
 export class BankAccountModel {
   _id: string;
   userId: string;
+  isMainAccount: boolean;
   bankName: string;
   credentials: string;
   details: {
@@ -31,6 +32,7 @@ export class BankAccountModel {
   constructor(bankAccount: BankAccountModel) {
     this._id = bankAccount._id;
     this.userId = bankAccount.userId;
+    this.isMainAccount = bankAccount.isMainAccount;
     this.bankName = bankAccount.bankName;
     this.credentials = bankAccount.credentials;
     this.details = bankAccount.details;

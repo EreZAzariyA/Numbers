@@ -1,11 +1,12 @@
-import { Button, Col, DatePicker, Input, Row, Select } from "antd";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { useTranslation } from "react-i18next";
+import React from "react";
 import dayjs, { Dayjs } from "dayjs";
+import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../redux/store";
 import { useResize } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
 import { CompaniesNames, SupportedCompaniesTypes } from "../../utils/definitions";
+import { DefaultOptionType } from "antd/es/select";
+import { Button, Col, DatePicker, Input, Row, Select } from "antd";
 
 interface FiltersProps {
   datesFilter?: boolean;
@@ -14,6 +15,7 @@ interface FiltersProps {
   statusFilter?: boolean;
   textFilter?: boolean;
   companyFilter?: boolean;
+  byIncome?: boolean;
   filterState: any;
   handleFilterChange: (field: string, val: string | number[] | Dayjs[]) => void;
   resetFilters?: () => void;
@@ -21,8 +23,8 @@ interface FiltersProps {
 
 export const Filters = (props: FiltersProps) => {
   const { t } = useTranslation();
-  const { isPhone } = useResize();
-  const { categories, loading } = useSelector((state: RootState) => state.categories);
+  const { isPhone, isMobile } = useResize();
+  const { categories, loading } = useAppSelector((state) => state.categories);
   const transactionStatus = [
     {
       name: TransactionStatuses.completed,
@@ -33,6 +35,20 @@ export const Filters = (props: FiltersProps) => {
       value: TransactionStatuses.pending
     }
   ];
+  const incomeType: DefaultOptionType[] = [
+    {
+      label: 'Income',
+      value: 'income'
+    },
+    {
+      label: 'Spent',
+      value: 'spent'
+    }
+  ];
+
+  const style: React.CSSProperties = {
+    width: (isMobile ? 200 : 250)
+  }
 
   return (
     <Row align={'middle'} justify={'start'} gutter={[10, 10]}>
@@ -40,7 +56,7 @@ export const Filters = (props: FiltersProps) => {
         <Col>
           <DatePicker.RangePicker
             allowClear
-            style={{ width: 250 }}
+            style={style}
             value={props.filterState.dates}
             maxDate={dayjs()}
             onChange={(val) => {
@@ -49,6 +65,7 @@ export const Filters = (props: FiltersProps) => {
                 return;
               }
               props.handleFilterChange('dates', val);
+              props.handleFilterChange('month', null);
             }}
           />
         </Col>
@@ -60,13 +77,14 @@ export const Filters = (props: FiltersProps) => {
             picker="month"
             maxDate={dayjs()}
             allowClear={!isPhone}
-            style={{ width: 250 }}
+            style={style}
             value={props.filterState.month}
             onChange={(val) => {
               if (!val) {
                 props.handleFilterChange('month', null);
                 return;
               }
+              props.handleFilterChange('dates', null);
               props.handleFilterChange('month', val);
             }}
           />
@@ -79,7 +97,7 @@ export const Filters = (props: FiltersProps) => {
             mode="multiple"
             allowClear
             value={props.filterState.categories}
-            style={{ width: 250 }}
+            style={style}
             placeholder={t('filters.placeholders.0')}
             onChange={(val) => props.handleFilterChange('categories', val)}
             options={[...categories].map((c) => ({
@@ -96,7 +114,7 @@ export const Filters = (props: FiltersProps) => {
           <Input
             value={props.filterState.text}
             allowClear
-            style={{ width: 250 }}
+            style={style}
             placeholder={t('filters.placeholders.3')}
             onChange={(val) => props.handleFilterChange('text', val.target.value)}
           />
@@ -108,7 +126,7 @@ export const Filters = (props: FiltersProps) => {
           <Select
             value={props.filterState.status}
             allowClear
-            style={{ width: 250 }}
+            style={style}
             placeholder={t('filters.placeholders.2')}
             onChange={(val) => props.handleFilterChange('status', val)}
             options={[...transactionStatus].map((c) => ({
@@ -119,12 +137,25 @@ export const Filters = (props: FiltersProps) => {
         </Col>
       )}
 
+      {props.byIncome && (
+        <Col>
+          <Select
+            value={props.filterState.byIncome}
+            allowClear
+            style={style}
+            placeholder={'Filter by Income'}
+            onChange={(val) => props.handleFilterChange('byIncome', val)}
+            options={incomeType}
+          />
+        </Col>
+      )}
+
       {props.companyFilter && (
         <Col>
           <Select
             value={props.filterState.companyId}
             allowClear
-            style={{ width: 250 }}
+            style={style}
             placeholder={t('filters.placeholders.4')}
             onChange={(val) => props.handleFilterChange('companyId', val)}
             options={Object.entries(SupportedCompaniesTypes).map(([key, val]) => ({

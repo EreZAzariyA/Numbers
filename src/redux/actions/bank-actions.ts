@@ -10,6 +10,7 @@ export enum BanksActions {
   CONNECT_BANK = "banks/connectBank",
   FETCH_BANK_ACCOUNT = "banks/fetchBankAccount",
   REFRESH_BANK_ACCOUNT = "banks/refreshBankData",
+  SET_AS_MAIN_ACCOUNT = "banks/setAsMainAccount",
 };
 
 export const fetchBankAccounts = createAsyncThunk<MainBanksAccount, string>(
@@ -21,7 +22,7 @@ export const fetchBankAccounts = createAsyncThunk<MainBanksAccount, string>(
   }
 );
 
-export const connectBankAccount = createAsyncThunk<BankAccountDetails, { details: ScraperCredentials, user_id: string } >(
+export const connectBankAccount = createAsyncThunk<BankAccountDetails, { details: ScraperCredentials, user_id: string }>(
   BanksActions.CONNECT_BANK,
   async ({ details, user_id }) => {
     const response = await axios.post<BankAccountDetails>(config.urls.bank.connectBank + `/${user_id}`, details);
@@ -45,3 +46,14 @@ export const refreshBankData = createAsyncThunk<RefreshedBankAccountDetails, { b
     }
   }
 );
+
+export const setBankAsMainAccount = createAsyncThunk<void, { user_id: string, bank_id: string }>(
+  BanksActions.SET_AS_MAIN_ACCOUNT,
+  async ({ user_id, bank_id }, thunkApi) => {
+    try {
+      await axios.post<void>(config.urls.bank.setMainAccount + `/${user_id}`, { bank_id });
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+)
