@@ -48,7 +48,6 @@ const CategoryModal = (props: { category: CategoryModel, loading: boolean }) => 
 
       <TransactionsTable
         transactions={data}
-        status={TransactionStatuses.completed}
         withTotals
         props={{scroll: { x: 200 }}}
       />
