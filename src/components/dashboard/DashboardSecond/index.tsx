@@ -51,6 +51,14 @@ const DashboardSecond = (props: DashboardSecondProps) => {
             type={TransactionsTableTypes.Last_Transactions}
             date={props.monthToDisplay}
             loading={loading}
+            props={{
+              pagination: {
+                hideOnSinglePage: true
+              },
+              style: {
+                borderRadius: 0
+              }
+            }}
           />
         </div>
       </div>

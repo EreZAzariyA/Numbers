@@ -9,7 +9,7 @@ import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
 import { Filters } from "../components/Filters";
 import { TransactionStatusesType } from "../../utils/transactions";
-import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
+import { asNumString, filtering, getError, isArrayAndNotEmpty } from "../../utils/helpers";
 import { App, Button, Space, TableProps, Tooltip } from "antd";
 import { TotalsContainer } from "../components/TotalsContainer";
 
@@ -30,49 +30,11 @@ const Transactions = () => {
   const newTransWithCategory_idFromCategories = hash.split('#')?.[1];
   const [step, setStep] = useState<string>(hash ? Steps.New_Transaction : null);
   const [filterState, setFilterState] = useState({
-    categories: [],
-    dates: null,
     month: dayjs(),
-    status: 'completed',
-    text: null,
-    companyId: null
+    status: TransactionStatusesType.COMPLETED,
   });
 
-  const dataSource = filtering(transactions);
-
-  function filtering (transactions: TransactionModel[] = []): TransactionModel[] {
-    let data = [...transactions];
-
-    if (!isArrayAndNotEmpty(transactions)) {
-      return [];
-    }
-    if (isArrayAndNotEmpty(filterState.categories)) {
-      data = data.filter((d) => filterState.categories.includes(d.category_id));
-    }
-    if (filterState.companyId) {
-      data = data.filter((d) => d.companyId === filterState.companyId);
-    }
-    if (filterState.dates && filterState.dates.length === 2) {
-      data = data.filter((d) => (
-        dayjs(d.date).valueOf() >= dayjs(filterState.dates[0]).startOf('day').valueOf() &&
-        dayjs(d.date).valueOf() <= dayjs(filterState.dates[1]).endOf('day').valueOf()
-      ));
-    }
-    if (filterState.month) {
-      data = data.filter((d) => (
-        dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
-        dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
-      ));
-    }
-    if (filterState.status) {
-      data = data.filter((d) => d.status === filterState.status);
-    }
-    if (filterState.text) {
-      data = data.filter((d) => d.description.startsWith(filterState.text));
-    }
-
-    return data;
-  };
+  const dataSource = filtering(transactions, filterState);
 
   const onFinish = async (transaction: TransactionModel) => {
     if (!user) {
@@ -135,12 +97,8 @@ const Transactions = () => {
 
   const resetFilters = () => {
     setFilterState({
-      categories: [],
-      dates: [],
       month: dayjs(),
-      status: TransactionStatusesType.COMPLETED,
-      text: null,
-      companyId: null,
+      status: TransactionStatusesType.COMPLETED
     });
   };
 
@@ -188,9 +146,7 @@ const Transactions = () => {
       key: 'amount',
       width: 100,
       sorter: (a, b) => (Math.abs(b.amount) - Math.abs(a.amount)),
-      render: (val, record) => {
-        console.log(record.amount);
-
+      render: (val) => {
         return (
           asNumString(val)
         );

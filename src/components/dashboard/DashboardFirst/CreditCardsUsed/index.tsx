@@ -16,7 +16,6 @@ export const CreditCardsUsed = (props: {creditCards: CreditCardType[]}) => {
         const percentage = asNumber((cardFrameworkUsed / cardFramework) * 100);
 
         const marks: SliderSingleProps['marks'] = {
-          0: '0',
           [cardFramework]: {
             style: {
               color: '#f50',

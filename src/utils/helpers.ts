@@ -112,6 +112,9 @@ export const getInvoicesBySelectedMonth = (transactions: TransactionModel[], sel
   const transactionsByMonth: TransactionModel[] = [];
   if (isArrayAndNotEmpty(transactions)) {
     transactions.forEach((i) => {
+      if (i.status !== TransactionStatusesType.COMPLETED) {
+        return
+      }
       const transactionDate = dayjs(i.date).format('YYYY-MM');
       if (transactionDate === selectedMonth?.format('YYYY-MM')) {
         transactionsByMonth.push(i);
@@ -303,24 +306,29 @@ export const getUserfName = (user: UserModel) => {
   return user.profile.first_name;
 };
 
-export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: TransactionModel[]) => {
-  const categoryMap = new Map();
-  categories.forEach(category => {
-    categoryMap.set(category._id, category.name);
-  });
+const getCategory = (category_id: string): CategoryModel => {
+  const categories = store.getState().categories.categories;
+  return categories.find((c) => c._id === category_id);
+}
 
-  const categoryInvoiceAmounts: any = {};
-  transactions.forEach(transaction => {
-    const categoryName = categoryMap.get(transaction.category_id);
-    if (!categoryInvoiceAmounts[categoryName]) {
+export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: TransactionModel[]) => {
+  const categoryInvoiceAmounts: Record<string, number> = {};
+
+  transactions.forEach((transaction) => {
+    const category = getCategory(transaction.category_id);
+    const categoryName = category.name;
+
+    if (transaction.category_id === category._id && transaction.amount < 0) {
+      if (!categoryInvoiceAmounts[categoryName]) {
         categoryInvoiceAmounts[categoryName] = 0;
+      }
+      categoryInvoiceAmounts[categoryName] += transaction.amount;
     }
-    categoryInvoiceAmounts[categoryName] += transaction.amount;
   });
 
   const result = Object.entries(categoryInvoiceAmounts).map(([name, amount]) => ({
     name,
-    value: Math.abs(asNumber(amount as number))
+    value: Math.abs(asNumber(amount))
   }));
 
   return result;
@@ -401,28 +409,28 @@ export const filtering = (transactions: TransactionModel[] = [], filterState: an
     return [];
   }
   if (isArrayAndNotEmpty(filterState.categories)) {
-    data = data.filter((d) => filterState.categories.includes(d.category_id));
+    data = [...data].filter((d) => filterState.categories.includes(d.category_id));
   }
   if (filterState.companyId) {
-    data = data.filter((d) => d.companyId === filterState.companyId);
+    data = [...data].filter((d) => d.companyId === filterState.companyId);
   }
   if (filterState.dates && filterState.dates.length === 2) {
-    data = data.filter((d) => (
+    data = [...data].filter((d) => (
       dayjs(d.date).valueOf() >= dayjs(filterState.dates[0]).startOf('day').valueOf() &&
       dayjs(d.date).valueOf() <= dayjs(filterState.dates[1]).endOf('day').valueOf()
     ));
   }
   if (filterState.month) {
-    data = data.filter((d) => (
+    data = [...data].filter((d) => (
       dayjs(d.date).valueOf() >= dayjs(filterState.month).startOf('month').valueOf() &&
       dayjs(d.date).valueOf() <= dayjs(filterState.month).endOf('month').valueOf()
     ));
   }
   if (filterState.status) {
-    data = data.filter((d) => d.status === filterState.status);
+    data = [...data].filter((d) => d.status === filterState.status);
   }
   if (filterState.text) {
-    data = data.filter((d) => d.description.startsWith(filterState.text));
+    data = [...data].filter((d) => d.description.startsWith(filterState.text));
   }
   if (filterState.byIncome) {
     const byIncome = filterState.byIncome === 'income';

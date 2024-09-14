@@ -5,7 +5,14 @@
   color: #ffffff;
 
   border-radius: 6px;
-  padding: 10px;
+  padding: 10px 15px;
   background: linear-gradient(90deg, #4BC87D 20%, #12AA54 100%);
   box-shadow: 0 10px 16px 0 rgba(67, 96, 144, 0.24);
+}
+
+.credit-card-main-container .credit-card.non-active {
+  background: linear-gradient(90deg, #1a472c 100%, #12AA54 100%);
+}
+.credit-card-main-container .credit-card.non-active .card-number {
+  color: rgba(211, 211, 211, 0.4);
 }

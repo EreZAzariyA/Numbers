@@ -4,12 +4,16 @@ import CurrencyList from 'currency-list'
 import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
 import CategoryModel from "../../../models/category-model";
 import { MainBanksAccount } from "../../../models/bank-model";
-import { asNumString, isArrayAndNotEmpty, useResize } from "../../../utils/helpers";
+import { asNumString, isArrayAndNotEmpty } from "../../../utils/helpers";
 import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
 import { CreditCardType } from "../../../utils/types";
-import { Divider, Skeleton } from "antd";
+import { Col, Row, Skeleton } from "antd";
 import TransactionModel from "../../../models/transaction";
-import { CreditCardsUsed } from "./CreditCardsUsed";
+import "./DashboardFirst.css";
+import { SimpleCharts } from "../../components/Charts/SimpleCharts";
+import { TotalAmountInput } from "../../components/TotalAmount";
+import { TotalAmountType } from "../../../utils/enums";
+import { RefreshBankDataButton } from "../../components/RefreshBankDataButton";
 
 interface DashboardFirstProps {
   setMonthToDisplay?: React.Dispatch<React.SetStateAction<Dayjs>>;
@@ -21,10 +25,8 @@ interface DashboardFirstProps {
 };
 
 const DashboardFirst = (props: DashboardFirstProps) => {
-  const { isMobile } = useResize();
   const { t } = useTranslation();
   const banks = props.account?.banks || [];
-  const hasBanksAccount = isArrayAndNotEmpty(banks);
   const bankAccount = banks.find((b) => b.isMainAccount) ?? banks?.[1];
 
   let totalBanksBalance = 0;
@@ -46,36 +48,47 @@ const DashboardFirst = (props: DashboardFirstProps) => {
 
   return (
     <div className="home-first-main-container home-component">
-      <div className="card-container">
-        <div className="card-title-container">
-          <div className="card-title">{t('dashboard.first.0')}</div>
-        </div>
-        <div className="card-body">
-          <div className="balances">
-            <div className="sub-title-container">
-              <div className="card-subtitle">{t('dashboard.first.1')}</div>
-              <div className="balance">
+      <Row align={"middle"} gutter={[20, 20]}>
+        <Col xs={24} lg={12}>
+          <Row align={"top"} justify={'start'} className="dashboard-card">
+            <Col span={24}>
+              <Row justify={"space-between"}>
+                <Col>
+                  <div className="card-title">{t('dashboard.first.0')}</div>
+                </Col>
+                <Col>
+                  <div className="action">
+                    <RefreshBankDataButton />
+                  </div>
+                </Col>
+              </Row>
+            </Col>
+
+            <Col>
+              <div className="balances">
+                <div className="card-subtitle">{t('dashboard.first.1')}</div>
+                <div className="balance">
                   {props.loading ? <Skeleton paragraph={{ rows: 0 }} /> : (
-                    <><span>{currency?.symbol}</span> {banksTotalBalance}</>
+                    <>{currency?.symbol} {banksTotalBalance}</>
                   )}
                 </div>
-            </div>
-            {!isMobile && (
-              <Divider style={{ margin: '5px 0 20px' }} />
-            )}
-            {hasBanksAccount ? (
-              <div className="cards">
-                <CreditCardsAndSavings currency={currency?.symbol} cardsUsed={used} savingsBalance={savingsBalance} />
               </div>
-            ) : <span>Connect your bank account to see more details</span>}
+              <CreditCardsAndSavings currency={currency?.symbol} cardsUsed={used} savingsBalance={savingsBalance} />
+            </Col>
+          </Row>
+        </Col>
+
+        <Col xs={24} lg={12}>
+          <div className="dashboard-card charts">
+            <TotalAmountInput
+              transactions={props.transactionsByMonth}
+              type={TotalAmountType.SPENT}
+              style={{ maxWidth: '30%' }}
+            />
+            <SimpleCharts categories={props.categories} transactions={props.transactionsByMonth} />
           </div>
-          <Divider type="vertical" style={{ height: 'unset' }} />
-          <CreditCardsUsed creditCards={cards} />
-          {/* <div className="charts">
-            <BarCharts type={ChartsTypes.INVOICES_PER_CATEGORY} data={data} />
-          </div> */}
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
   );
 };

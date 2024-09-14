@@ -35,15 +35,3 @@
   font-size: 18px;
   margin-top: 5px;
 }
-
-@media (min-width: 768px) {
-  .inner-card-container {
-    margin-top: 0;
-  }
-
-  .inner-card-container .box {
-    width: 100%;
-    box-shadow: none;
-    padding: 0;
-  }
-}

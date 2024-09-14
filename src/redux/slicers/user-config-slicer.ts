@@ -2,6 +2,7 @@ import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/
 import { LanguageType, ThemeColorType } from "../../utils/types";
 import { Languages, ThemeColors } from "../../utils/enums";
 import { changeLanguageAction, changeThemeAction } from "../actions/user-config-actions";
+import i18next from "i18next";
 
 interface UserConfigState {
   language: {
@@ -100,6 +101,7 @@ const userConfigSlicer = createSlice({
     },
     setUserLang(state, action) {
       localStorage.setItem('language', action.payload);
+      i18next.changeLanguage(action.payload);
       return {
         ...state,
         language: {

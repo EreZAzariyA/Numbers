@@ -23,15 +23,19 @@
   },
   "dashboard": {
     "first": [
-      "Your account status",
+      "Your Account Status",
       "Account balance",
       "Credit cards",
-      "Deposits and savings"
+      "Deposits and savings",
+      "Monthly report"
     ],
     "second": [
-      "Recent movements in the account",
+      "Recent Movements",
       "More movements",
       "Credit cards"
+    ],
+    "third": [
+      "Credit Cards"
     ]
   },
   "transactions": {
