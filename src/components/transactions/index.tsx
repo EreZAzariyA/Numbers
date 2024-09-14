@@ -118,11 +118,16 @@ const Transactions = () => {
       title: t('transactions.table.header.category'),
       dataIndex: 'category_id',
       key: 'category',
-      width: 120,
+      width: 130,
+      ellipsis: {
+        showTitle: false,
+      },
       render:(value) => {
         const category = categories.find((c) => c._id === value);
         return (
-          <span>{category?.name}</span>
+          <Tooltip title={category?.name}>
+            <span>{category?.name}</span>
+          </Tooltip>
         );
       }
     },

@@ -107,6 +107,7 @@ export const SimpleCharts = (props: SimpleChartsProps) => {
           layout="vertical"
           verticalAlign="middle"
           align="right"
+          onClick={(_, index) => setState({ activeIndex: index })}
           formatter={(value) => (
             <span style={{ marginRight: "10px" }}>{value}</span>
           )}

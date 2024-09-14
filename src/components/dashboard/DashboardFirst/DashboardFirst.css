@@ -31,6 +31,30 @@
 
 .page-container.dashboard .dashboard-card.charts .recharts-default-legend {
   text-align: right !important;
+
+  max-height: 200px;
+  overflow: auto;
+}
+
+.page-container.dashboard .dashboard-card.charts .recharts-default-legend li:hover {
+  cursor: pointer;
+}
+
+.page-container.dashboard .dashboard-card.charts .recharts-default-legend::-webkit-scrollbar {
+  width: 8px;
+}
+.page-container.dashboard .dashboard-card.charts .recharts-default-legend::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.page-container.dashboard .dashboard-card.charts .recharts-default-legend::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.page-container.dashboard .dashboard-card.charts .recharts-default-legend::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 
