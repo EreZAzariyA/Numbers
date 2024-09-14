@@ -5,12 +5,14 @@ import { TransactionsTable } from "../TransactionsTable";
 import { Filters } from "../Filters";
 import { TotalsContainer } from "../TotalsContainer";
 import { filtering, getTransactionsByCategory } from "../../../utils/helpers";
-import { TransactionStatuses } from "../../../utils/transactions";
+import { TransactionStatuses, TransactionStatusesType } from "../../../utils/transactions";
 import { Space, Spin } from "antd";
 
 const CategoryModal = (props: { category: CategoryModel, loading: boolean }) => {
   const transactions = getTransactionsByCategory(props.category._id);
-  const [filterState, setFilterState] = useState({});
+  const [filterState, setFilterState] = useState({
+    status: TransactionStatusesType.COMPLETED
+  });
   const data = filtering(transactions, filterState);
 
   const handleFilterChange = (field: string, value: string | number[] | Dayjs[]) => {
@@ -25,15 +27,19 @@ const CategoryModal = (props: { category: CategoryModel, loading: boolean }) => 
       <p>{props.category?.name}</p>
       <Space>
         <Filters
+          type="categories"
           companyFilter
           datesFilter
           monthFilter
           textFilter
+          statusFilter
           byIncome
           filterState={filterState}
           handleFilterChange={handleFilterChange}
           resetFilters={() => {
-            setFilterState({});
+            setFilterState({
+              status: TransactionStatusesType.COMPLETED
+            });
           }}
         />
 

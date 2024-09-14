@@ -1,7 +1,9 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import dayjs from "dayjs";
+import React, { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import { Navigate, useLocation } from "react-router-dom";
-import { RootState } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import { logoutAction } from "../redux/actions/auth-actions";
 
 interface PrivateRouteProps {
   element: React.JSX.Element;
@@ -9,7 +11,18 @@ interface PrivateRouteProps {
 
 const PrivateRoute = (props: PrivateRouteProps) => {
   const location = useLocation();
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { token } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken: { exp: number } = jwtDecode(token);
+
+      if (dayjs().unix() > decodedToken.exp) {
+        dispatch(logoutAction());
+      }
+    }
+  }, [token, dispatch, location]);
 
   if (!token) {
     return <Navigate to={'/auth/sign-in'} state={location} />

@@ -12,8 +12,7 @@ import { useResize } from "../utils/helpers";
 import { Languages } from "../utils/enums";
 import { LanguageType } from "../utils/types";
 import { App, Button, Col, Dropdown, Layout, MenuProps, Row } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
-import { IoIosClose } from "react-icons/io";
+import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
 
 interface DashboardHeaderProps {
   collapsedHandler?: () => void;
@@ -104,11 +103,13 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
                 onOpenChange={setIsOpen}
                 className="dropdown-area"
               >
-                {!isOpen ? (
-                  <MenuOutlined className="menu-btn" />
-                ) : (
-                  <IoIosClose className="menu-btn" />
-                )}
+                <div className="menu-btn">
+                  {!isOpen ? (
+                    <MenuOutlined />
+                  ) : (
+                    <CloseOutlined />
+                  )}
+                </div>
               </Dropdown>
             </div>
           )}

@@ -16,7 +16,9 @@ interface FiltersProps {
   textFilter?: boolean;
   companyFilter?: boolean;
   byIncome?: boolean;
+  categoryText?: boolean;
   filterState: any;
+  type: 'categories' | 'transactions',
   handleFilterChange: (field: string, val: string | number[] | Dayjs[]) => void;
   resetFilters?: () => void;
 };
@@ -162,6 +164,18 @@ export const Filters = (props: FiltersProps) => {
               label: CompaniesNames[val],
               value: key,
             }))}
+          />
+        </Col>
+      )}
+
+      {props.categoryText && (
+        <Col>
+          <Input
+            type="text"
+            placeholder={t('filters.placeholders.1')}
+            allowClear
+            value={props.filterState.name}
+            onChange={(val) => props.handleFilterChange('name', val.target.value)}
           />
         </Col>
       )}

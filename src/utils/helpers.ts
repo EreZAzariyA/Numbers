@@ -389,8 +389,8 @@ const getDataFromStringDate = (stringDate: string): string => {
   return dayjs().set('year', year).set('month', month).format('MM-YYYY');
 };
 
-export const getTransactionsByCategory = (categoryId: string): TransactionModel[] => {
-  const trans = store.getState().transactions.transactions;
+export const getTransactionsByCategory = (categoryId: string, sentTransactions?: TransactionModel[]): TransactionModel[] => {
+  const trans = sentTransactions || store.getState().transactions.transactions;
   const transactions: TransactionModel[] = [];
 
   for (const transaction of trans) {

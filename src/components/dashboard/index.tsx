@@ -6,7 +6,7 @@ import DashboardFirst from "./DashboardFirst";
 import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
 import { getAccountCreditCards, getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
-import { DatePicker, Row, Skeleton } from "antd";
+import { Button, DatePicker, Row, Skeleton } from "antd";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -33,6 +33,12 @@ const Dashboard = () => {
           maxDate={dayjs()}
           placeholder={dayjs().format('YYYY-MM')}
           allowClear={false}
+          showNow={true}
+          renderExtraFooter={() => {
+            return (
+              <Button type="text" danger onClick={() => setMonthToDisplay(dayjs())}>Reset</Button>
+            )
+          }}
           value={monthToDisplay}
           onChange={setMonthToDisplay}
         />

@@ -9,7 +9,7 @@ import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
 import { Filters } from "../components/Filters";
 import { TransactionStatusesType } from "../../utils/transactions";
-import { asNumString, filtering, getError, isArrayAndNotEmpty } from "../../utils/helpers";
+import { asNumString, filtering, getError } from "../../utils/helpers";
 import { App, Button, Space, TableProps, Tooltip } from "antd";
 import { TotalsContainer } from "../components/TotalsContainer";
 
@@ -191,12 +191,14 @@ const Transactions = () => {
         {!step && (
           <Space direction="vertical" className="w-100">
             <Filters
+              type="transactions"
               datesFilter
               monthFilter
               categoryFilter
               statusFilter
               textFilter
               companyFilter
+              byIncome
               filterState={filterState}
               handleFilterChange={handleFilterChange}
               resetFilters={resetFilters}

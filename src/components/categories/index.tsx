@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import NewCategory from "./newCategory/newCategory";
+import { EditTable } from "../components/EditTable";
+import { Filters } from "../components/Filters";
 import CategoryModel from "../../models/category-model";
 import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
 import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty } from "../../utils/helpers";
-import { App, Button, Col, Input, Row, Space, TableProps, Tooltip } from "antd";
-import { EditTable } from "../components/EditTable";
+import { App, Button, Space, TableProps, Tooltip } from "antd";
+import { Dayjs } from "dayjs";
 
 enum Steps {
   New_Category = "New_Category",
@@ -21,8 +23,8 @@ const CategoriesPage = () => {
   const { categories, loading: isLoading } = useAppSelector((state) => state.categories);
   const [selectedCategory, setSelectedCategory] = useState<Partial<CategoryModel>>(null);
   const [step, setStep] = useState<string>(null);
-  const [filterState, setFilterState] = useState<Partial<CategoryModel>>({
-    name: '',
+  const [filterState, setFilterState] = useState({
+    name: null,
   });
 
   const onBack = () => {
@@ -74,11 +76,17 @@ const CategoriesPage = () => {
     }
   };
 
-  const resetFilters = () => {
-    setFilterState({ name: null });
+  const handleFilterChange = (field: string, value: string | number[] | Dayjs[]) => {
+    setFilterState({...filterState, [field]: value});
   };
 
-  const filtering = (categories: CategoryModel[] = []) => {
+  const resetFilters = () => {
+    setFilterState({
+      name: null,
+    });
+  };
+
+  const categoriesFiltering = (categories: CategoryModel[] = []) => {
     if (!isArrayAndNotEmpty(categories)) {
       return [];
     }
@@ -91,7 +99,7 @@ const CategoriesPage = () => {
 
     return data;
   };
-  const dataSource = filtering(categories);
+  const dataSource = categoriesFiltering(categories);
 
   const columns: TableProps<CategoryModel>['columns'] = [
     {
@@ -123,7 +131,7 @@ const CategoriesPage = () => {
         transactions.forEach((t) => {
           totalAmount += t.amount;
         });
-        const value = `${asNumString(totalAmount)} (${transactions.length})`;
+        const value = `(${transactions.length}) ${asNumString(totalAmount)}`;
         return (
           <Tooltip title={value}>
             {value}
@@ -146,22 +154,13 @@ const CategoriesPage = () => {
         {!step && (
           <Space direction="vertical" className="w-100">
             <div className="filter">
-              <Row gutter={[10, 10]} wrap={false}>
-                <Col>
-                  <Input
-                    type="text"
-                    placeholder={t('filters.placeholders.1')}
-                    allowClear
-                    value={filterState.name}
-                    onChange={(e) => setFilterState({ ...filterState, name: e.target.value })}
-                  />
-                </Col>
-                <Col>
-                  <Button className="reset-btn" onClick={resetFilters}>
-                    {t('filters.reset')}
-                  </Button>
-                </Col>
-              </Row>
+              <Filters
+                type="categories"
+                categoryText
+                filterState={filterState}
+                handleFilterChange={handleFilterChange}
+                resetFilters={resetFilters}
+              />
             </div>
             <EditTable
               type="categories"

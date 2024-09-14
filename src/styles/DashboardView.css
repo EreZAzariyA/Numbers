@@ -101,10 +101,10 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    height: 100%;
     border-radius: 0;
     font-size: 26px;
     background-color: var(--bright-blue);
+    height: 100%;
     width: 50px;
   }
   .dark-theme .main-header-container .left-container .menu-collapse .menu-btn {
