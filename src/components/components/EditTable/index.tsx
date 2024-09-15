@@ -71,13 +71,8 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
 
   return (
     <>
-      <Table
-        {...props.tableProps}
-        pagination={{
-          hideOnSinglePage: true,
-          showSizeChanger: true
-        }}
-      />
+      <Table {...props.tableProps} />
+
       <Modal
         destroyOnClose
         open={open}

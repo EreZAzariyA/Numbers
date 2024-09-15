@@ -7,7 +7,7 @@ import { Filters } from "../components/Filters";
 import CategoryModel from "../../models/category-model";
 import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
 import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty } from "../../utils/helpers";
-import { App, Button, Space, TableProps, Tooltip } from "antd";
+import { App, Button, Pagination, Row, Space, TablePaginationConfig, TableProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
 
 enum Steps {
@@ -25,6 +25,10 @@ const CategoriesPage = () => {
   const [step, setStep] = useState<string>(null);
   const [filterState, setFilterState] = useState({
     name: null,
+  });
+  const [pagination, setPagination] = useState<Pick<TablePaginationConfig, "current" | "pageSize">>({
+    current: 1,
+    pageSize: 10,
   });
 
   const onBack = () => {
@@ -94,12 +98,35 @@ const CategoriesPage = () => {
     let data = [...categories];
 
     if (filterState.name) {
-      data = data.filter((d) => d.name.toLowerCase().startsWith(filterState.name.toLowerCase()));
+      data = [...data].filter((d) => d.name.toLowerCase().startsWith(filterState.name.toLowerCase()));
     }
 
-    return data;
+    return data.map((category) => {
+      const transactions = getTransactionsByCategory(category._id);
+
+      let totalAmount = 0;
+      transactions.forEach((t) => {
+        totalAmount += t.amount;
+      });
+
+      return {
+        ...category,
+        spent: totalAmount,
+        transactions: transactions.length || 0
+      };
+    });
   };
-  const dataSource = categoriesFiltering(categories);
+
+  const filtered = categoriesFiltering(categories);
+
+  const dataSource = [...filtered].slice(
+    (pagination.current - 1) * pagination.pageSize,
+    pagination.current * pagination.pageSize
+  );
+
+  const handlePageChange = (page: number, pageSize: number) => {
+    setPagination({ current: page, pageSize });
+  };
 
   const columns: TableProps<CategoryModel>['columns'] = [
     {
@@ -125,19 +152,11 @@ const CategoriesPage = () => {
       ellipsis: {
         showTitle: false
       },
-      render: (_, record) => {
-        const transactions = getTransactionsByCategory(record._id);
-        let totalAmount = 0;
-        transactions.forEach((t) => {
-          totalAmount += t.amount;
-        });
-        const value = `(${transactions.length}) ${asNumString(totalAmount)}`;
-        return (
-          <Tooltip title={value}>
-            {value}
-          </Tooltip>
-        );
-      }
+      render: (value, record: any) => (
+        <Tooltip title={value}>
+          {`(${record.transactions}) ${asNumString(value)}`}
+        </Tooltip>
+      )
     },
   ];
 
@@ -170,14 +189,23 @@ const CategoriesPage = () => {
                 dataSource,
                 rowKey: '_id',
                 columns,
-                scroll: { x: 800 },
+                scroll: { x: 600 },
                 bordered: true,
                 loading: isLoading,
+                pagination: false,
               }}
             />
-            <Button onClick={() => setStep(Steps.New_Category)}>
-              {t('categories.buttons.add')}
-            </Button>
+            <Row justify={'space-between'}>
+              <Button onClick={() => setStep(Steps.New_Category)}>
+                {t('categories.buttons.add')}
+              </Button>
+              <Pagination
+                current={pagination.current}
+                pageSize={pagination.pageSize}
+                total={filtered.length || 0}
+                onChange={handlePageChange}
+              />
+            </Row>
           </Space>
         )}
         {(step && step === Steps.New_Category) && (

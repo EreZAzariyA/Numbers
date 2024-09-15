@@ -43,7 +43,7 @@ const Dashboard = () => {
           onChange={setMonthToDisplay}
         />
       </div>
-      <div className="sub-title-container">
+      <div className="sub-title-container mb-10">
         <Row>
           {loading ? <Skeleton active paragraph={{ rows: 0 }} /> : (
             <span>Hey {getUserfName(user)}, {getGreeting()}</span>

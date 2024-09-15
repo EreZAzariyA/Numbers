@@ -23,7 +23,7 @@ export const CreditCard = (props: CreditCardProps) => {
     },
   };
   const trackStyle = {
-    background: `linear-gradient(to right, #4caf20 100%, #ccc ${percentage}%)`,
+    background: `green`,
   };
 
   return (
@@ -31,6 +31,10 @@ export const CreditCard = (props: CreditCardProps) => {
       <div className={`credit-card ${!isActive ? 'non-active' : ''}`}>
         <div className="card-number">
           {props.card.cardNumber}
+        </div>
+        <div className="card-percentage">
+          {percentage}%
+        </div>
 
           {isActive && (
             <div className="slider">
@@ -41,11 +45,10 @@ export const CreditCard = (props: CreditCardProps) => {
                 defaultValue={cardFrameworkUsed}
                 min={0}
                 max={cardFramework}
-                tooltip={{ open: false,arrow: true }}
+                tooltip={{ open: true, arrow: true }}
               />
             </div>
           )}
-        </div>
       </div>
     </div>
   );
