@@ -1,4 +1,4 @@
-import { BankAccountModel } from "../models/bank-model";
+import { BankAccountModel, CardNumberType } from "../models/bank-model";
 import TransactionModel from "../models/transaction";
 import { SupportedCompaniesTypes } from "./definitions";
 import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "./types";
@@ -24,12 +24,14 @@ export interface CardsPastOrFutureDebitType {
 
 export interface BankAccount {
   accountNumber: string;
+  cardNumber: CardNumberType;
   balance?: number;
   txns: Transaction[];
   info?: Partial<AccountInfoType>;
   pastOrFutureDebits?: Partial<PastOrFutureDebitType[]>;
   cardsPastOrFutureDebit?: CardsPastOrFutureDebitType;
   saving?: AccountSavesType;
+  creditCards: CreditCardType[];
 };
 
 export interface RefreshedBankAccountDetails {
@@ -51,6 +53,7 @@ export interface Transaction {
   memo?: string;
   status: TransactionStatuses;
   category?: string;
+  cardNumber: CardNumberType;
 };
 
 export declare type ScraperCredentials = {

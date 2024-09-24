@@ -7,6 +7,7 @@ import { CustomModal } from "../components/CustomModal";
 import { isArrayAndNotEmpty } from "../../utils/helpers";
 import { CompaniesNames } from "../../utils/definitions";
 import { Result, Spin, Tabs, TabsProps, Typography } from "antd";
+import { BankAccountDetails } from "../../models/bank-model";
 
 const BankPage = () => {
   const { t } = useTranslation();
@@ -15,8 +16,15 @@ const BankPage = () => {
   const hasBankAccounts = account && isArrayAndNotEmpty(account.banks);
   const banksAccounts = hasBankAccounts ? account.banks : [];
   const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
-  const [modalResult, setModalResult] = useState(null);
+  const [modalResult, setModalResult] = useState<BankAccountDetails>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const isCardProvider = modalResult?.bank?.isCardProvider;
+  let modalSubTitle = `Account number: ${modalResult?.account?.accountNumber || modalResult?.account?.cardNumber} Added. Current balance of ${modalResult?.account?.balance} added to your account`;
+  if (isCardProvider) {
+    const creditCards = modalResult?.account?.creditCards;
+    modalSubTitle = `${creditCards?.length} card added into your account`
+  }
 
   const sortedArr = [...banksAccounts].sort((a, b) => (b.isMainAccount ? 1 : 0) - (a.isMainAccount ? 1 : 0));
   const items: TabsProps['items'] = sortedArr
@@ -43,7 +51,6 @@ const BankPage = () => {
               items={items}
               onEdit={(_, action) => {
                 if (action === 'add') {
-                  // showModal();
                   setIsOpen(true);
                 }
               }}
@@ -83,7 +90,7 @@ const BankPage = () => {
             <Result
               status="success"
               title="Successfully Connected To Your Bank Account!"
-              subTitle={`Account number: ${modalResult.account?.accountNumber} Added. Current balance of ${modalResult.account?.balance} added to your account`}
+              subTitle={modalSubTitle}
             />
           )}
         </>

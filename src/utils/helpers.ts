@@ -316,9 +316,9 @@ export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], trans
 
   transactions.forEach((transaction) => {
     const category = getCategory(transaction.category_id);
-    const categoryName = category.name;
+    const categoryName = category?.name;
 
-    if (transaction.category_id === category._id && transaction.amount < 0) {
+    if (transaction?.category_id === category?._id && transaction?.amount < 0) {
       if (!categoryInvoiceAmounts[categoryName]) {
         categoryInvoiceAmounts[categoryName] = 0;
       }

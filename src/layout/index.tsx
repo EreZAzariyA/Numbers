@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../redux/store";
+import { logoutAction } from "../redux/actions/auth-actions";
 import DashboardHeader from "./DashboardHeader";
 import { Colors, Sizes, useResize } from "../utils/helpers";
 import { MenuItem, getMenuItem } from "../utils/antd-types";
+import { Languages, ThemeColors } from "../utils/enums";
 import { Layout, Menu, MenuProps } from "antd";
 import { AiOutlineLogout, AiOutlineProfile } from "react-icons/ai";
 import { BiLogInCircle } from "react-icons/bi";
-import { CiCircleList } from "react-icons/ci";
+import { CiCircleList, CiBank } from "react-icons/ci";
 import { BsReceipt } from "react-icons/bs";
-import { CiBank } from "react-icons/ci";
 import { FaAddressCard } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
-import { Languages, ThemeColors } from "../utils/enums";
-import { logoutAction } from "../redux/actions/auth-actions";
+import { LuWalletCards } from "react-icons/lu";
 
 const { Sider, Content } = Layout;
 
 const DashboardView = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { pathname } = useLocation();
@@ -48,7 +47,7 @@ const DashboardView = () => {
 
   const accountItems = user ? [
     getMenuItem(
-      t('menu.account.1'),
+      <Link to='/profile'>{t('menu.account.1')}</Link>,
       'profile',
       <AiOutlineProfile size={Sizes.SUB_MENU_ICON} />,
       null, style
@@ -76,25 +75,31 @@ const DashboardView = () => {
 
   const items: MenuItem[] = [
     getMenuItem(
-      t('menu.dashboard'),
+      <Link to={'/dashboard'}>{t('menu.dashboard')}</Link>,
       'dashboard',
       <RxDashboard size={Sizes.MENU_ICON} />,
       null, style
     ),
     getMenuItem(
-      t('menu.transactions'),
+      <Link to='/transactions'>{t('menu.transactions')}</Link>,
       'transactions',
       <BsReceipt size={Sizes.MENU_ICON} />,
       null, style
     ),
     getMenuItem(
-      t('menu.categories'),
+      <Link to='/categories'>{t('menu.categories')}</Link>,
       'categories',
       <CiCircleList size={Sizes.MENU_ICON} />,
       null, style
     ),
     getMenuItem(
-      t('menu.bankAccount'),
+      <Link to='/credit-cards'>{t('menu.creditCards')}</Link>,
+      'credit-cards',
+      <LuWalletCards size={Sizes.MENU_ICON} />,
+      null, style
+    ),
+    getMenuItem(
+      <Link to='/bank'>{t('menu.bankAccount')}</Link>,
       'bank',
       <CiBank size={Sizes.MENU_ICON} />,
       null, style
@@ -109,10 +114,9 @@ const DashboardView = () => {
 
   const onClick: MenuProps['onClick'] = async (e) => {
     if (e.key === 'sign-out') {
-      dispatch(logoutAction());
+      await dispatch(logoutAction()).unwrap();
       return;
     }
-    navigate(e.key);
     setCurrent(e.key);
   };
 

@@ -1,4 +1,5 @@
 import { Languages, ThemeColors } from "./enums";
+import { Transaction } from "./transactions";
 
 export type LanguageType = typeof Languages[keyof typeof Languages];
 export type ThemeColorType = ThemeColors.LIGHT | ThemeColors.DARK;
@@ -25,6 +26,8 @@ export type PastOrFutureDebitType = {
 };
 
 export type CreditCardType = {
+  _id: string;
+  txns?: Transaction[];
   cardFamilyDescription: string;
   cardFrameworkNotUsed: number;
   cardFramework: number;

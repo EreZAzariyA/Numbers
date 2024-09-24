@@ -5,6 +5,7 @@ export enum SupportedCompaniesTypes {
   discount = 'discount',
   behatsdaa = 'behatsdaa',
   leumi = 'leumi',
+  visaCal = 'visaCal',
 };
 
 export const SupportedScrapers: any = {
@@ -23,6 +24,10 @@ export const SupportedScrapers: any = {
   [SupportedCompaniesTypes.behatsdaa]: {
     name: 'Behatsdaa',
     loginFields: ['id', PASSWORD_FIELD],
+  },
+  [SupportedCompaniesTypes.visaCal]: {
+    name: 'Cal',
+    loginFields: ['username', PASSWORD_FIELD],
   },
 };
 

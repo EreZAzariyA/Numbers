@@ -1,8 +1,10 @@
 import { BankAccount } from "../utils/transactions";
 import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "../utils/types";
 
+export type CardNumberType = string | number;
+
 export interface BankAccountDetails {
-  bank: MainBanksAccount;
+  bank: BankAccountModel;
   account: BankAccount;
 };
 export interface MainBanksAccount {
@@ -15,10 +17,12 @@ export class BankAccountModel {
   _id: string;
   userId: string;
   isMainAccount: boolean;
+  isCardProvider: boolean;
   bankName: string;
   credentials: string;
   details: {
     accountNumber: string;
+    cardNumber: CardNumberType;
     balance: number;
   };
   lastConnection: number;

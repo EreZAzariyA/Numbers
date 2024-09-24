@@ -3,7 +3,7 @@
 }
 
 .main-layout .site-layout {
-  padding: 10px;
+  padding: 0 10px;
   background: var(--light-blue);
   transition: background 300ms ease;
 }

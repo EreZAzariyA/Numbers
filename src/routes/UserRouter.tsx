@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PublicRoute from "./PublicRoute";
+import PrivateRoute from "./PrivateRoute";
 import DashboardView from "../layout";
 import AuthView from "../layout/AuthView";
 import SignIn from "../components/auth/sign-in";
 import SignUp from "../components/auth/sign-up";
 import Dashboard from "../components/dashboard";
 import Transactions from "../components/transactions";
+import CreditCards from "../components/credit-cards";
 import CategoriesPage from "../components/categories";
-import PublicRoute from "./PublicRoute";
 import Profile from "../components/profile";
 import PageNotFound from "../components/components/PageNotFound";
 import BankPage from "../components/bank-page";
-import PrivateRoute from "./PrivateRoute";
 
 const UserRouter = () => (
   <BrowserRouter>
@@ -19,6 +20,7 @@ const UserRouter = () => (
         <Route index element={<Navigate to={'/dashboard'} replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="transactions" element={<Transactions />} />
+        <Route path="credit-cards" element={<CreditCards />} />
         <Route path="categories" element={<CategoriesPage />} />
         <Route path="bank" element={<BankPage />} />
         <Route path="profile" element={<Profile />} />

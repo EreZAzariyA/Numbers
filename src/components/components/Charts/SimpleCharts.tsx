@@ -44,9 +44,11 @@ const renderActiveShape = (props: any) => {
       <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
         {`Price ${asNumString(value)}`}
       </text>
-      <text x={cx} y={cy + 20} dy={8} textAnchor="middle" fill={fill}>
-        {`(Rate ${(percent * 100).toFixed(2)}%)`}
-      </text>
+      {(value > 0.1) && (
+        <text x={cx} y={cy + 20} dy={8} textAnchor="middle" fill={fill}>
+          {`(Rate ${(percent * 100).toFixed(2)}%)`}
+        </text>
+      )}
       <Sector
         cx={cx}
         cy={cy}

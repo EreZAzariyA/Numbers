@@ -2,6 +2,7 @@
   "menu": {
     "dashboard": "Dashboard",
     "transactions": "Transactions",
+    "creditCards": "Credit Cards",
     "categories": "Categories",
     "bankAccount": "Bank Account",
     "profile": "Profile",
@@ -17,6 +18,7 @@
   "pages": {
     "dashboard": "Dashboard",
     "transactions": "Transactions",
+    "creditCards": "Credit Cards",
     "categories": "Categories",
     "bankAccount": "Bank Account",
     "profile": "Profile"

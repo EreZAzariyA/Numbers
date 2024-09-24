@@ -90,7 +90,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
               {props.loading ? (
               <Spin />
               ) : (
-                asNumString(details.balance)
+                asNumString(details?.balance || 0)
               )}
             </Typography.Text>
 

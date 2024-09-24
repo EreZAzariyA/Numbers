@@ -80,7 +80,11 @@ export const googleSignInAction = createAsyncThunk<string, CredentialResponse>(
 
 export const logoutAction = createAsyncThunk<void>(
   AuthActions.LOGOUT,
-  async () => {
-    await axios.post<void>(config.urls.auth.logout);
+  async (_, thunkApi) => {
+    try {
+      await axios.post<void>(config.urls.auth.logout);
+    } catch (err: any) {
+      thunkApi.rejectWithValue(err);
+    }
   }
 );

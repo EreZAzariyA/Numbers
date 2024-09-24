@@ -64,9 +64,7 @@ const Dashboard = () => {
           transactionsByMonth={transactionsByMonth}
           monthToDisplay={monthToDisplay}
         />
-        <DashboardThird
-          creditCards={creditCards}
-        />
+        <DashboardThird creditCards={creditCards} />
       </div>
     </div>
   );

@@ -35,7 +35,11 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
     ...state,
     loading: false,
     error: null,
-    account: action.payload
+    account: {
+      _id: action.payload?._id || null,
+      userId: action.payload?.userId || null,
+      banks: action.payload?.banks || [],
+    }
   }));
 
   builder.addCase(connectBankAccount.pending, (state) => ({
@@ -55,7 +59,7 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
     account: {
       _id: action.payload.bank._id,
       userId: action.payload.bank.userId,
-      banks: action.payload.bank.banks
+      banks: [...state.account.banks, action.payload.bank],
     }
   }));
 

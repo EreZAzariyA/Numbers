@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import UserModel from "../../models/user-model";
-import { BankAccountModel } from "../../models/bank-model";
-import { connectBankAccount } from "../../redux/actions/bank-actions";
-import { importTransactions } from "../../redux/actions/transaction-actions";
-import bankServices from "../../services/banks";
-import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../utils/definitions";
-import { Transaction } from "../../utils/transactions";
-import { MenuItem, getMenuItem } from "../../utils/antd-types";
-import { isArray, isArrayAndNotEmpty } from "../../utils/helpers";
+import { useAppDispatch, useAppSelector } from "../../../redux/store";
+import UserModel from "../../../models/user-model";
+import { BankAccountDetails, BankAccountModel } from "../../../models/bank-model";
+import { connectBankAccount } from "../../../redux/actions/bank-actions";
+import { importTransactions } from "../../../redux/actions/transaction-actions";
+import bankServices from "../../../services/banks";
+import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../../utils/definitions";
+import { Transaction } from "../../../utils/transactions";
+import { MenuItem, getMenuItem } from "../../../utils/antd-types";
+import { isArray, isArrayAndNotEmpty } from "../../../utils/helpers";
 import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
+import TransactionModel from "../../../models/transaction";
+import { ImportModal } from "./ImportModal";
 
 export enum ConnectBankFormType {
   Connect_Bank = "Connect_Bank",
@@ -19,7 +21,7 @@ export enum ConnectBankFormType {
 interface ConnectBankFormProps {
   user: UserModel;
   setIsOkBtnActive?: (val: boolean) => void;
-  setResult?: (res: any) => void;
+  setResult?: (res: BankAccountDetails) => void;
   formType?: ConnectBankFormType;
   bankDetails?: BankAccountModel;
 };
@@ -28,6 +30,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   const { message, modal } = App.useApp();
   const dispatch = useAppDispatch();
   const { loading: isLoading } = useAppSelector((state) => state.userBanks);
+  const [showImportConfirmationModal, setShowImportConfirmationModal] = useState<boolean>(false);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: props.bankDetails?.bankName || false,
     companyId: props.bankDetails?.bankName || null,
@@ -56,15 +59,16 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
 
     let res;
-
     try {
       if (props.formType === ConnectBankFormType.Update_Bank) {
         res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
       } else {
         res = await dispatch(connectBankAccount({ details: values, user_id: props.user._id })).unwrap();
       }
+      console.log({res});
+
       if (isArrayAndNotEmpty(res.account.txns)) {
-        showTransImportConfirmation(res.account.txns);
+        showTransImportConfirmation(res.account.txns, res);
       }
       props?.setResult(res);
       props.setIsOkBtnActive(true);
@@ -73,18 +77,45 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
   };
 
-  const showTransImportConfirmation = async (transactions: Transaction[]): Promise<void> => {
+  const showTransImportConfirmation = async (transactions: Transaction[], res: BankAccountDetails): Promise<void> => {
+    const isCardProvider = res.bank?.isCardProvider || false;
+    let content: any = `We found ${transactions.length} transactions, would you like to import them?`;
+
+    if (isCardProvider) {
+      const cards = res.account?.creditCards || [];
+
+      content = (
+        <Space direction="vertical" style={{ width: '100%' }}>
+          {cards.map((card) => (
+            <ImportModal
+              key={card.cardNumber}
+              card={card}
+              companyId={selectedCompany.companyId}
+            />
+            ))}
+        </Space>
+      );
+    }
+
     modal.confirm({
-      okText: 'Import',
-      onOk: async () => await onTransactionsImportOk(transactions),
-      content: `We found ${transactions.length} transactions, would you like to import them?`
+      open: showImportConfirmationModal,
+      okText: isCardProvider ? 'Done' : 'Import',
+      closable: false,
+      onOk: async () => {
+        if (isCardProvider) {
+          setShowImportConfirmationModal(false);
+        } else {
+          await onTransactionsImportOk(transactions);
+        }
+      },
+      content
     });
   };
 
-  const onTransactionsImportOk = async (transactions: Transaction[]): Promise<void> => {
+  const onTransactionsImportOk = async (transactions: Transaction[]): Promise<TransactionModel[]> => {
     try {
       const res = await dispatch(importTransactions({
-        transactions: transactions,
+        transactions,
         user_id: props.user._id,
         companyId: (SupportedCompaniesTypes as any)[selectedCompany.companyId]
       })).unwrap();
@@ -92,6 +123,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         console.log(res);
         message.success(`imported transactions: ${res?.length || 0}`);
       }
+      return res;
     } catch (err: any) {
       message.error(err);
     }
