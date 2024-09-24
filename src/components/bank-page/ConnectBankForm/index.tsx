@@ -65,7 +65,6 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
       } else {
         res = await dispatch(connectBankAccount({ details: values, user_id: props.user._id })).unwrap();
       }
-      console.log({res});
 
       if (isArrayAndNotEmpty(res.account.txns)) {
         showTransImportConfirmation(res.account.txns, res);
@@ -120,7 +119,6 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         companyId: (SupportedCompaniesTypes as any)[selectedCompany.companyId]
       })).unwrap();
       if (res && isArray(res)) {
-        console.log(res);
         message.success(`imported transactions: ${res?.length || 0}`);
       }
       return res;

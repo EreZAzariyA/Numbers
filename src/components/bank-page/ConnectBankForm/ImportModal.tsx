@@ -33,7 +33,6 @@ export const ImportModal = (props: ImportModalProps) => {
           companyId: (SupportedCompaniesTypes as any)[companyId]
         })).unwrap();
         if (res && isArray(res)) {
-          console.log(res);
           setImported(true);
           message.success(`imported transactions: ${res?.length || 0}`);
         }
