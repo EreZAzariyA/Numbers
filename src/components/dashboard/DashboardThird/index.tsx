@@ -25,7 +25,7 @@ const DashboardThird = (props: DashboardThirdProps) => {
             <div className={`credit-cards ${isEmpty ? 'empty' : ''}`}>
               {!isEmpty ?
                 props.creditCards.map((card) => (
-                  <CreditCard key={card.cardNumber} card={card} />
+                  <CreditCard key={card._id} card={card} />
                 )) :
                 <Empty />
               }
