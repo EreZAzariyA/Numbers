@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../redux/store";
-import { useResize } from "../../utils/helpers";
+import { getTransactionsByCategory, useResize } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
 import { CompaniesNames, SupportedCompaniesTypes } from "../../utils/definitions";
 import { DefaultOptionType } from "antd/es/select";
@@ -50,10 +50,23 @@ export const Filters = (props: FiltersProps) => {
   const { t } = useTranslation();
   const { isPhone, isMobile } = useResize();
   const [collapsed, setCollapsed] = useState<boolean>(true);
-  const { categories, loading } = useAppSelector((state) => state.categories);
   const style: React.CSSProperties = {
     width: (isMobile ? 200 : 250)
   };
+  const { categories, loading } = useAppSelector((state) => state.categories);
+  const mappedCategories = categories.map((category) => {
+    const transactions = getTransactionsByCategory(category._id);
+    return {
+      label: (
+        <Row justify={'space-between'}>
+          <Col>{category.name}</Col>
+          <Col><small>{transactions.length}</small></Col>
+        </Row>
+      ),
+      value: category._id,
+      transactions
+    }
+  }).sort((a, b) => (b.transactions.length - a.transactions.length))
 
   const withCollapse = [
     props.datesFilter,
@@ -130,10 +143,8 @@ export const Filters = (props: FiltersProps) => {
             style={style}
             placeholder={t('filters.placeholders.0')}
             onChange={(val) => props.handleFilterChange('categories', val)}
-            options={[...categories].map((c) => ({
-              label: c.name,
-              value: c._id,
-            }))}
+            maxTagCount='responsive'
+            options={mappedCategories}
             loading={loading}
           />
         </Col>

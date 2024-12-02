@@ -7,6 +7,7 @@ import { Filters } from "../components/Filters";
 import CategoryModel from "../../models/category-model";
 import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
 import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty } from "../../utils/helpers";
+import { TransactionStatusesType } from "../../utils/transactions";
 import { App, Button, Pagination, Row, Space, TablePaginationConfig, TableProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
 
@@ -102,7 +103,7 @@ const CategoriesPage = () => {
     }
 
     return data.map((category) => {
-      const transactions = getTransactionsByCategory(category._id);
+      const transactions = getTransactionsByCategory(category._id, TransactionStatusesType.COMPLETED) || [];
 
       let totalAmount = 0;
       transactions.forEach((t) => {
@@ -112,9 +113,9 @@ const CategoriesPage = () => {
       return {
         ...category,
         spent: totalAmount,
-        transactions: transactions.length || 0
+        transactions: transactions.length
       };
-    });
+    }).sort((a, b) => (Math.abs(b.spent) - Math.abs(a.spent)));
   };
 
   const filtered = categoriesFiltering(categories);
@@ -182,13 +183,14 @@ const CategoriesPage = () => {
               />
             </div>
             <EditTable
+              editable
               type="categories"
               onEditMode={onEdit}
               removeHandler={onRemove}
               tableProps={{
                 dataSource,
-                rowKey: '_id',
                 columns,
+                rowKey: '_id',
                 scroll: { x: 600 },
                 bordered: true,
                 loading: isLoading,

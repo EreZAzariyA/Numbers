@@ -33,6 +33,12 @@ export const Sizes: SizeType = {
   SUB_MENU_ICON: 20
 };
 
+export enum TransactionsTableTypes {
+  Pending = "Pending Transactions",
+  Card_Withdrawals = "Card Withdrawals",
+  Last_Transactions = "Transactions"
+};
+
 const getStyle = (theme: string): string => {
   if (theme === ThemeColors.LIGHT) {
     return 'black';
@@ -178,7 +184,7 @@ export const getInvoicesTotalsPrice = (transactions: TransactionModel[], status?
 export const getInvoicesPricePerCategory = (transactions: TransactionModel[], status?: TransactionStatusesType) => {
   const { categories } = store.getState().categories;
   const transactionsByCategory: any = {};
-  let arr = [...transactions] || [];
+  let arr = [...transactions || []];
 
   if (status) {
     arr = filterInvoicesByStatus(transactions, status);
@@ -389,12 +395,13 @@ const getDataFromStringDate = (stringDate: string): string => {
   return dayjs().set('year', year).set('month', month).format('MM-YYYY');
 };
 
-export const getTransactionsByCategory = (categoryId: string, sentTransactions?: TransactionModel[]): TransactionModel[] => {
+export const getTransactionsByCategory = (categoryId: string, status?: string, sentTransactions?: TransactionModel[]): TransactionModel[] => {
   const trans = sentTransactions || store.getState().transactions.transactions;
   const transactions: TransactionModel[] = [];
 
   for (const transaction of trans) {
     if (transaction.category_id === categoryId) {
+      if (status && transaction.status !== status) return;
       transactions.push(transaction);
     }
   }
