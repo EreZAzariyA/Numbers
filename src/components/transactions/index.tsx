@@ -1,5 +1,5 @@
-import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
@@ -8,10 +8,10 @@ import TransactionModel from "../../models/transaction";
 import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
 import { Filters } from "../components/Filters";
+import { TotalsContainer } from "../components/TotalsContainer";
 import { TransactionStatusesType } from "../../utils/transactions";
 import { asNumString, filtering, getError } from "../../utils/helpers";
 import { App, Button, Space, TableProps, Tooltip } from "antd";
-import { TotalsContainer } from "../components/TotalsContainer";
 
 enum Steps {
   New_Transaction = "New_Transaction",
@@ -150,7 +150,7 @@ const Transactions = () => {
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
-      sorter: (a, b) => (Math.abs(b.amount) - Math.abs(a.amount)),
+      sorter: (a, b) => (b.amount - a.amount),
       render: (val) => {
         return (
           asNumString(val)
@@ -209,16 +209,16 @@ const Transactions = () => {
               resetFilters={resetFilters}
             />
             <EditTable
-              type="transactions"
+              editable
               onEditMode={onEdit}
               removeHandler={onRemove}
               tableProps={{
+                columns,
                 dataSource,
                 rowKey: '_id',
-                columns,
                 scroll: { x: 800 },
                 bordered: true,
-                loading: loading,
+                loading
               }}
             />
             <Button onClick={() => setStep(Steps.New_Transaction)}>

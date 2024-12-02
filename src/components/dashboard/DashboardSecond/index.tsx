@@ -1,36 +1,69 @@
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../redux/store";
 import TransactionModel from "../../../models/transaction";
 import UserModel from "../../../models/user-model";
-import { TransactionsTable } from "../../components/TransactionsTable";
-import { filterInvoicesByStatus, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { EditTable } from "../../components/EditTable";
+import { asNumString, filterInvoicesByStatus, isArrayAndNotEmpty } from "../../../utils/helpers";
 import { TransactionStatusesType } from "../../../utils/transactions";
+import { Tooltip } from "antd";
+import { TableProps } from "antd/lib";
 import "./DashboardSecond.css";
 
-interface DashboardSecondProps {
+interface DashboardSecondProps<T> {
   user: UserModel;
-  transactions: TransactionModel[];
-  transactionsByMonth?: TransactionModel[];
+  transactions: T[];
+  transactionsByMonth?: T[];
   monthToDisplay: Dayjs;
 };
 
-export enum TransactionsTableTypes {
-  Pending = "Pending Transactions",
-  Card_Withdrawals = "Card Withdrawals",
-  Last_Transactions = "Transactions"
-};
-
-const DashboardSecond = (props: DashboardSecondProps) => {
+const DashboardSecond = <T extends TransactionModel>(props: DashboardSecondProps<T>) => {
   const { t } = useTranslation();
   const { loading } = useAppSelector((state) => state.transactions);
-  let transactions: TransactionModel[] = [];
+  let dataSource: TransactionModel[] = [];
 
   if (isArrayAndNotEmpty(props.transactions)) {
-    transactions  = filterInvoicesByStatus(props.transactionsByMonth, TransactionStatusesType.COMPLETED);
-    transactions = transactions.slice(0, 6);
+    dataSource  = filterInvoicesByStatus(props.transactions, TransactionStatusesType.COMPLETED);
+    dataSource = [...dataSource].slice(0, 6);
   }
+
+  const columns: TableProps<TransactionModel>['columns'] = [
+    {
+      title: t('transactions.table.header.date'),
+      dataIndex: 'date',
+      key: 'date',
+      width: '33.3%',
+      sorter: (a, b) => (dayjs(b.date).valueOf() - dayjs(a.date).valueOf()),
+      defaultSortOrder: 'ascend',
+      render: (text, r) => (
+        <span>{new Date(text).toLocaleDateString()}</span>
+      ),
+    },
+    {
+      title: t('transactions.table.header.description'),
+      dataIndex: 'description',
+      key: 'description',
+      width: '33.3%',
+      ellipsis: {
+        showTitle: false
+      },
+      render: (text) => (
+        <Tooltip title={text}>
+          {text}
+        </Tooltip>
+      )
+    },
+    {
+      title: t('transactions.table.header.amount'),
+      dataIndex: 'amount',
+      key: 'amount',
+      width: '33.3%',
+      render: (val) => (
+        asNumString(val)
+      )
+    },
+  ];
 
   return (
     <div className="home-seconde-main-container home-component">
@@ -46,12 +79,11 @@ const DashboardSecond = (props: DashboardSecondProps) => {
           </div>
         </div>
         <div className="card-body">
-          <TransactionsTable
-            transactions={transactions}
-            type={TransactionsTableTypes.Last_Transactions}
-            date={props.monthToDisplay}
-            loading={loading}
-            props={{
+          <EditTable
+            tableProps={{
+              columns,
+              dataSource,
+              loading,
               pagination: {
                 hideOnSinglePage: true
               },

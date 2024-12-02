@@ -1,14 +1,12 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import CategoryModal from "./CategoryModal";
+import CategoryTransactionsModal from "../CategoryTransactionsModal";
 import TransactionModel from "../../../models/transaction";
 import CategoryModel from "../../../models/category-model";
-import Modal from "antd/es/modal/Modal";
-import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps } from "antd";
+import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, App } from "antd";
 
 interface EditTableProps<T> {
-  type: string;
+  type?: string;
+  editable?: boolean;
   handleAdd?: () => void;
   onEditMode?: (record: T) => void;
   removeHandler?: (record_id: string) => Promise<void>;
@@ -17,26 +15,32 @@ interface EditTableProps<T> {
 };
 
 export const EditTable = <T extends CategoryModel | TransactionModel>(props: EditTableProps<T>) => {
+  const { modal } = App.useApp();
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [open, setOpen] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryModel>(null);
+
+  const showModal = (record: CategoryModel) => {
+    modal.info({
+      icon: null,
+      closable: true,
+      destroyOnClose: true,
+      style: { top: 20 },
+      content: <CategoryTransactionsModal category={record} />,
+      footer: null
+    });
+  };
 
   const columnRender = (record: T) => (
     <Row align={'middle'}>
       {props.type === 'categories' && (
         <>
           <Col>
-            <Typography.Link onClick={() => {
-              setOpen(true);
-              setSelectedCategory(record as CategoryModel);
-            }}>
+            <Typography.Link onClick={() => showModal(record as CategoryModel)}>
               {t('actions.0')}
             </Typography.Link>
           </Col>
           <Divider type="vertical" />
           <Col>
-            <Typography.Link onClick={() => navigate({ pathname: '/transactions', hash: record._id })}>
+            <Typography.Link href={`/transactions/#${record._id}`}>
               {t('actions.1')}
             </Typography.Link>
           </Col>
@@ -62,25 +66,14 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
     </Row>
   );
 
-  props.tableProps.columns.push({
-    title: t('transactions.table.header.actions'),
-    key: 'action',
-    width: 150,
-    render: (_: any, record) => columnRender(record),
-  });
+  if (props.editable) {
+    props.tableProps.columns.push({
+      title: t('transactions.table.header.actions'),
+      key: 'action',
+      width: 150,
+      render: (_: any, record) => columnRender(record),
+    });
+  }
 
-  return (
-    <>
-      <Table {...props.tableProps} />
-
-      <Modal
-        destroyOnClose
-        open={open}
-        footer={null}
-        onCancel={() => setOpen(false)}
-      >
-        <CategoryModal loading={!selectedCategory} category={selectedCategory} />
-      </Modal>
-    </>
-  );
+  return <Table {...props.tableProps} />
 };
