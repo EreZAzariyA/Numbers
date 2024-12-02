@@ -84,6 +84,7 @@ const DashboardSecond = <T extends TransactionModel>(props: DashboardSecondProps
               columns,
               dataSource,
               loading,
+              rowKey: '_id',
               pagination: {
                 hideOnSinglePage: true
               },

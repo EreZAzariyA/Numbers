@@ -5,12 +5,15 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { AppDispatch } from "../../../redux/store";
 import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
 import { CustomModal } from "../../components/CustomModal";
-import { refreshBankData, setBankAsMainAccount } from "../../../redux/actions/bank-actions";
+import { setBankAsMainAccount } from "../../../redux/actions/bank-actions";
 import UserModel from "../../../models/user-model";
 import { BankAccountModel } from "../../../models/bank-model";
 import { CompaniesNames } from "../../../utils/definitions";
-import { asNumString, getTimeToRefresh } from "../../../utils/helpers";
-import { App, Button, Col, Row, Space, Spin, Tooltip, Typography } from "antd";
+import { asNumString } from "../../../utils/helpers";
+import { App, Button, Col, Row, Space, Spin, Typography } from "antd";
+import { RefreshBankDataButton } from "../../components/RefreshBankDataButton";
+
+dayjs.extend(relativeTime);
 
 interface BankAccountPageProps {
   bankAccount: BankAccountModel;
@@ -18,38 +21,15 @@ interface BankAccountPageProps {
   loading: boolean;
   mainAccountLoading: boolean;
 };
-dayjs.extend(relativeTime);
 
 const BankAccountPage = (props: BankAccountPageProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { message } = App.useApp();
   const { lastConnection, details, bankName, _id: bank_id } = props.bankAccount;
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
-  const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
-  // const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
-  const isRefreshAvailable = true;
   const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
-  const isMainAccount = !!props.bankAccount.isMainAccount;
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const refreshData = async () => {
-    if (props.loading) {
-      return;
-    }
-
-    try {
-      const result = await dispatch(refreshBankData({
-        bank_id,
-        user_id: props.user?._id
-      })).unwrap();
-
-      const { importedTransactions = [] } = result;
-      message.success(`${importedTransactions.length} transactions updated successfully`);
-    } catch (err: any) {
-      message.error(err);
-    }
-  };
+  const isMainAccount = !!props.bankAccount.isMainAccount;
 
   const editAccountDetails = () => {
     setIsOpen(!isOpen);
@@ -96,9 +76,12 @@ const BankAccountPage = (props: BankAccountPageProps) => {
 
             <Row align={'middle'} justify={'center'} gutter={[10, 10]}>
               <Col>
-                <Tooltip title={!isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''}>
-                  <Typography.Link disabled={!isRefreshAvailable || props.loading} onClick={refreshData}>Refresh</Typography.Link>
-                </Tooltip>
+                <RefreshBankDataButton
+                  bank={props.bankAccount}
+                  buttonProps={{
+                    type: 'link'
+                  }}
+                />
               </Col>
               <Col>
                 <Typography.Link disabled={props.loading} onClick={editAccountDetails}>Edit-details</Typography.Link>
@@ -121,7 +104,6 @@ const BankAccountPage = (props: BankAccountPageProps) => {
           disabled: props.loading
         }}
         confirmLoading={props.loading}
-
         okButtonProps={{
           disabled: !isOkBtnActive,
           onClick: () => setIsOpen(false),
