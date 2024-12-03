@@ -15,6 +15,7 @@ const Dashboard = () => {
   const { transactions } = useAppSelector((state) => state.transactions);
   const { categories, loading: categoriesLoading } = useAppSelector((state) => state.categories);
   const { account, loading: accountLoading } = useAppSelector((state) => state.userBanks);
+
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
   const transactionsByMonth = getInvoicesBySelectedMonth(transactions, monthToDisplay);

@@ -18,8 +18,7 @@ export const RefreshBankDataButton = (props: RefreshBankDataButtonProps) => {
   const { account } = useAppSelector((state) => state.userBanks);
   const { user } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const banksToRefresh: BankAccountModel[] = props.bank ? [props.bank] : [...account.banks];
+  const banksToRefresh: BankAccountModel[] = props.bank ? [props.bank] : [...account?.banks || []];
 
   const lastConnection = !isArrayAndNotEmpty(banksToRefresh) ? null : banksToRefresh
     .sort((a, b) => (
