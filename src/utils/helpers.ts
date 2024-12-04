@@ -114,13 +114,13 @@ export const asNumString = (num: number = 0, digits: number = 2): string => {
   return parseFloat(formattedNumber || '0').toLocaleString();
 };
 
-export const getInvoicesBySelectedMonth = (transactions: TransactionModel[], selectedMonth: Dayjs): TransactionModel[] => {
+export const getInvoicesBySelectedMonth = (transactions: TransactionModel[], selectedMonth: Dayjs, status?: string): TransactionModel[] => {
   const transactionsByMonth: TransactionModel[] = [];
   if (isArrayAndNotEmpty(transactions)) {
     transactions.forEach((i) => {
-      if (i.status !== TransactionStatusesType.COMPLETED) {
-        return
-      }
+      if (status && i.status !== status) return;
+      if (i.status !== TransactionStatusesType.COMPLETED) return;
+
       const transactionDate = dayjs(i.date).format('YYYY-MM');
       if (transactionDate === selectedMonth?.format('YYYY-MM')) {
         transactionsByMonth.push(i);
