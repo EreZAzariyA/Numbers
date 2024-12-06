@@ -38,10 +38,35 @@ export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
             <div className="inner-box-title-icon">
               <GoCreditCard />
             </div>
-            <div className="inner-box-title">{t('dashboard.first.3')}</div>
+            <div className="inner-box-title">{t('dashboard.first.4')}</div>
           </div>
           <div className="inner-box-body">
             {props.currency} {asNumString(totalSaves)}
+          </div>
+        </div>
+      </div>
+      <div className="box">
+        <div className="inner-box">
+          <div className="inner-box-title-container">
+            <div className="inner-box-title-icon">
+              <GoCreditCard />
+            </div>
+            <div className="inner-box-title">{t('dashboard.first.5')}</div>
+          </div>
+          <div className="inner-box-body">
+            {props.currency} {asNumString(props.cardsUsed || 0)}
+          </div>
+        </div>
+        <Divider className="custom-divider" />
+        <div className="inner-box">
+          <div className="inner-box-title-container">
+            <div className="inner-box-title-icon">
+              <GoCreditCard />
+            </div>
+            <div className="inner-box-title">{t('dashboard.first.3')}</div>
+          </div>
+          <div className="inner-box-body">
+            {props.currency} {0}
           </div>
         </div>
       </div>
