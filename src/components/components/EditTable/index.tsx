@@ -1,41 +1,52 @@
+import { ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import CategoryTransactionsModal from "../CategoryTransactionsModal";
 import TransactionModel from "../../../models/transaction";
-import CategoryModel from "../../../models/category-model";
-import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, App } from "antd";
-import React, { useEffect, useState } from "react";
-import UserModel from "../../../models/user-model";
-import { useAppDispatch } from "../../../redux/store";
-import { ColumnsType } from "antd/lib/table";
+import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, App, Flex, Pagination, Grid } from "antd";
 import transactionsServices from "../../../services/transactions";
+import { queryFiltering } from "../../../utils/helpers";
+import { useAppSelector } from "../../../redux/store";
+import { Filters } from "../Filters";
+import dayjs, { Dayjs } from "dayjs";
+import { TransactionStatusesType } from "../../../utils/transactions";
+import { TotalsContainer } from "../TotalsContainer";
 
 interface EditTableProps<T> {
-  type?: string;
+  tableProps?: TableProps<T>;
   editable?: boolean;
+  filterState?: object;
+  setFilterState?: (object: any) => void;
+
+  query?: object;
+
+  totals?: boolean;
+  actionButton?: ReactNode;
   handleAdd?: () => void;
   onEditMode?: (record: T) => void;
   removeHandler?: (record_id: string) => Promise<void>;
-  isReady?: boolean;
-
-  user?: UserModel;
-  query?: object;
-  columns: TableProps<T>['columns']
-  style?: React.CSSProperties;
 };
 
-export const EditTable = <T extends CategoryModel | TransactionModel>(props: EditTableProps<T>) => {
-  const dispatch = useAppDispatch();
+export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) => {
+  const { message } = App.useApp();
   const { t } = useTranslation();
-  const { modal, message } = App.useApp();
-  const [transactions, setTransactions] = useState<TransactionModel[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const screen = Grid.useBreakpoint();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const [transactions, setTransactions] = useState<T[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     const dispatchTransactions = async () => {
+      const query = props.query || queryFiltering(props.filterState, { skip: (page - 1) * pageSize, limit: pageSize });
       setLoading(true);
+
       try {
-        const transactions = await transactionsServices.fetchTransactions(props.user._id, null, props.query)
-        setTransactions(transactions)
+        const { transactions, total } = await transactionsServices.fetchTransactions(user?._id, null, query);
+        setTransactions(transactions as T[]);
+        setTotal(props.query ? transactions?.length : total);
       } catch (err: any) {
         message.error(err);
       }
@@ -43,37 +54,21 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
     };
 
     dispatchTransactions();
-  }, [dispatch, message, props.query, props.user._id]);
+  }, [page, pageSize, props.filterState, message, user._id, props.query]);
 
-  const showModal = (record: CategoryModel) => {
-    modal.info({
-      icon: null,
-      closable: true,
-      destroyOnClose: true,
-      style: { top: 20 },
-      content: <CategoryTransactionsModal category={record} />,
-      footer: null
+  const handleFilterChange = (field: string, value: string | number[] | Dayjs[] | Dayjs): void => {
+    props.setFilterState({ ...props.filterState, [field]: value });
+  };
+
+  const resetFilters = () => {
+    props.setFilterState({
+      month: dayjs(),
+      status: TransactionStatusesType.COMPLETED
     });
   };
 
   const columnRender = (record: T) => (
     <Row align={'middle'}>
-      {props.type === 'categories' && (
-        <>
-          <Col>
-            <Typography.Link onClick={() => showModal(record as CategoryModel)}>
-              {t('actions.0')}
-            </Typography.Link>
-          </Col>
-          <Divider type="vertical" />
-          <Col>
-            <Typography.Link href={`/transactions/#${record._id}`}>
-              {t('actions.1')}
-            </Typography.Link>
-          </Col>
-          <Divider type="vertical" />
-        </>
-      )}
       <Col>
         <Typography.Link onClick={() => props.onEditMode(record)}>
           {t('actions.2')}
@@ -94,26 +89,61 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
   );
 
   if (props.editable) {
-    props.columns.push({
+    props.tableProps.columns.push({
       title: t('transactions.table.header.actions'),
       key: 'action',
       width: 150,
-      render: (_: any, record) => columnRender(record),
-    });
+      render: (_: any, record: T) => columnRender(record),
+    })
   }
 
-  return <Table
-    columns={props.columns as ColumnsType<TransactionModel>}
-    dataSource={transactions}
-    rowKey='_id'
-    loading={loading}
-    pagination= {{
-      hideOnSinglePage: true
-    }}
-    style={props.style}
-    expandable={{
-      defaultExpandAllRows: true
-    }}
-    scroll={{ x: 800 }}
-  />
+  return (
+    <Flex vertical gap={10} justify="center">
+      <Flex align="flex-start" gap={10} wrap={screen.xs}>
+        {props.filterState && (
+          <Filters
+            type="transactions"
+            datesFilter
+            monthFilter
+            categoryFilter
+            statusFilter
+            textFilter
+            companyFilter
+            byIncome
+            filterState={props.filterState}
+            handleFilterChange={handleFilterChange}
+            resetFilters={resetFilters}
+          />
+        )}
+        {props.totals && (
+          <TotalsContainer filterState={props.filterState} />
+        )}
+
+      </Flex>
+      <Table
+        {...props.tableProps}
+        dataSource={transactions}
+        rowKey='_id'
+        bordered
+        loading={loading}
+        pagination={false}
+      />
+
+      <Flex justify="space-between">
+        {props?.actionButton && (
+          props.actionButton
+        )}
+        <Pagination
+          pageSize={pageSize}
+          current={page}
+          total={total}
+          hideOnSinglePage
+          onChange={(page, pageSize) => {
+            setPage(page);
+            setPageSize(pageSize);
+          }}
+        />
+      </Flex>
+    </Flex>
+  );
 };

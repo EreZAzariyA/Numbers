@@ -1,5 +1,5 @@
 import { useState } from "react";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
@@ -7,11 +7,9 @@ import { addTransaction, removeTransaction, updateTransaction } from "../../redu
 import TransactionModel from "../../models/transaction";
 import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
-import { Filters } from "../components/Filters";
-import { TotalsContainer } from "../components/TotalsContainer";
 import { TransactionStatusesType } from "../../utils/transactions";
-import { asNumString, filtering, getError } from "../../utils/helpers";
-import { App, Button, Space, TableProps, Tooltip } from "antd";
+import { asNumString, getError } from "../../utils/helpers";
+import { App, Button, Spin, TableProps, Tooltip } from "antd";
 
 enum Steps {
   New_Transaction = "New_Transaction",
@@ -20,21 +18,21 @@ enum Steps {
 
 const Transactions = () => {
   const dispatch = useAppDispatch();
-  const { message } = App.useApp();
   const { t } = useTranslation();
   const { hash } = useLocation();
+  const { message } = App.useApp();
+
   const { user } = useAppSelector((state) => state.auth);
-  const { transactions, loading } = useAppSelector((state) => state.transactions);
-  const { categories } = useAppSelector((state) => state.categories);
+  const { categories, loading: categoriesLoading } = useAppSelector((state) => state.categories);
+
   const [selectedTransaction, setSelectedTransaction] = useState<TransactionModel>(null);
-  const newTransWithCategory_idFromCategories = hash.split('#')?.[1];
   const [step, setStep] = useState<string>(hash ? Steps.New_Transaction : null);
   const [filterState, setFilterState] = useState({
     month: dayjs(),
     status: TransactionStatusesType.COMPLETED,
   });
 
-  const dataSource = filtering(transactions, filterState);
+  const newTransWithCategory_idFromCategories = hash.split('#')?.[1];
 
   const onFinish = async (transaction: TransactionModel) => {
     if (!user) {
@@ -91,23 +89,12 @@ const Transactions = () => {
     }
   };
 
-  const handleFilterChange = (field: string, value: string | number[] | Dayjs[] | Dayjs): void => {
-    setFilterState({ ...filterState, [field]: value });
-  };
-
-  const resetFilters = () => {
-    setFilterState({
-      month: dayjs(),
-      status: TransactionStatusesType.COMPLETED
-    });
-  };
-
   const columns: TableProps<TransactionModel>['columns'] = [
     {
       title: t('transactions.table.header.date'),
       dataIndex: 'date',
       key: 'date',
-      width: 100,
+      width: 120,
       render: (text) => (
         <span>{new Date(text).toLocaleDateString()}</span>
       ),
@@ -123,6 +110,7 @@ const Transactions = () => {
         showTitle: false,
       },
       render:(value) => {
+        if (categoriesLoading) return <Spin />
         const category = categories.find((c) => c._id === value);
         return (
           <Tooltip title={category?.name}>
@@ -182,56 +170,44 @@ const Transactions = () => {
     }
   ];
 
+  const actionButton = (
+    <Button onClick={() => setStep(Steps.New_Transaction)}>
+      {t('transactions.buttons.add')}
+    </Button>
+  );
+
   return (
     <div className="page-container transactions">
       <div className="title-container">
         <div className="page-title">{t('pages.transactions')}</div>
-        {step ? (
+        {step && (
           <Button danger className="btn-18" type="link" size="small" onClick={onBack}>Back</Button>
-        ) : (
-          <TotalsContainer transactions={dataSource} />
         )}
       </div>
       <div className="page-inner-container">
         {!step && (
-          <Space direction="vertical" className="w-100">
-            <Filters
-              type="transactions"
-              datesFilter
-              monthFilter
-              categoryFilter
-              statusFilter
-              textFilter
-              companyFilter
-              byIncome
-              filterState={filterState}
-              handleFilterChange={handleFilterChange}
-              resetFilters={resetFilters}
-            />
-            <EditTable
-              editable
-              onEditMode={onEdit}
-              removeHandler={onRemove}
-              tableProps={{
-                columns,
-                dataSource,
-                rowKey: '_id',
-                scroll: { x: 800 },
-                bordered: true,
-                loading
-              }}
-            />
-            <Button onClick={() => setStep(Steps.New_Transaction)}>
-              {t('transactions.buttons.add')}
-            </Button>
-          </Space>
+          <EditTable
+            editable
+            totals
+            filterState={filterState}
+            setFilterState={setFilterState}
+            actionButton={actionButton}
+            onEditMode={onEdit}
+            removeHandler={onRemove}
+            tableProps={{
+              columns,
+              scroll: {
+                x: 800
+              },
+            }}
+          />
         )}
         {(step && step === Steps.New_Transaction) && (
           <NewTransaction
             onFinish={onFinish}
             categories={categories}
             newInvoiceCategoryId={newTransWithCategory_idFromCategories}
-            isLoading={loading}
+            isLoading={categoriesLoading}
           />
         )}
         {(step && step === Steps.Update_Transaction) && (
@@ -239,7 +215,7 @@ const Transactions = () => {
             onFinish={onFinish}
             categories={categories}
             transaction={selectedTransaction}
-            isLoading={loading}
+            isLoading={categoriesLoading}
           />
         )}
       </div>
