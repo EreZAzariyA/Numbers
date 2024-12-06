@@ -17,6 +17,7 @@ export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
   const { t } = useTranslation();
   const totalSaves = props?.bankAccount?.savings?.totalDepositsCurrentValue || 0;
   const used = calculateCreditCardsUsage(props.cards);
+  const totalLoans = props.bankAccount?.loans?.summary?.totalBalance || 0;
 
   return (
     <div className="inner-card-container">
@@ -54,7 +55,7 @@ export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
             <div className="inner-box-title">{t('dashboard.first.5')}</div>
           </div>
           <div className="inner-box-body">
-            {props.currency} {asNumString(props.cardsUsed || 0)}
+            {props.currency} {asNumString(totalLoans)}
           </div>
         </div>
         <Divider className="custom-divider" />

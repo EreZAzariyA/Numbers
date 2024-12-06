@@ -1,5 +1,5 @@
 import { BankAccount } from "../utils/transactions";
-import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "../utils/types";
+import { AccountInfoType, AccountSavesType, CreditCardType, MainLoansType, PastOrFutureDebitType } from "../utils/types";
 
 export type CardNumberType = string | number;
 
@@ -30,6 +30,7 @@ export class BankAccountModel {
   pastOrFutureDebits: PastOrFutureDebitType[];
   creditCards: CreditCardType[];
   savings: AccountSavesType;
+  loans: MainLoansType;
   createdAt: Date;
   updatedAt: Date;
 
@@ -45,6 +46,7 @@ export class BankAccountModel {
     this.pastOrFutureDebits = bankAccount.pastOrFutureDebits;
     this.creditCards = bankAccount.creditCards;
     this.savings = bankAccount.savings;
+    this.loans = bankAccount.loans;
     this.createdAt = bankAccount.createdAt;
     this.updatedAt = bankAccount.updatedAt;
   }
