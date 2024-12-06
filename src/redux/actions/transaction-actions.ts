@@ -4,6 +4,7 @@ import TransactionModel from "../../models/transaction";
 import config from "../../utils/config";
 import { insertBulkTransactionsAction } from "../slicers/transaction-slicer";
 import { Transaction } from "../../utils/transactions";
+import transactionsServices from "../../services/transactions";
 
 export enum TransactionsActions {
   FETCH_TRANSACTIONS = 'transactions/fetch-transactions',
@@ -13,12 +14,20 @@ export enum TransactionsActions {
   IMPORT_TRANSACTIONS = 'transactions/import-transactions',
 };
 
-export const fetchTransactions = createAsyncThunk<TransactionModel[], string>(
+export const fetchTransactions = createAsyncThunk<{transactions: TransactionModel[], total: number }, { user_id: string, type?: string, query?: object }>(
   TransactionsActions.FETCH_TRANSACTIONS,
-  async (user_id) => {
-    const response = await axios.get<TransactionModel[]>(config.urls.transactions + `/${user_id}`);
-    const userTransactions = response.data;
-    return userTransactions || [];
+  async ({ user_id, type, query }, thunkApi) => {
+    try {
+      const { transactions, total } = await transactionsServices.fetchTransactions(
+        user_id,
+        type,
+        query,
+      );
+
+      return thunkApi.fulfillWithValue({ transactions, total });
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
   }
 );
 

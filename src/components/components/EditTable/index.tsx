@@ -3,6 +3,11 @@ import CategoryTransactionsModal from "../CategoryTransactionsModal";
 import TransactionModel from "../../../models/transaction";
 import CategoryModel from "../../../models/category-model";
 import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, App } from "antd";
+import React, { useEffect, useState } from "react";
+import UserModel from "../../../models/user-model";
+import { useAppDispatch } from "../../../redux/store";
+import { ColumnsType } from "antd/lib/table";
+import transactionsServices from "../../../services/transactions";
 
 interface EditTableProps<T> {
   type?: string;
@@ -11,12 +16,34 @@ interface EditTableProps<T> {
   onEditMode?: (record: T) => void;
   removeHandler?: (record_id: string) => Promise<void>;
   isReady?: boolean;
-  tableProps: TableProps<T>;
+
+  user?: UserModel;
+  query?: object;
+  columns: TableProps<T>['columns']
+  style?: React.CSSProperties;
 };
 
 export const EditTable = <T extends CategoryModel | TransactionModel>(props: EditTableProps<T>) => {
-  const { modal } = App.useApp();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { modal, message } = App.useApp();
+  const [transactions, setTransactions] = useState<TransactionModel[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const dispatchTransactions = async () => {
+      setLoading(true);
+      try {
+        const transactions = await transactionsServices.fetchTransactions(props.user._id, null, props.query)
+        setTransactions(transactions)
+      } catch (err: any) {
+        message.error(err);
+      }
+      setLoading(false);
+    };
+
+    dispatchTransactions();
+  }, [dispatch, message, props.query, props.user._id]);
 
   const showModal = (record: CategoryModel) => {
     modal.info({
@@ -67,7 +94,7 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
   );
 
   if (props.editable) {
-    props.tableProps.columns.push({
+    props.columns.push({
       title: t('transactions.table.header.actions'),
       key: 'action',
       width: 150,
@@ -75,5 +102,18 @@ export const EditTable = <T extends CategoryModel | TransactionModel>(props: Edi
     });
   }
 
-  return <Table {...props.tableProps} />
+  return <Table
+    columns={props.columns as ColumnsType<TransactionModel>}
+    dataSource={transactions}
+    rowKey='_id'
+    loading={loading}
+    pagination= {{
+      hideOnSinglePage: true
+    }}
+    style={props.style}
+    expandable={{
+      defaultExpandAllRows: true
+    }}
+    scroll={{ x: 800 }}
+  />
 };

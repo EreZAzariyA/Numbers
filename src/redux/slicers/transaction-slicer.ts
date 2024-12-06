@@ -29,7 +29,7 @@ const extraReducers = (builder: ActionReducerMapBuilder<InitialStateType>) => {
     ...state,
     loading: false,
     error: null,
-    transactions: action.payload
+    transactions: action.payload.transactions
   }));
 
   // Add transaction:

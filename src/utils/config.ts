@@ -41,7 +41,7 @@ abstract class Config {
           language: baseUrl + "users/config/language",
         }
       },
-      transactions: baseUrl + "transactions",
+      transactions: baseUrl + "transactions/",
       categories: baseUrl + "categories",
       bank: {
         fetchAllBanksAccounts: baseUrl + "banks/fetch-all-banks-accounts",

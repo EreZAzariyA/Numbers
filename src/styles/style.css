@@ -59,14 +59,12 @@
 }
 
 .filters {
-  padding: 8px 0;
-  max-height: 300px;
-
+  max-height: 350px;
   transition: max-height 0.3s linear;
 }
 
 .filters.collapsed {
-  max-height: 40px;
+  max-height: 32px;
   overflow: hidden;
 }
 

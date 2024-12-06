@@ -446,3 +446,64 @@ export const filtering = (transactions: TransactionModel[] = [], filterState: an
 
   return data;
 };
+
+export const queryFiltering = (filterState: any = {}, projection: object = {}, options: object = {}): object => {
+  let query = {};
+
+  if (isArrayAndNotEmpty(filterState.categories)) {
+    query = {
+      ...query,
+      category_id: { $in: filterState.categories }
+    };
+  }
+  if (filterState.companyId) {
+    query = {
+      ...query,
+      companyId: filterState.companyId
+    };
+  }
+  if (filterState.dates && filterState.dates.length === 2) {
+    query = {
+      ...query,
+      date: {
+        $gte: dayjs(filterState.dates[0]).startOf('day'),
+        $lte: dayjs(filterState.dates[1]).endOf('day')
+      }
+    }
+  }
+  if (filterState.month) {
+    query = {
+      ...query,
+      date: {
+        $gte: dayjs(filterState.month).startOf('month').toISOString(),
+        $lte: dayjs(filterState.month).endOf('month').toISOString()
+      }
+    }
+  }
+  if (filterState.status) {
+    query = {
+      ...query,
+      status: filterState.status
+    };
+  }
+  if (filterState.text) {
+    query = {
+      ...query,
+      description: {
+        $regex: filterState.text,
+        $options: 'i'
+      }
+    };
+  }
+  if (filterState.byIncome) {
+    const byIncome = filterState.byIncome === 'income';
+    query = {
+      ...query,
+      amount: {
+        [byIncome ? '$gte' : '$lte']: 0
+      }
+    };
+  }
+
+  return { query, projection, options };
+};
