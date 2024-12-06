@@ -5,20 +5,17 @@ import { useAppSelector } from "../../redux/store";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
-import { getAccountCreditCards, getGreeting, getInvoicesBySelectedMonth, getUserfName } from "../../utils/helpers";
+import { getAccountCreditCards, getGreeting, getUserfName } from "../../utils/helpers";
 import { Button, DatePicker, Row, Skeleton } from "antd";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const { user, loading } = useAppSelector((state) => state.auth);
-  const { transactions } = useAppSelector((state) => state.transactions);
-  const { categories, loading: categoriesLoading } = useAppSelector((state) => state.categories);
   const { account, loading: accountLoading } = useAppSelector((state) => state.userBanks);
 
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
-  const transactionsByMonth = getInvoicesBySelectedMonth(transactions, monthToDisplay);
   const creditCards = getAccountCreditCards(account);
 
   return (
@@ -53,16 +50,13 @@ const Dashboard = () => {
       </div>
       <div className="page-inner-container">
         <DashboardFirst
-          categories={categories}
-          monthToDisplay={monthToDisplay}
+          user={user}
           account={account}
-          loading={categoriesLoading && accountLoading}
-          transactionsByMonth={transactionsByMonth}
+          loading={accountLoading}
+          monthToDisplay={monthToDisplay}
         />
         <DashboardSecond
           user={user}
-          transactions={transactions}
-          transactionsByMonth={transactionsByMonth}
           monthToDisplay={monthToDisplay}
         />
         <DashboardThird creditCards={creditCards} />

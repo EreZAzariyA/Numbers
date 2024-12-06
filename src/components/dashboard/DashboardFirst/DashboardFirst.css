@@ -30,8 +30,6 @@
 }
 
 .page-container.dashboard .dashboard-card.charts .recharts-default-legend {
-  text-align: right !important;
-
   max-height: 200px;
   overflow: auto;
 }

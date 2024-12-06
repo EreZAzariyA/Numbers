@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CategoryModel from "../../../models/category-model";
+import { useAppSelector } from "../../../redux/store";
 import TransactionModel from "../../../models/transaction";
 import {
   Cell,
@@ -14,13 +14,14 @@ import {
   isArrayAndNotEmpty,
   setCategoriesAndInvoicesArray,
 } from "../../../utils/helpers";
+import { Grid, Spin } from "antd";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 interface SimpleChartsProps {
-  categories: CategoryModel[];
   transactions: TransactionModel[];
-}
+  loading: boolean;
+};
 
 const renderActiveShape = (props: any) => {
   const {
@@ -72,9 +73,12 @@ const renderActiveShape = (props: any) => {
 };
 
 export const SimpleCharts = (props: SimpleChartsProps) => {
+  const { categories, loading } = useAppSelector((state) => state.categories);
   const [state, setState] = useState({ activeIndex: 0 });
+  const screen = Grid.useBreakpoint();
+
   let data = setCategoriesAndInvoicesArray(
-    props.categories,
+    categories,
     props.transactions
   );
   data = data.sort((a, b) => b.value - a.value);
@@ -88,6 +92,7 @@ export const SimpleCharts = (props: SimpleChartsProps) => {
     });
   };
 
+  if (loading && props.loading) return <Spin />
   return (
     <ResponsiveContainer width={"100%"} height={300}>
       <PieChart>
@@ -106,9 +111,9 @@ export const SimpleCharts = (props: SimpleChartsProps) => {
           ))}
         </Pie>
         <Legend
-          layout="vertical"
-          verticalAlign="middle"
-          align="right"
+          layout={screen.sm ? "vertical" : "horizontal"}
+          verticalAlign={screen.sm ? "middle" : "bottom"}
+          align={screen.sm ? "right" : "center"}
           onClick={(_, index) => setState({ activeIndex: index })}
           formatter={(value) => (
             <span style={{ marginRight: "10px" }}>{value}</span>

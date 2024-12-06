@@ -1,19 +1,22 @@
-import { asNumString } from "../../../../utils/helpers";
-import "./CreditCardsAndSavings.css";
-import { AccountSavesType } from "../../../../utils/types";
-import { GoCreditCard } from "react-icons/go";
-import { Divider } from "antd";
 import { useTranslation } from "react-i18next";
+import { BankAccountModel } from "../../../../models/bank-model";
+import { asNumString } from "../../../../utils/helpers";
+import { CreditCardType } from "../../../../utils/types";
+import { calculateCreditCardsUsage } from "../../../../utils/bank-utils";
+import { Divider } from "antd";
+import { GoCreditCard } from "react-icons/go";
+import "./CreditCardsAndSavings.css";
 
 interface CreditCardsAndSavingsProps {
-  cardsUsed: number;
-  savingsBalance: AccountSavesType;
-  currency: string
+  currency: string;
+  cards: CreditCardType[];
+  bankAccount: BankAccountModel;
 };
 
 export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
   const { t } = useTranslation();
-  const totalSaves = props.savingsBalance?.totalDepositsCurrentValue || 0;
+  const totalSaves = props?.bankAccount?.savings?.totalDepositsCurrentValue || 0;
+  const used = calculateCreditCardsUsage(props.cards);
 
   return (
     <div className="inner-card-container">
@@ -26,7 +29,7 @@ export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
             <div className="inner-box-title">{t('dashboard.first.2')}</div>
           </div>
           <div className="inner-box-body">
-            {props.currency} {asNumString(props.cardsUsed || 0)}
+            {props.currency} {asNumString(used)}
           </div>
         </div>
         <Divider className="custom-divider" />

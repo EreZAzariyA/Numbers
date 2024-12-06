@@ -6,7 +6,7 @@ import { getTransactionsByCategory, useResize } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
 import { CompaniesNames, SupportedCompaniesTypes } from "../../utils/definitions";
 import { DefaultOptionType } from "antd/es/select";
-import { Button, Col, DatePicker, Input, Row, Select, Tooltip } from "antd";
+import { Button, Col, DatePicker, Flex, Input, Row, Select, Tooltip } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 
 interface FiltersProps {
@@ -83,41 +83,42 @@ export const Filters = (props: FiltersProps) => {
 
   return (
     <Row align={'middle'} justify={'start'} gutter={[10, 10]} className={`filters ${collapsed ? 'collapsed' : ''}`}>
-
-      <Col style={withCollapse && { width: (isMobile ? 210 : 260), display: 'flex' }}>
-        {withCollapse && (
-          <Tooltip title="More filters">
-            <Button
-              type="text"
-              className="icon-btn"
-              icon={<LeftOutlined />}
-              onClick={handleCollapse}
+      <Col style={withCollapse && { width: (isMobile ? 210 : 260) }}>
+        <Flex>
+          {withCollapse && (
+            <Tooltip title="More filters">
+              <Button
+                type="text"
+                className="icon-btn"
+                icon={<LeftOutlined />}
+                onClick={handleCollapse}
+              />
+            </Tooltip>
+          )}
+          {props.monthFilter && (
+            <DatePicker
+              picker="month"
+              maxDate={dayjs()}
+              allowClear={!isPhone}
+              style={{ width: '100%' }}
+              value={props.filterState.month}
+              onChange={(val) => {
+                if (!val) {
+                  props.handleFilterChange('month', null);
+                  return;
+                }
+                props.handleFilterChange('dates', null);
+                props.handleFilterChange('month', val);
+              }}
             />
-          </Tooltip>
-        )}
-
-        {props.monthFilter && (
-          <DatePicker
-            picker="month"
-            maxDate={dayjs()}
-            allowClear={!isPhone}
-            style={{ width: '100%' }}
-            value={props.filterState.month}
-            onChange={(val) => {
-              if (!val) {
-                props.handleFilterChange('month', null);
-                return;
-              }
-              props.handleFilterChange('dates', null);
-              props.handleFilterChange('month', val);
-            }}
-          />
-        )}
+          )}
+        </Flex>
       </Col>
 
       {props.datesFilter && (
         <Col>
           <DatePicker.RangePicker
+            id="datesFilter"
             allowClear
             style={style}
             value={props.filterState.dates}
@@ -153,6 +154,7 @@ export const Filters = (props: FiltersProps) => {
       {props.textFilter && (
         <Col>
           <Input
+            id="textFilter"
             value={props.filterState.text}
             allowClear
             style={style}

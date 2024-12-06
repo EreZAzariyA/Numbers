@@ -1,32 +1,27 @@
-import dayjs, { Dayjs } from "dayjs";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../../../redux/store";
+import dayjs, { Dayjs } from "dayjs";
 import TransactionModel from "../../../models/transaction";
 import UserModel from "../../../models/user-model";
 import { EditTable } from "../../components/EditTable";
-import { asNumString, filterInvoicesByStatus, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { asNumString, queryFiltering } from "../../../utils/helpers";
 import { TransactionStatusesType } from "../../../utils/transactions";
 import { Tooltip } from "antd";
 import { TableProps } from "antd/lib";
 import "./DashboardSecond.css";
 
-interface DashboardSecondProps<T> {
+interface DashboardSecondProps {
   user: UserModel;
-  transactions: T[];
-  transactionsByMonth?: T[];
   monthToDisplay: Dayjs;
 };
 
-const DashboardSecond = <T extends TransactionModel>(props: DashboardSecondProps<T>) => {
+const DashboardSecond = (props: DashboardSecondProps) => {
   const { t } = useTranslation();
-  const { loading } = useAppSelector((state) => state.transactions);
-  let dataSource: TransactionModel[] = [];
 
-  if (isArrayAndNotEmpty(props.transactions)) {
-    dataSource  = filterInvoicesByStatus(props.transactions, TransactionStatusesType.COMPLETED);
-    dataSource = [...dataSource].slice(0, 6);
-  }
+  const query = queryFiltering({
+    month: props.monthToDisplay.toISOString(),
+    status: TransactionStatusesType.COMPLETED
+  }, { limit: 5 });
 
   const columns: TableProps<TransactionModel>['columns'] = [
     {
@@ -80,17 +75,9 @@ const DashboardSecond = <T extends TransactionModel>(props: DashboardSecondProps
         </div>
         <div className="card-body">
           <EditTable
+            query={query}
             tableProps={{
               columns,
-              dataSource,
-              loading,
-              rowKey: '_id',
-              pagination: {
-                hideOnSinglePage: true
-              },
-              style: {
-                borderRadius: 0
-              }
             }}
           />
         </div>
