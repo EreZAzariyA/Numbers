@@ -72,3 +72,42 @@ export type BankCredential = {
   save: boolean,
   username: string
 };
+
+export interface MainLoansType {
+  loans: LoanType[];
+  summary: {
+    currentMonthTotalPayment: number;
+    totalBalance: number;
+    totalBalanceCurrency: string;
+  };
+  currentTimestamp: number;
+}
+
+export type LoanType = {
+  loanAccount: string;
+  loanName: string;
+  numOfPayments: string;
+  numOfPaymentsRemained: string;
+  numOfPaymentsMade: string;
+  establishmentDate: string;
+  establishmentChannelCode: string;
+  loanCurrency: string;
+  loanAmount: number;
+  totalInterestRate: number;
+  firstPaymentDate: string;
+  lastPaymentDate: string;
+  nextPaymentDate: string;
+  previousPaymentDate: string;
+  nextPayment: number;
+  previousPayment: number;
+  baseInterestDescription: string;
+  loanBalance: number;
+  prepaymentPenaltyFee: number;
+  totalLoanBalance: number;
+  finishDate: string;
+  loanRefundStatus: string;
+  establishmentValueDate: string;
+  currentMonthPayment: number;
+  numberOfPartialPrepayments: string;
+  loanPurpose: string;
+};
