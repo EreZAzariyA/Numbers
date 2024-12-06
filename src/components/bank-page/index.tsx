@@ -35,6 +35,11 @@ const BankPage = () => {
     closable: false,
   }));
 
+  const handleClose = () => {
+    setIsOpen(false);
+    setModalResult(null);
+  };
+
   return (
     <>
       <div className="page-container bank-account">
@@ -67,16 +72,16 @@ const BankPage = () => {
         onOk={() => {
           setModalResult(null);
           setIsOpen(false);
-          setIsOkBtnActive(false);
         }}
-        onCancel={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
+        onCancel={handleClose}
+        onClose={handleClose}
         okButtonProps={{
           disabled: !isOkBtnActive,
         }}
         cancelButtonProps={{
           disabled: loading || isOkBtnActive
         }}
+        footer={modalResult && false}
       >
         <>
           {!modalResult && (

@@ -9,7 +9,8 @@ import CategoryModel from "../../models/category-model";
 import NewCategory from "./newCategory/newCategory";
 import CategoryTransactionsModal from "./CategoryTransactionsModal";
 import { Filters } from "../components/Filters";
-import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty } from "../../utils/helpers";
+import { TransactionStatusesType } from "../../utils/transactions";
+import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
 import { App, Button, Divider, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
 
 enum Steps {
@@ -37,7 +38,8 @@ const CategoriesPage = () => {
 
   useEffect(() => {
     const dispatchTransactions = async () => {
-      const { transactions } = await  transactionsServices.fetchTransactions(user._id);
+      const query = queryFiltering({ status: TransactionStatusesType.COMPLETED });
+      const { transactions } = await  transactionsServices.fetchTransactions(user._id, null, query);
       setTransactions(transactions);
     }
 

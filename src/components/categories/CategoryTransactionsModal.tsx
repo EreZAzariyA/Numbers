@@ -12,6 +12,7 @@ const CategoryTransactionsModal = (props: { category: CategoryModel }) => {
   const { t } = useTranslation();
 
   const [filterState, setFilterState] = useState({
+    categories: [props.category._id],
     status: TransactionStatusesType.COMPLETED,
   });
 
@@ -56,8 +57,8 @@ const CategoryTransactionsModal = (props: { category: CategoryModel }) => {
     <Space direction="vertical">
       <p>{props.category.name}</p>
       <EditTable
-        filterState={filterState}
         totals
+        filterState={filterState}
         setFilterState={setFilterState}
         tableProps={{
           columns,
