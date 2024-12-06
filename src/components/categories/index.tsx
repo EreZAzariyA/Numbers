@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import NewCategory from "./newCategory/newCategory";
-import { EditTable } from "../components/EditTable";
-import { Filters } from "../components/Filters";
-import CategoryModel from "../../models/category-model";
-import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
-import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty } from "../../utils/helpers";
-import { TransactionStatusesType } from "../../utils/transactions";
-import { App, Button, Pagination, Row, Space, TablePaginationConfig, TableProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
+import transactionsServices from "../../services/transactions";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
+import TransactionModel from "../../models/transaction";
+import CategoryModel from "../../models/category-model";
+import NewCategory from "./newCategory/newCategory";
+import CategoryTransactionsModal from "./CategoryTransactionsModal";
+import { Filters } from "../components/Filters";
+import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty } from "../../utils/helpers";
+import { App, Button, Divider, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
 
 enum Steps {
   New_Category = "New_Category",
@@ -18,12 +19,14 @@ enum Steps {
 
 const CategoriesPage = () => {
   const dispatch = useAppDispatch();
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   const { t } = useTranslation();
   const { user } = useAppSelector((state) => state.auth);
   const { categories, loading: isLoading } = useAppSelector((state) => state.categories);
+  const [transactions, setTransactions] = useState<TransactionModel[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Partial<CategoryModel>>(null);
   const [step, setStep] = useState<string>(null);
+
   const [filterState, setFilterState] = useState({
     name: null,
   });
@@ -31,6 +34,15 @@ const CategoriesPage = () => {
     current: 1,
     pageSize: 10,
   });
+
+  useEffect(() => {
+    const dispatchTransactions = async () => {
+      const { transactions } = await  transactionsServices.fetchTransactions(user._id);
+      setTransactions(transactions);
+    }
+
+    dispatchTransactions();
+  }, [user._id]);
 
   const onBack = () => {
     setStep(null);
@@ -81,13 +93,30 @@ const CategoriesPage = () => {
     }
   };
 
-  const handleFilterChange = (field: string, value: string | number[] | Dayjs[]) => {
+  const handleFilterChange = (field: string, value: string | boolean | number[] | Dayjs | Dayjs[] | CategoryModel[]) => {
     setFilterState({...filterState, [field]: value});
   };
 
   const resetFilters = () => {
     setFilterState({
       name: null,
+    });
+  };
+
+  const handlePageChange = (page: number, pageSize: number) => {
+    setPagination({ current: page, pageSize });
+  };
+
+  const showModal = (record: CategoryModel) => {
+    modal.info({
+      icon: null,
+      closable: true,
+      maskClosable: true,
+      destroyOnClose: true,
+      style: { top: 20 },
+      width: 500,
+      content: <CategoryTransactionsModal category={record} />,
+      footer: null
     });
   };
 
@@ -103,31 +132,26 @@ const CategoriesPage = () => {
     }
 
     return data.map((category) => {
-      const transactions = getTransactionsByCategory(category._id, TransactionStatusesType.COMPLETED) || [];
+      const categoryTransactions = getTransactionsByCategory(category._id, transactions) || [];
 
       let totalAmount = 0;
-      transactions.forEach((t) => {
+      categoryTransactions.forEach((t) => {
         totalAmount += t.amount;
       });
 
       return {
         ...category,
         spent: totalAmount,
-        transactions: transactions.length
+        transactions: categoryTransactions.length
       };
     }).sort((a, b) => (Math.abs(b.spent) - Math.abs(a.spent)));
   };
 
   const filtered = categoriesFiltering(categories);
-
   const dataSource = [...filtered].slice(
     (pagination.current - 1) * pagination.pageSize,
     pagination.current * pagination.pageSize
   );
-
-  const handlePageChange = (page: number, pageSize: number) => {
-    setPagination({ current: page, pageSize });
-  };
 
   const columns: TableProps<CategoryModel>['columns'] = [
     {
@@ -157,8 +181,34 @@ const CategoriesPage = () => {
         <Tooltip title={value}>
           {`(${record.transactions}) ${asNumString(value)}`}
         </Tooltip>
-      )
+      ),
     },
+    {
+      title: t('transactions.table.header.actions'),
+      key: 'action',
+      width: 200,
+      render: (_: any, record: CategoryModel) => (
+        <Space split={<Divider type="vertical" />}>
+          <Typography.Link onClick={() => showModal(record)}>
+            {t('actions.0')}
+          </Typography.Link>
+          <Typography.Link href={`/transactions/#${record._id}`}>
+            {t('actions.1')}
+          </Typography.Link>
+          <Typography.Link onClick={() => onEdit(record)}>
+            {t('actions.2')}
+          </Typography.Link>
+          <Popconfirm
+            title="Are you sure?"
+            onConfirm={() => onRemove(record?._id)}
+          >
+            <Typography.Link>
+              {t('actions.3')}
+            </Typography.Link>
+          </Popconfirm>
+        </Space>
+      ),
+    }
   ];
 
   return (
@@ -182,19 +232,14 @@ const CategoriesPage = () => {
                 resetFilters={resetFilters}
               />
             </div>
-            <EditTable
-              editable
-              type="categories"
-              onEditMode={onEdit}
-              removeHandler={onRemove}
-              tableProps={{
-                dataSource,
-                columns,
-                rowKey: '_id',
-                scroll: { x: 600 },
-                bordered: true,
-                loading: isLoading,
-                pagination: false,
+            <Table
+              columns={columns}
+              dataSource={dataSource}
+              bordered
+              loading={isLoading}
+              pagination={false}
+              scroll={{
+                x: 650
               }}
             />
             <Row justify={'space-between'}>

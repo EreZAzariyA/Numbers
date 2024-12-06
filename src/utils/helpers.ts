@@ -395,13 +395,12 @@ const getDataFromStringDate = (stringDate: string): string => {
   return dayjs().set('year', year).set('month', month).format('MM-YYYY');
 };
 
-export const getTransactionsByCategory = (categoryId: string, status?: string, sentTransactions?: TransactionModel[]): TransactionModel[] => {
+export const getTransactionsByCategory = (categoryId: string, sentTransactions?: TransactionModel[]): TransactionModel[] => {
   const trans = sentTransactions || store.getState().transactions.transactions;
   const transactions: TransactionModel[] = [];
 
   for (const transaction of trans) {
     if (transaction.category_id === categoryId) {
-      if (status && transaction.status !== status) return;
       transactions.push(transaction);
     }
   }
@@ -447,7 +446,7 @@ export const filtering = (transactions: TransactionModel[] = [], filterState: an
   return data;
 };
 
-export const queryFiltering = (filterState: any = {}, projection: object = {}, options: object = {}): object => {
+export const queryFiltering = (filterState: any = {}, options: object = {}, projection: object = {}): object => {
   let query = {};
 
   if (isArrayAndNotEmpty(filterState.categories)) {
