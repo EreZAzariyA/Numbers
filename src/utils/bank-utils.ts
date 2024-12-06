@@ -1,4 +1,5 @@
-import { CreditCardFrameworkType, CreditCardType } from "./types";
+import { BankAccountModel } from "../models/bank-model";
+import { CardStatusCode, CreditCardFrameworkType, CreditCardType } from "./types";
 
 export const calculateCreditCardsUsage = (creditCards: CreditCardType[]): number => {
   let used = 0;
@@ -14,14 +15,27 @@ export const getCreditCardsFramework = (creditCards: CreditCardType[]): CreditCa
   const cards: CreditCardFrameworkType = {};
 
   for (const card of creditCards) {
-    if (card.cardStatusCode === 9) {
+    const { cardNumber, cardFramework, cardFrameworkUsed } = card;
+    if (card.cardStatusCode === CardStatusCode.Disable) {
       continue;
     }
-    cards[card.cardNumber] = {
-      cardFramework: card.cardFramework,
-      cardFrameworkUsed: card.cardFrameworkUsed,
+    cards[cardNumber] = {
+      cardFramework: cardFramework,
+      cardFrameworkUsed: cardFrameworkUsed,
     }
   }
 
   return cards;
+};
+
+export const getBankCreditCards = (bank: BankAccountModel): CreditCardType[] => {
+  const creditCards = bank?.creditCards || [];
+  const activeCards = [];
+
+  for (let card of creditCards) {
+    if (card.cardStatusCode === CardStatusCode.Active) {
+      activeCards.push(card);
+    }
+  }
+  return activeCards;
 };

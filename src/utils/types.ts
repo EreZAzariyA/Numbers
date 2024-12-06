@@ -5,6 +5,11 @@ export type LanguageType = typeof Languages[keyof typeof Languages];
 export type ThemeColorType = ThemeColors.LIGHT | ThemeColors.DARK;
 export type CreditCardFrameworkType = Record<string, { cardFramework: number, cardFrameworkUsed: number }>;
 
+export enum CardStatusCode {
+  Active = 0,
+  Disable = 9
+};
+
 export type AccountInfoType = {
   accountName: string;
   accountAvailableBalance: number;

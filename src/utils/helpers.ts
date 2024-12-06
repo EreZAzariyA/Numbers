@@ -317,7 +317,7 @@ const getCategory = (category_id: string): CategoryModel => {
   return categories.find((c) => c._id === category_id);
 }
 
-export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: TransactionModel[]) => {
+export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: TransactionModel[] = []) => {
   const categoryInvoiceAmounts: Record<string, number> = {};
 
   transactions.forEach((transaction) => {
