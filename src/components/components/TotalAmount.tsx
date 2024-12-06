@@ -17,7 +17,7 @@ export const TotalAmountInput = (props: TotalAmountInputProps) => {
     <Input
       disabled
       value={asNumString(amount)}
-      style={{...props.style, fontWeight: 600, color: props.type === TotalAmountType.INCOME ? 'green' : 'red' }}
+      style={{ ...props.style, fontWeight: 600, color: props.type === TotalAmountType.INCOME ? 'green' : 'red' }}
     />
   );
 };

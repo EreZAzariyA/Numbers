@@ -13,7 +13,7 @@ const App = () => {
   const isEN = lang === Languages.EN
   const direction = isEN ? 'ltr': 'rtl';
   const isDarkTheme = theme === ThemeColors.DARK;
-  const algorithm = (isDarkTheme ? AntdThemes.darkAlgorithm : AntdThemes.defaultAlgorithm) ?? AntdThemes.defaultAlgorithm;
+  const algorithm = isDarkTheme ? AntdThemes.darkAlgorithm : AntdThemes.defaultAlgorithm;
   const locale = isEN ? en : il;
 
   useEffect(() => {

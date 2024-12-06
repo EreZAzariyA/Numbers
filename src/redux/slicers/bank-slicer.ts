@@ -12,7 +12,7 @@ interface BanksAccountState {
 const initialState: BanksAccountState = {
   account: {
     _id: null,
-    userId: null,
+    user_id: null,
     banks: [],
   },
   loading: false,
@@ -37,7 +37,7 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
     error: null,
     account: {
       _id: action.payload?._id || null,
-      userId: action.payload?.userId || null,
+      user_id: action.payload?.user_id || null,
       banks: action.payload?.banks || [],
     }
   }));
@@ -58,7 +58,7 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
     error: null,
     account: {
       _id: action.payload.bank._id,
-      userId: action.payload.bank.userId,
+      user_id: action.payload.bank.user_id,
       banks: [...state.account.banks, action.payload.bank],
     }
   }));

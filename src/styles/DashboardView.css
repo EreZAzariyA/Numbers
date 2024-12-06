@@ -3,8 +3,8 @@
 }
 
 .main-layout .site-layout {
-  padding: 0 10px;
-  background: var(--light-blue);
+  padding: 0 10px 20px;
+  background: var(--light-grey);
   transition: background 300ms ease;
 }
 
@@ -27,6 +27,7 @@
 }
 
 .main-header-container {
+  min-height: 50px;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
@@ -72,7 +73,7 @@
   .main-header-container .right-container {
     max-width: 150px;
     display: block;
-    flex: 0 0 150px;
+    flex: 0 0 auto;
   }
   .main-header-container .left-container {
     flex: 0 0 220px;
@@ -118,7 +119,7 @@
     flex: 0 0 150px;
   }
   .main-header-container .left-container {
-    flex: 0 0 150px;
+    flex: 0 0 auto;
     max-width: 150px;
     display: flex;
     justify-content: space-between;
