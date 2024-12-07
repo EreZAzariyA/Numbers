@@ -5,7 +5,7 @@ import BankAccountPage from "./BankAccountPage";
 import { ConnectBankFormType } from "./ConnectBankForm";
 import { ConnectBankModel } from "../components/CustomModal";
 import { getCompanyName, isArrayAndNotEmpty } from "../../utils/helpers";
-import { Spin, Tabs, TabsProps, Typography } from "antd";
+import { Flex, Space, Spin, Tabs, TabsProps, Typography } from "antd";
 
 const BankPage = () => {
   const { t } = useTranslation();
@@ -30,12 +30,10 @@ const BankPage = () => {
 
   return (
     <>
-      <div className="page-container bank-account">
-        <div className="title-container">
-          <div className="page-title">{t('pages.bankAccount')}</div>
-        </div>
+      <Flex vertical gap={5} className="page-container bank-account">
+        <Typography.Title level={2} className="page-title">{t('pages.bankAccount')}</Typography.Title>
         {userLoading ? <Spin /> : (
-          <div className="page-inner-container">
+          <>
             <Tabs
               defaultActiveKey="1"
               items={items}
@@ -49,9 +47,9 @@ const BankPage = () => {
             {!hasBankAccounts && (
               <p>Connect your bank account on the '+' button to see details</p>
             )}
-          </div>
+          </>
         )}
-      </div>
+      </Flex>
       <ConnectBankModel
         formType={ConnectBankFormType.Connect_Bank}
         user={user}
