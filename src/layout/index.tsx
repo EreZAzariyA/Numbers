@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import { logoutAction } from "../redux/actions/auth-actions";
 import DashboardHeader from "./DashboardHeader";
 import { Colors, Sizes, useResize } from "../utils/helpers";
-import { MenuItem, getMenuItem } from "../utils/antd-types";
+import { MenuItem, getMenuItem } from "../utils/antd";
 import { Languages, ThemeColors } from "../utils/enums";
 import { Layout, Menu, MenuProps } from "antd";
 import { AiOutlineLogout, AiOutlineProfile } from "react-icons/ai";

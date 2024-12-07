@@ -5,10 +5,10 @@ import { BankAccountDetails, BankAccountModel } from "../../../models/bank-model
 import { connectBankAccount } from "../../../redux/actions/bank-actions";
 import { importTransactions } from "../../../redux/actions/transaction-actions";
 import bankServices from "../../../services/banks";
-import { CompaniesNames, SupportedCompaniesTypes, SupportedScrapers } from "../../../utils/definitions";
+import { SupportedCompaniesTypes, SupportedScrapers } from "../../../utils/definitions";
 import { Transaction } from "../../../utils/transactions";
-import { MenuItem, getMenuItem } from "../../../utils/antd-types";
-import { isArray, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { MenuItem, getMenuItem } from "../../../utils/antd";
+import { getCompanyName, isArray, isArrayAndNotEmpty } from "../../../utils/helpers";
 import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
 import TransactionModel from "../../../models/transaction";
 import { ImportModal } from "./ImportModal";
@@ -38,7 +38,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
   });
 
   const bankList: MenuItem[] = Object.entries(SupportedCompaniesTypes).map(([bank, value]) => (
-    getMenuItem(CompaniesNames[bank] || bank, bank, null, null, null, null, value)
+    getMenuItem(getCompanyName(bank) || bank, bank, null, null, null, null, value)
   ));
 
   const onSelectCompany = (companyId: SupportedCompaniesTypes) => {
@@ -160,7 +160,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
 
         {selectedCompany.isSelected && (
           <>
-            <h2>{CompaniesNames[selectedCompany.companyId]}</h2>
+            <Typography.Title level={3}>{getCompanyName(selectedCompany.companyId)}</Typography.Title>
             {selectedCompany.loginFields.map((field: any) => (
               <Form.Item
                 key={field}

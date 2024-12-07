@@ -88,14 +88,15 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
     </Row>
   );
 
-  if (props.editable) {
-    props.tableProps.columns.push({
+  const columns = [
+    ...props.tableProps.columns,
+    ...[(props.editable ? {
       title: t('transactions.table.header.actions'),
       key: 'action',
       width: 150,
       render: (_: any, record: T) => columnRender(record),
-    })
-  }
+    } : {})]
+  ];
 
   return (
     <Flex vertical gap={10} justify="center">
@@ -123,8 +124,8 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
       <Table
         {...props.tableProps}
         dataSource={transactions}
+        columns={columns}
         rowKey='_id'
-        bordered
         loading={loading}
         pagination={false}
       />

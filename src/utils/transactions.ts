@@ -1,7 +1,7 @@
 import { BankAccountModel, CardNumberType } from "../models/bank-model";
 import TransactionModel from "../models/transaction";
 import { SupportedCompaniesTypes } from "./definitions";
-import { AccountInfoType, AccountSavesType, CreditCardType, PastOrFutureDebitType } from "./types";
+import { AccountInfoType, AccountSavesType, CardsPastOrFutureDebitType, CreditCardType, PastOrFutureDebitType } from "./types";
 
 export enum TransactionStatuses {
   completed = "Completed",
@@ -16,11 +16,6 @@ declare enum TransactionTypes {
   Normal = "normal",
   Installments = "installments"
 };
-
-export interface CardsPastOrFutureDebitType {
-  cardsBlock?: CreditCardType[];
-  usage?: number;
-}
 
 export interface BankAccount {
   accountNumber: string;
