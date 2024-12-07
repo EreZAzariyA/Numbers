@@ -6,7 +6,7 @@ import UserModel from "../../models/user-model";
 import { EditTable } from "../components/EditTable";
 import { asNumString, queryFiltering } from "../../utils/helpers";
 import { TransactionStatusesType } from "../../utils/transactions";
-import { Card, Flex, Tooltip, Typography } from "antd";
+import { Card, Flex, Tooltip } from "antd";
 import { TableProps } from "antd/lib";
 
 interface DashboardSecondProps {

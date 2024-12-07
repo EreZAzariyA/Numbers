@@ -1,10 +1,10 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { asNumString, getFutureDebitDate, isArrayAndNotEmpty } from '../../../utils/helpers';
 import { ChartsTypes } from './charts-utils';
-import { PastOrFutureDebits } from '../../../utils/types';
+import { PastOrFutureDebitType } from '../../../utils/types';
 
 interface GraphProps {
-  data: PastOrFutureDebits[];
+  data: PastOrFutureDebitType[];
   type: ChartsTypes;
 };
 
