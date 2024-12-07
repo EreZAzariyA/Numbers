@@ -1,0 +1,11 @@
+.inner-card-container {
+  -webkit-box-shadow: 0px 10px 15px -5px rgb(63 61 61 / 60%);
+  -moz-box-shadow: 0px 10px 15px -5px rgb(63 61 61 / 60%);
+  box-shadow: 0px 10px 15px -5px rgb(63 61 61 / 60%);
+  margin-top: 1.5rem;
+}
+
+.inner-card-container .box {
+  padding: 0.5rem;
+  width: 50%;
+}

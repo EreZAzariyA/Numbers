@@ -1,19 +1,16 @@
-import { useEffect } from "react";
 import { useAppSelector } from "./redux/store";
 import UserRouter from "./routes/UserRouter";
-import { Languages, ThemeColors } from "./utils/enums";
-import { ConfigProvider, theme as AntdThemes, App as AppContainer } from "antd";
+import { Languages } from "./utils/enums";
+import { getThemeConfig } from "./utils/antd";
+import { ConfigProvider, App as AppContainer } from "antd";
 import il from 'antd/locale/he_IL';
 import en from 'antd/locale/en_US';
+import { useEffect } from "react";
 
 const App = () => {
-  const { theme } = useAppSelector((state) => state.config.themeColor);
-  const { lang } = useAppSelector((state) => state.config.language);
-
+  const { themeColor: { theme }, language: { lang } } = useAppSelector((state) => state.config);
   const isEN = lang === Languages.EN
   const direction = isEN ? 'ltr': 'rtl';
-  const isDarkTheme = theme === ThemeColors.DARK;
-  const algorithm = isDarkTheme ? AntdThemes.darkAlgorithm : AntdThemes.defaultAlgorithm;
   const locale = isEN ? en : il;
 
   useEffect(() => {
@@ -25,19 +22,10 @@ const App = () => {
     }
   }, [theme]);
 
-  useEffect(() => {
-    const body = document.body;
-    body.classList.add(`${direction}-direction`);
-
-    return () => {
-      body.classList.remove(`${direction}-direction`);
-    }
-  }, [direction]);
-
   return (
     <ConfigProvider
       direction={direction}
-      theme={{ algorithm }}
+      theme={getThemeConfig(theme)}
       locale={locale}
     >
       <AppContainer

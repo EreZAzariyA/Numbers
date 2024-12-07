@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
-import TransactionModel from "../../../models/transaction";
-import UserModel from "../../../models/user-model";
-import { EditTable } from "../../components/EditTable";
-import { asNumString, queryFiltering } from "../../../utils/helpers";
-import { TransactionStatusesType } from "../../../utils/transactions";
-import { Tooltip } from "antd";
+import TransactionModel from "../../models/transaction";
+import UserModel from "../../models/user-model";
+import { EditTable } from "../components/EditTable";
+import { asNumString, queryFiltering } from "../../utils/helpers";
+import { TransactionStatusesType } from "../../utils/transactions";
+import { Card, Flex, Tooltip, Typography } from "antd";
 import { TableProps } from "antd/lib";
-import "./DashboardSecond.css";
 
 interface DashboardSecondProps {
   user: UserModel;
@@ -60,29 +59,23 @@ const DashboardSecond = (props: DashboardSecondProps) => {
     },
   ];
 
+  const cardTitle = (
+    <Flex align="center" justify="space-between">
+      {t('dashboard.second.0')}
+      <Link to={'/transactions'}>{t('dashboard.second.1')}</Link>
+    </Flex>
+  )
+
   return (
-    <div className="home-seconde-main-container home-component">
-      <div className="card-container">
-        <div className="card-title-container">
-          <div className="card-title">
-            {t('dashboard.second.0')}
-          </div>
-          <div className="action">
-            <Link to={'/transactions'}>
-              {t('dashboard.second.1')}
-            </Link>
-          </div>
-        </div>
-        <div className="card-body">
-          <EditTable
-            query={query}
-            tableProps={{
-              columns,
-            }}
-          />
-        </div>
-      </div>
-    </div>
+    <Card title={cardTitle} className="dashboard-second">
+      <EditTable
+        query={query}
+        tableProps={{
+          columns,
+          bordered: false
+        }}
+      />
+    </Card>
   );
 };
 

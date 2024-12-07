@@ -1,10 +1,9 @@
-import TransactionModel from "../../../models/transaction";
-import { Graph } from "../../components/Charts/Graph";
+import TransactionModel from "../../models/transaction";
+import { Graph } from "../components/Charts/Graph";
 import { Tabs, Typography } from "antd";
-import { CompaniesNames } from "../../../utils/definitions";
-import { isArrayAndNotEmpty } from "../../../utils/helpers";
-import { ChartsTypes } from "../../components/Charts/charts-utils";
-import { BankAccountModel } from "../../../models/bank-model";
+import { getCompanyName, isArrayAndNotEmpty } from "../../utils/helpers";
+import { ChartsTypes } from "../components/Charts/charts-utils";
+import { BankAccountModel } from "../../models/bank-model";
 
 interface DashboardFourthProps {
   transactions: TransactionModel[];
@@ -14,7 +13,7 @@ interface DashboardFourthProps {
 const DashboardFourth = (props: DashboardFourthProps) => {
 
   const banks = props.bankAccount.map((bank) => ({
-    label: CompaniesNames[bank.bankName] || bank.bankName,
+    label: getCompanyName(bank.bankName),
     key: bank?._id,
     children: <Graph data={bank?.pastOrFutureDebits} type={ChartsTypes.PAST_DEBIT} />
   }));

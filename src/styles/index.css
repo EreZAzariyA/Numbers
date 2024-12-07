@@ -13,10 +13,8 @@ html,
 
 * {
   box-sizing: border-box;
-
-  font-family: "Noto Serif Hebrew", serif;
-  font-optical-sizing: auto;
-  font-style: normal;
+  margin: 0;
+  padding: 0;
 }
 
 body.rtl-direction {
