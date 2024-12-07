@@ -11,7 +11,7 @@ import CategoryTransactionsModal from "./CategoryTransactionsModal";
 import { Filters } from "../components/Filters";
 import { TransactionStatusesType } from "../../utils/transactions";
 import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
-import { App, Button, Divider, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
+import { App, Button, Divider, Flex, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
 
 enum Steps {
   New_Category = "New_Category",
@@ -214,64 +214,60 @@ const CategoriesPage = () => {
   ];
 
   return (
-    <div className="page-container categories">
-      <div className="title-container">
-        <div className="page-title">{t('pages.categories')}</div>
+    <Flex vertical gap={5} className="page-container categories">
+      <Flex align="center" justify="space-between">
+        <Typography.Title level={2} className="page-title">{t('pages.categories')}</Typography.Title>
         {step && (
-          <Button className="btn-18" type="text" size="small" onClick={onBack}>Back</Button>
+          <Button danger type="link" size="small" onClick={onBack}>Back</Button>
         )}
-      </div>
+      </Flex>
 
-      <div className="page-inner-container">
-        {!step && (
-          <Space direction="vertical" className="w-100">
-            <div className="filter">
-              <Filters
-                type="categories"
-                categoryText
-                filterState={filterState}
-                handleFilterChange={handleFilterChange}
-                resetFilters={resetFilters}
-              />
-            </div>
-            <Table
-              columns={columns}
-              dataSource={dataSource}
-              bordered
-              loading={isLoading}
-              pagination={false}
-              scroll={{
-                x: 650
-              }}
+      {!step && (
+        <Space direction="vertical" size={"middle"}>
+          <Filters
+            type="categories"
+            categoryText
+            filterState={filterState}
+            handleFilterChange={handleFilterChange}
+            resetFilters={resetFilters}
+          />
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            bordered
+            loading={isLoading}
+            pagination={false}
+            scroll={{
+              x: 650
+            }}
+          />
+          <Row justify={'space-between'}>
+            <Button onClick={() => setStep(Steps.New_Category)}>
+              {t('categories.buttons.add')}
+            </Button>
+            <Pagination
+              current={pagination.current}
+              pageSize={pagination.pageSize}
+              total={filtered.length || 0}
+              onChange={handlePageChange}
             />
-            <Row justify={'space-between'}>
-              <Button onClick={() => setStep(Steps.New_Category)}>
-                {t('categories.buttons.add')}
-              </Button>
-              <Pagination
-                current={pagination.current}
-                pageSize={pagination.pageSize}
-                total={filtered.length || 0}
-                onChange={handlePageChange}
-              />
-            </Row>
-          </Space>
-        )}
-        {(step && step === Steps.New_Category) && (
-          <NewCategory
-            onFinish={onFinish}
-            isLoading={isLoading}
-          />
-        )}
-        {(step && step === Steps.Update_Category) && (
-          <NewCategory
-            onFinish={onFinish}
-            category={selectedCategory}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-    </div>
+          </Row>
+        </Space>
+      )}
+      {(step && step === Steps.New_Category) && (
+        <NewCategory
+          onFinish={onFinish}
+          isLoading={isLoading}
+        />
+      )}
+      {(step && step === Steps.Update_Category) && (
+        <NewCategory
+          onFinish={onFinish}
+          category={selectedCategory}
+          isLoading={isLoading}
+        />
+      )}
+    </Flex>
   );
 };
 
