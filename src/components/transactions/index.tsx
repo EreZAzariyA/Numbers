@@ -9,7 +9,7 @@ import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
 import { TransactionStatusesType } from "../../utils/transactions";
 import { asNumString, getError } from "../../utils/helpers";
-import { App, Button, Spin, TableProps, Tooltip } from "antd";
+import { App, Button, Flex, Spin, TableProps, Tooltip, Typography } from "antd";
 
 enum Steps {
   New_Transaction = "New_Transaction",
@@ -177,49 +177,48 @@ const Transactions = () => {
   );
 
   return (
-    <div className="page-container transactions">
-      <div className="title-container">
-        <div className="page-title">{t('pages.transactions')}</div>
+    <Flex vertical gap={5} className="page-container transactions">
+      <Flex align="center" justify="space-between">
+        <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
         {step && (
-          <Button danger className="btn-18" type="link" size="small" onClick={onBack}>Back</Button>
+          <Button danger type="link" size="small" onClick={onBack}>Back</Button>
         )}
-      </div>
-      <div className="page-inner-container">
-        {!step && (
-          <EditTable
-            editable
-            totals
-            filterState={filterState}
-            setFilterState={setFilterState}
-            actionButton={actionButton}
-            onEditMode={onEdit}
-            removeHandler={onRemove}
-            tableProps={{
-              columns,
-              scroll: {
-                x: 800
-              },
-            }}
-          />
-        )}
-        {(step && step === Steps.New_Transaction) && (
-          <NewTransaction
-            onFinish={onFinish}
-            categories={categories}
-            newInvoiceCategoryId={newTransWithCategory_idFromCategories}
-            isLoading={categoriesLoading}
-          />
-        )}
-        {(step && step === Steps.Update_Transaction) && (
-          <NewTransaction
-            onFinish={onFinish}
-            categories={categories}
-            transaction={selectedTransaction}
-            isLoading={categoriesLoading}
-          />
-        )}
-      </div>
-    </div>
+      </Flex>
+
+      {!step && (
+        <EditTable
+          editable
+          totals
+          filterState={filterState}
+          setFilterState={setFilterState}
+          actionButton={actionButton}
+          onEditMode={onEdit}
+          removeHandler={onRemove}
+          tableProps={{
+            columns,
+            scroll: {
+              x: 800
+            },
+          }}
+        />
+      )}
+      {(step && step === Steps.New_Transaction) && (
+        <NewTransaction
+          onFinish={onFinish}
+          categories={categories}
+          newInvoiceCategoryId={newTransWithCategory_idFromCategories}
+          isLoading={categoriesLoading}
+        />
+      )}
+      {(step && step === Steps.Update_Transaction) && (
+        <NewTransaction
+          onFinish={onFinish}
+          categories={categories}
+          transaction={selectedTransaction}
+          isLoading={categoriesLoading}
+        />
+      )}
+    </Flex>
   );
 };
 
