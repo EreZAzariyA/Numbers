@@ -91,7 +91,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
             <Row align={'middle'} justify={'center'}>
               <Col>
                 <Tooltip title={disabledMainAccountBtnTitle}>
-                  <Button disabled={isMainAccount} loading={props.mainAccountLoading} onClick={handleSetAsMainAccount}>Set as main account</Button>
+                  <Button disabled={isMainAccount || isCardProvider} loading={props.mainAccountLoading} onClick={handleSetAsMainAccount}>Set as main account</Button>
                 </Tooltip>
               </Col>
             </Row>
