@@ -19,7 +19,7 @@ const Dashboard = () => {
   const creditCards = getAccountCreditCards(account);
 
   return (
-    <Space direction="vertical" className="page-container dashboard">
+    <Flex vertical gap={10} className="page-container dashboard">
       <Flex align="flex-start" justify="space-between">
         <Flex vertical justify="flex-start">
           <Typography.Title level={2} className="page-title">{t('pages.dashboard')}</Typography.Title>
@@ -56,7 +56,7 @@ const Dashboard = () => {
         />
         <DashboardThird creditCards={creditCards} />
       </Space>
-    </Space>
+    </Flex>
   );
 };
 

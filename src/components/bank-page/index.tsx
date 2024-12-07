@@ -5,7 +5,7 @@ import BankAccountPage from "./BankAccountPage";
 import { ConnectBankFormType } from "./ConnectBankForm";
 import { ConnectBankModel } from "../components/CustomModal";
 import { getCompanyName, isArrayAndNotEmpty } from "../../utils/helpers";
-import { Flex, Space, Spin, Tabs, TabsProps, Typography } from "antd";
+import { Flex, Spin, Tabs, TabsProps, Typography } from "antd";
 
 const BankPage = () => {
   const { t } = useTranslation();
