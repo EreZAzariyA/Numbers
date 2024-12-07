@@ -4,8 +4,7 @@ import { useAppSelector } from "../../redux/store";
 import BankAccountPage from "./BankAccountPage";
 import { ConnectBankFormType } from "./ConnectBankForm";
 import { ConnectBankModel } from "../components/CustomModal";
-import { isArrayAndNotEmpty } from "../../utils/helpers";
-import { CompaniesNames } from "../../utils/definitions";
+import { getCompanyName, isArrayAndNotEmpty } from "../../utils/helpers";
 import { Spin, Tabs, TabsProps, Typography } from "antd";
 
 const BankPage = () => {
@@ -20,7 +19,7 @@ const BankPage = () => {
   const sortedArr = [...banksAccounts].sort((a, b) => (b.isMainAccount ? 1 : 0) - (a.isMainAccount ? 1 : 0));
   const items: TabsProps['items'] = sortedArr.map((bank) => ({
     key: bank.bankName,
-    label: <Typography.Text>{CompaniesNames[bank.bankName] || bank.bankName}</Typography.Text>,
+    label: <Typography.Text>{getCompanyName(bank.bankName)}</Typography.Text>,
     children: <BankAccountPage key={bank._id} user={user} bankAccount={bank} loading={loading} mainAccountLoading={mainAccountLoading} />,
     closable: false,
   }));

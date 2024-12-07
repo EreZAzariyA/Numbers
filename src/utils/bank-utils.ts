@@ -29,10 +29,12 @@ export const getCreditCardsFramework = (creditCards: CreditCardType[]): CreditCa
 };
 
 export const getBankCreditCards = (bank: BankAccountModel): CreditCardType[] => {
-  const creditCards = bank?.creditCards || [];
+  const isCardProvider = bank.isCardProvider;
+  const { cardsPastOrFutureDebit, creditCards } = bank;
+  const cards = (isCardProvider ? creditCards : cardsPastOrFutureDebit.cardsBlock) || [];
   const activeCards = [];
 
-  for (let card of creditCards) {
+  for (let card of cards) {
     if (card.cardStatusCode === CardStatusCode.Active) {
       activeCards.push(card);
     }

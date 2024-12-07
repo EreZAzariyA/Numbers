@@ -7,8 +7,9 @@ export enum SupportedCompaniesTypes {
   leumi = 'leumi',
   visaCal = 'visaCal',
 };
+type SupportedScrapersType = Record<string, { name: string, loginFields: string[]}>;
 
-export const SupportedScrapers: any = {
+export const SupportedScrapers: SupportedScrapersType = {
   [SupportedCompaniesTypes.leumi]: {
     name: 'Bank Leumi',
     loginFields: ['username', PASSWORD_FIELD],
@@ -30,13 +31,6 @@ export const SupportedScrapers: any = {
     loginFields: ['username', PASSWORD_FIELD],
   },
 };
-
-export const CompaniesNames: any = {
-  [SupportedCompaniesTypes.discount]: SupportedScrapers[SupportedCompaniesTypes.discount].name,
-  [SupportedCompaniesTypes.max]: SupportedScrapers[SupportedCompaniesTypes.max].name,
-  [SupportedCompaniesTypes.behatsdaa]: SupportedScrapers[SupportedCompaniesTypes.behatsdaa].name,
-  [SupportedCompaniesTypes.leumi]: SupportedScrapers[SupportedCompaniesTypes.leumi].name,
-}
 
 // export enum CompanyTypes {
 //   hapoalim = 'hapoalim',

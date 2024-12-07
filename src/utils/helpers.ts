@@ -10,6 +10,7 @@ import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
 import { BankAccountModel, MainBanksAccount } from "../models/bank-model";
 import { ThemeColors } from "./enums";
 import { CreditCardType, PastOrFutureDebitType } from "./types";
+import { getBankCreditCards } from "./bank-utils";
 
 export type ColorType = {
   ICON: string;
@@ -138,8 +139,9 @@ export const getAccountCreditCards = (mainAccount: MainBanksAccount): CreditCard
 
   const creditCards: CreditCardType[] = [];
   for (const bank of banks) {
-    if (isArrayAndNotEmpty(bank?.creditCards)) {
-      bank.creditCards.forEach((card) => {
+    const cards = getBankCreditCards(bank);
+    if (isArrayAndNotEmpty(cards)) {
+      cards.forEach((card) => {
         creditCards.push(card);
       });
     }
@@ -364,9 +366,11 @@ export const getBanksTotal = (banks: BankAccountModel[]) => {
 };
 
 export const getLoginFields = (companyId: SupportedCompaniesTypes) => {
-  const company = SupportedScrapers[companyId];
-  return company.loginFields;
+  return SupportedScrapers[companyId].loginFields || [];
 };
+export const getCompanyName = (company: string) => {
+  return SupportedScrapers[(SupportedCompaniesTypes as any)[company]].name || 'company';
+}
 
 export const getDebitsByDate = (account: MainBanksAccount, selectedMonth: Dayjs): Partial<PastOrFutureDebitType[]> => {
   const banks = account?.banks;

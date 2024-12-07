@@ -37,7 +37,6 @@ export const refreshBankData = createAsyncThunk<RefreshedBankAccountDetails, { b
     try {
       const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.refreshBankData + `/${user_id}`, { bank_id });
       const data = response.data;
-      console.log({data});
 
       if (isArrayAndNotEmpty(data.importedTransactions)) {
         thunkApi.dispatch(insertBulkTransactionsAction(data.importedTransactions));
