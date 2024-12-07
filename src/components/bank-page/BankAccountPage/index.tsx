@@ -3,15 +3,15 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import relativeTime from "dayjs/plugin/relativeTime"
 import { AppDispatch } from "../../../redux/store";
-import ConnectBankForm, { ConnectBankFormType } from "../ConnectBankForm";
-import { CustomModal } from "../../components/CustomModal";
 import { setBankAsMainAccount } from "../../../redux/actions/bank-actions";
 import UserModel from "../../../models/user-model";
+import { ConnectBankFormType } from "../ConnectBankForm";
+import { ConnectBankModel } from "../../components/CustomModal";
+import { RefreshBankDataButton } from "../../components/RefreshBankDataButton";
 import { BankAccountModel } from "../../../models/bank-model";
 import { CompaniesNames } from "../../../utils/definitions";
 import { asNumString } from "../../../utils/helpers";
 import { App, Button, Col, Row, Space, Spin, Typography } from "antd";
-import { RefreshBankDataButton } from "../../components/RefreshBankDataButton";
 
 dayjs.extend(relativeTime);
 
@@ -32,7 +32,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
   const isMainAccount = !!props.bankAccount.isMainAccount;
 
   const editAccountDetails = () => {
-    setIsOpen(!isOpen);
+    setIsOpen(true);
   };
 
   const handleSetAsMainAccount = async () => {
@@ -95,28 +95,28 @@ const BankAccountPage = (props: BankAccountPageProps) => {
           </Space>
         </Col>
       </Row>
-      <CustomModal
-        title="Update bank account"
-        open={isOpen}
-        onCancel={() => setIsOpen(false)}
-        cancelButtonProps={{
-          onClick: () => setIsOpen(false),
-          disabled: props.loading
+      <ConnectBankModel
+        bank={props.bankAccount}
+        user={props.user}
+        formType={ConnectBankFormType.Update_Bank}
+        setIsOkBtnActive={setIsOkBtnActive}
+        setIsOpen={setIsOpen}
+        modalProps={{
+          open: isOpen,
+          onCancel: () => setIsOpen(false),
+          onClose: () => setIsOpen(false),
+          closable: true,
+          confirmLoading: props.loading,
+          cancelButtonProps: {
+            onClick: () => setIsOpen(false),
+            disabled: props.loading
+          },
+          okButtonProps: {
+            disabled: !isOkBtnActive,
+            onClick: () => setIsOpen(false),
+          },
         }}
-        confirmLoading={props.loading}
-        okButtonProps={{
-          disabled: !isOkBtnActive,
-          onClick: () => setIsOpen(false),
-        }}
-        onClose={() => setIsOpen(false)}
-      >
-        <ConnectBankForm
-          setIsOkBtnActive={setIsOkBtnActive}
-          user={props.user}
-          formType={ConnectBankFormType.Update_Bank}
-          bankDetails={props.bankAccount}
-        />
-      </CustomModal>
+      />
     </>
   );
 };

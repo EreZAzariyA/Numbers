@@ -5,14 +5,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { changeLanguageAction } from "../redux/actions/user-config-actions";
 import { fetchUserDataAction, logoutAction } from "../redux/actions/auth-actions";
-import { MenuItem } from "../utils/antd-types";
+import { MenuItem } from "../utils/antd";
 import { useResize } from "../utils/helpers";
 import { Languages } from "../utils/enums";
 import { LanguageType } from "../utils/types";
 import DarkModeButton from "../components/components/Darkmode-button";
 import Logo from "../components/components/logo/logo";
-import { App, Button, Col, Dropdown, Layout, MenuProps, Row } from "antd";
-import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import { App, Button, Col, Divider, Dropdown, Flex, Layout, MenuProps, Row, Space } from "antd";
+import CloseOutlined from "@ant-design/icons/CloseOutlined";
+import MenuOutlined from "@ant-design/icons/MenuOutlined";
 
 interface DashboardHeaderProps {
   collapsedHandler?: () => void;
@@ -83,63 +84,47 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   }));
 
   return (
-    <Header className="main-header">
-      <div className="main-header-container">
-        <div className="left-container">
+    <Header>
+      <Flex align="center" justify="space-between">
+        <Flex>
           {isMobile && (
-            <div className="menu-collapse">
-              <Dropdown
-                menu={{
-                  items: props.items,
-                  selectable: true,
-                  selectedKeys: [current],
-                  onClick: onClick,
-                  className: "dropdown-menu",
-                }}
-                arrow
-                overlayClassName="dropdown-container"
-                trigger={['click']}
-                open={isOpen}
-                onOpenChange={setIsOpen}
-                className="dropdown-area"
-              >
-                <div className="menu-btn">
-                  {!isOpen ? (
-                    <MenuOutlined />
-                  ) : (
-                    <CloseOutlined />
-                  )}
-                </div>
-              </Dropdown>
-            </div>
+            <Dropdown
+              menu={{
+                items: props.items,
+                selectable: true,
+                selectedKeys: [current],
+                onClick: onClick,
+                className: "dropdown-menu",
+              }}
+              arrow
+              overlayClassName="dropdown-container"
+              trigger={['click']}
+              open={isOpen}
+              onOpenChange={setIsOpen}
+              className="dropdown-area"
+            >
+              <div className="menu-btn">
+                {isOpen ? <CloseOutlined /> : <MenuOutlined />}
+              </div>
+            </Dropdown>
           )}
-          <div className="left-inner-container inner-container">
-            <Logo />
-          </div>
-        </div>
-        <div className="right-container">
-          <div className="right-inner-container">
-            <Row align={'middle'} gutter={!isMobile ? [10, 0] : [0, 0]}>
-              <Col>
-                <Dropdown
-                  menu={{
-                    items: langs,
-                    className: "dropdown-menu langs",
-                    onClick: (e) => handleChangeLang(e.key as LanguageType),
-                  }}
-                >
-                  <Button type="link" size="small" loading={loading}>
-                    {`${lang}-${lang?.toUpperCase()}`}
-                  </Button>
-                </Dropdown>
-              </Col>
-              <Col>
-                <DarkModeButton />
-              </Col>
-            </Row>
-          </div>
-        </div>
-      </div>
+          <Logo />
+        </Flex>
+        <Space align="center" style={{ padding: '0 20px'}} split={<Divider type="vertical" />}>
+          <Dropdown
+            menu={{
+              items: langs,
+              className: "dropdown-menu langs",
+              onClick: (e) => handleChangeLang(e.key as LanguageType),
+            }}
+          >
+            <Button type="link" size="small" loading={loading}>
+              {`${lang}-${lang?.toUpperCase()}`}
+            </Button>
+          </Dropdown>
+          <DarkModeButton />
+        </Space>
+      </Flex>
     </Header>
   );
 };

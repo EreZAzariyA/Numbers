@@ -50,13 +50,12 @@ export type CreditCardType = {
   EURTotalDebit: number;
 };
 
-export type PastOrFutureDebits = {
-  debitMonth: string;
-  monthlyNumberOfTransactions: number;
-  monthlyNISDebitSum: number;
-  monthlyUSDDebitSum: number;
-  monthlyEURDebitSum: number;
-};
+export interface CardsPastOrFutureDebitType {
+  cardsBlock: CreditCardType[];
+  accountCreditFramework: number;
+  accountFrameworkNotUsed: number;
+  accountFrameworkUsed: number;
+}
 
 export interface AccountSavesType {
   businessDate: string;
