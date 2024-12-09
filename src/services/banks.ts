@@ -17,8 +17,8 @@ class BankServices {
     return banks;
   };
 
-  updateBankDetails = async (bankName: string, user_id: string, newCredentials: any): Promise<RefreshedBankAccountDetails> => {
-    const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.updateBankDetails + `/${user_id}`, { bankName, newCredentials });
+  updateBankDetails = async (bank_id: string, user_id: string, newCredentials: any): Promise<RefreshedBankAccountDetails> => {
+    const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.updateBankDetails + `/${user_id}`, { bank_id, newCredentials });
     const data = response.data;
     return data;
   };

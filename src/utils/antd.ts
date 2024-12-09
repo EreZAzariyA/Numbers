@@ -46,7 +46,7 @@ export const getThemeConfig = (currTheme: ThemeColorType): ThemeConfig => {
     algorithm,
     token: {
       colorBgContainer: isDarkTheme ? '#141414' : '#ffff',
-      fontSizeHeading2: 26,
+      fontSizeHeading2: 28,
       fontSizeHeading3: 20,
       fontSizeHeading4: 18,
       fontWeightStrong: 500,

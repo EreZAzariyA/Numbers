@@ -2,7 +2,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { BankAccountModel } from "../../../models/bank-model";
 import { asNumString } from "../../../utils/helpers";
-import { CreditCardType } from "../../../utils/types";
 import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
 import { Card, Divider, Flex, Typography } from "antd";
 import { GoCreditCard } from "react-icons/go";
@@ -10,7 +9,6 @@ import "./CreditCardsAndSavings.css";
 
 interface CreditCardsAndSavingsProps {
   currency: string;
-  cards: CreditCardType[];
   bankAccount: BankAccountModel;
 };
 
@@ -28,7 +26,7 @@ const CardBlock = (props: { title: string, icon: React.ReactNode, value: number,
 
 export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
   const { t } = useTranslation();
-  const used = calculateCreditCardsUsage(props.cards);
+  const used = calculateCreditCardsUsage(props.bankAccount?.cardsPastOrFutureDebit);
   const totalSaves = props?.bankAccount?.savings?.totalDepositsCurrentValue || 0;
   const totalLoans = props.bankAccount?.loans?.summary?.totalBalance || 0;
 

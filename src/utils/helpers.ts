@@ -368,8 +368,8 @@ export const getBanksTotal = (banks: BankAccountModel[]) => {
 export const getLoginFields = (companyId: SupportedCompaniesTypes) => {
   return SupportedScrapers[companyId].loginFields || [];
 };
-export const getCompanyName = (company: string) => {
-  return SupportedScrapers[(SupportedCompaniesTypes as any)[company]].name || 'company';
+export const getCompanyName = (companyId: string) => {
+  return SupportedScrapers[companyId]?.name || companyId;
 }
 
 export const getDebitsByDate = (account: MainBanksAccount, selectedMonth: Dayjs): Partial<PastOrFutureDebitType[]> => {

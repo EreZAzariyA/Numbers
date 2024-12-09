@@ -12,8 +12,6 @@ import { TotalAmountInput } from "../components/TotalAmount";
 import { RefreshBankDataButton } from "../components/RefreshBankDataButton";
 import { asNumString, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
 import { TotalAmountType } from "../../utils/enums";
-import { getBankCreditCards } from "../../utils/bank-utils";
-import { CreditCardType } from "../../utils/types";
 import { TransactionStatusesType } from "../../utils/transactions";
 import { Card, Col, Flex, Grid, message, Row, Skeleton, Typography } from "antd";
 
@@ -52,11 +50,9 @@ const DashboardFirst = (props: DashboardFirstProps) => {
   }, [props.monthToDisplay, props.user._id]);
 
   let totalBanksBalance = 0;
-  let cards: CreditCardType[] = [];
   if (isArrayAndNotEmpty(banks)) {
     banks.forEach((bank) => {
       totalBanksBalance += bank.details?.balance || 0;
-      cards = [...cards, ...getBankCreditCards(bank)];
     });
   }
 
@@ -79,7 +75,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
                 )}
               </Typography.Title>
             </Flex>
-            <CreditCardsAndSavings currency={currency.symbol} cards={cards} bankAccount={bankAccount} />
+            <CreditCardsAndSavings currency={currency.symbol} bankAccount={bankAccount} />
           </Card>
         </Col>
 

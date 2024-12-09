@@ -1,12 +1,8 @@
-import { BankAccount } from "../utils/transactions";
-import { AccountInfoType, AccountSavesType, CardsPastOrFutureDebitType, CreditCardType, MainLoansType, PastOrFutureDebitType } from "../utils/types";
+import { Transaction } from "../utils/transactions";
+import { AccountInfoType, AccountSavesType, CardsPastOrFutureDebitType, MainLoansType, PastOrFutureDebitType } from "../utils/types";
 
 export type CardNumberType = string | number;
 
-export interface BankAccountDetails {
-  bank: BankAccountModel;
-  account: BankAccount;
-};
 export interface MainBanksAccount {
   _id: string;
   user_id: string;
@@ -28,7 +24,6 @@ export class BankAccountModel {
   lastConnection: number;
   extraInfo: AccountInfoType;
   pastOrFutureDebits: PastOrFutureDebitType[];
-  creditCards: CreditCardType[];
   cardsPastOrFutureDebit: CardsPastOrFutureDebitType;
   savings: AccountSavesType;
   loans: MainLoansType;
@@ -45,7 +40,6 @@ export class BankAccountModel {
     this.lastConnection = bankAccount.lastConnection;
     this.extraInfo = bankAccount.extraInfo;
     this.pastOrFutureDebits = bankAccount.pastOrFutureDebits;
-    this.creditCards = bankAccount.creditCards;
     this.cardsPastOrFutureDebit = bankAccount.cardsPastOrFutureDebit;
     this.savings = bankAccount.savings;
     this.loans = bankAccount.loans;

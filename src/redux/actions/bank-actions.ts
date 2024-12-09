@@ -1,9 +1,9 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { BankAccountDetails, BankAccountModel, MainBanksAccount } from "../../models/bank-model";
+import { MainBanksAccount } from "../../models/bank-model";
 import { insertBulkTransactionsAction } from "../slicers/transaction-slicer";
 import config from "../../utils/config";
-import { BankAccount, RefreshedBankAccountDetails, ScraperCredentials } from "../../utils/transactions";
+import { RefreshedBankAccountDetails, ScraperCredentials } from "../../utils/transactions";
 import { isArrayAndNotEmpty } from "../../utils/helpers";
 
 export enum BanksActions {
@@ -22,12 +22,16 @@ export const fetchBankAccounts = createAsyncThunk<MainBanksAccount, string>(
   }
 );
 
-export const connectBankAccount = createAsyncThunk<{ bank: BankAccountModel, account: BankAccount }, { details: ScraperCredentials, user_id: string }>(
+export const connectBankAccount = createAsyncThunk<RefreshedBankAccountDetails, { details: ScraperCredentials, user_id: string }>(
   BanksActions.CONNECT_BANK,
-  async ({ details, user_id }) => {
-    const response = await axios.post<BankAccountDetails>(config.urls.bank.connectBank + `/${user_id}`, details);
-    const data = response.data;
-    return data;
+  async ({ details, user_id }, thunkApi) => {
+    try {
+      const response = await axios.post<RefreshedBankAccountDetails>(config.urls.bank.connectBank + `/${user_id}`, details);
+      const data = response.data;
+      return thunkApi.fulfillWithValue(data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message || error);
+    }
   }
 );
 

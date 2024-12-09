@@ -237,6 +237,7 @@ const CategoriesPage = () => {
             bordered
             loading={isLoading}
             pagination={false}
+            rowKey={'_id'}
             scroll={{
               x: 650
             }}
