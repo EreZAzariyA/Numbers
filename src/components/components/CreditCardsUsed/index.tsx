@@ -1,9 +1,9 @@
-import { CreditCardType } from "../../../../utils/types";
-import { getCreditCardsFramework } from "../../../../utils/bank-utils";
+import { getCreditCardsFramework } from "../../../utils/bank-utils";
+import { asNumber } from "../../../utils/helpers";
+import { CreditCardType } from "../../../utils/types";
 import { Slider, SliderSingleProps } from "antd";
 import { FrownOutlined } from '@ant-design/icons';
 import "./CreditCardsUsed.css";
-import { asNumber } from "../../../../utils/helpers";
 
 export const CreditCardsUsed = (props: {creditCards: CreditCardType[]}) => {
 

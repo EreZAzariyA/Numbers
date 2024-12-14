@@ -46,7 +46,7 @@ export const getThemeConfig = (currTheme: ThemeColorType): ThemeConfig => {
     algorithm,
     token: {
       colorBgContainer: isDarkTheme ? '#141414' : '#ffff',
-      fontSizeHeading2: 26,
+      fontSizeHeading2: 28,
       fontSizeHeading3: 20,
       fontSizeHeading4: 18,
       fontWeightStrong: 500,
@@ -57,7 +57,7 @@ export const getThemeConfig = (currTheme: ThemeColorType): ThemeConfig => {
     },
     components: {
       Layout: {
-        headerBg: isDarkTheme ? '#141414' : '#ffff',
+        headerBg: isDarkTheme ? '#001529' : '#ffff',
         siderBg: isDarkTheme ? '#141414' : '#ffff',
         headerPadding: 0,
         headerHeight: 60,

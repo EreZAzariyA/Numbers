@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import TransactionModel from "../../../models/transaction";
-import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, App, Flex, Pagination, Grid } from "antd";
+import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, App, Flex, Pagination, Grid, Space } from "antd";
 import transactionsServices from "../../../services/transactions";
 import { queryFiltering } from "../../../utils/helpers";
 import { useAppSelector } from "../../../redux/store";
@@ -99,7 +99,7 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
   ];
 
   return (
-    <Flex vertical gap={10} justify="center">
+    <Space direction="vertical" size={"middle"}>
       <Flex align="flex-start" gap={10} wrap={screen.xs}>
         {props.filterState && (
           <Filters
@@ -145,6 +145,6 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
           }}
         />
       </Flex>
-    </Flex>
+    </Space>
   );
 };

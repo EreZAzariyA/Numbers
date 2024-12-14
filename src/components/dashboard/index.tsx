@@ -6,7 +6,7 @@ import DashboardFirst from "./DashboardFirst";
 import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
 import { getAccountCreditCards, getGreeting, getUserfName } from "../../utils/helpers";
-import { Button, DatePicker, Row, Skeleton } from "antd";
+import { Button, DatePicker, Flex, Space, Typography } from "antd";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -19,11 +19,12 @@ const Dashboard = () => {
   const creditCards = getAccountCreditCards(account);
 
   return (
-    <div className="page-container dashboard">
-      <div className="title-container">
-        <div className="page-title">
-          {t('pages.dashboard')}
-        </div>
+    <Flex vertical gap={10} className="page-container dashboard">
+      <Flex align="flex-start" justify="space-between">
+        <Flex vertical justify="flex-start">
+          <Typography.Title level={2} className="page-title">{t('pages.dashboard')}</Typography.Title>
+          <span>Hey {getUserfName(user)}, {getGreeting()}</span>
+        </Flex>
 
         <DatePicker
           picker="month"
@@ -40,19 +41,13 @@ const Dashboard = () => {
           value={monthToDisplay}
           onChange={setMonthToDisplay}
         />
-      </div>
-      <div className="sub-title-container mb-10">
-        <Row>
-          {loading ? <Skeleton active paragraph={{ rows: 0 }} /> : (
-            <span>Hey {getUserfName(user)}, {getGreeting()}</span>
-          )}
-        </Row>
-      </div>
-      <div className="page-inner-container">
+      </Flex>
+
+      <Space direction="vertical" size={"large"}>
         <DashboardFirst
           user={user}
           account={account}
-          loading={accountLoading}
+          loading={loading && accountLoading}
           monthToDisplay={monthToDisplay}
         />
         <DashboardSecond
@@ -60,8 +55,8 @@ const Dashboard = () => {
           monthToDisplay={monthToDisplay}
         />
         <DashboardThird creditCards={creditCards} />
-      </div>
-    </div>
+      </Space>
+    </Flex>
   );
 };
 

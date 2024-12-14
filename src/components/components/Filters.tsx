@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../redux/store";
-import { getTransactionsByCategory, useResize } from "../../utils/helpers";
+import { getCompanyName, getTransactionsByCategory, useResize } from "../../utils/helpers";
 import { TransactionStatuses } from "../../utils/transactions";
-import { CompaniesNames, SupportedCompaniesTypes } from "../../utils/definitions";
+import { SupportedCompaniesTypes } from "../../utils/definitions";
 import { DefaultOptionType } from "antd/es/select";
 import { Button, Col, DatePicker, Flex, Input, Row, Select, Tooltip } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
@@ -202,7 +202,7 @@ export const Filters = (props: FiltersProps) => {
             placeholder={t('filters.placeholders.4')}
             onChange={(val) => props.handleFilterChange('companyId', val)}
             options={Object.entries(SupportedCompaniesTypes).map(([key, val]) => ({
-              label: CompaniesNames[val],
+              label: getCompanyName(val),
               value: key,
             }))}
           />

@@ -11,7 +11,7 @@ import { Languages } from "../utils/enums";
 import { LanguageType } from "../utils/types";
 import DarkModeButton from "../components/components/Darkmode-button";
 import Logo from "../components/components/logo/logo";
-import { App, Button, Col, Divider, Dropdown, Flex, Layout, MenuProps, Row, Space } from "antd";
+import { App, Button, Divider, Dropdown, Flex, Layout, MenuProps, Space } from "antd";
 import CloseOutlined from "@ant-design/icons/CloseOutlined";
 import MenuOutlined from "@ant-design/icons/MenuOutlined";
 
@@ -60,16 +60,17 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
     setCurrent(e.key);
   };
 
-  const handleChangeLang = async (lang: LanguageType): Promise<void> => {
+  const handleChangeLang = async (selectedLang: LanguageType): Promise<void> => {
     if (!user) {
       message.error('No user id');
       return;
     }
+    if (selectedLang === lang) return;
 
     try {
       const language = await dispatch(changeLanguageAction({
         user_id: user._id,
-        language: lang
+        language: selectedLang
       })).unwrap();
       i18n.changeLanguage(language);
     } catch (err: any) {

@@ -1,7 +1,8 @@
 import { BankAccountModel, CardNumberType } from "../models/bank-model";
+import CategoryModel from "../models/category-model";
 import TransactionModel from "../models/transaction";
 import { SupportedCompaniesTypes } from "./definitions";
-import { AccountInfoType, AccountSavesType, CardsPastOrFutureDebitType, CreditCardType, PastOrFutureDebitType } from "./types";
+import { TransactionsAccountResponse } from "./types";
 
 export enum TransactionStatuses {
   completed = "Completed",
@@ -17,22 +18,11 @@ declare enum TransactionTypes {
   Installments = "installments"
 };
 
-export interface BankAccount {
-  accountNumber: string;
-  cardNumber: CardNumberType;
-  balance?: number;
-  txns: Transaction[];
-  info?: Partial<AccountInfoType>;
-  pastOrFutureDebits?: Partial<PastOrFutureDebitType[]>;
-  cardsPastOrFutureDebit?: CardsPastOrFutureDebitType;
-  saving?: AccountSavesType;
-  creditCards: CreditCardType[];
-};
-
 export interface RefreshedBankAccountDetails {
-  bank: BankAccountModel;
-  account: BankAccount;
+  bank: BankAccountModel; // full inserted bank - no account.txns or cardsBlock.txns
+  account: TransactionsAccountResponse; // scrapper account - account.txns + cardsBlock.txns
   importedTransactions?: TransactionModel[];
+  importedCategories?: CategoryModel[];
 };
 
 export interface Transaction {

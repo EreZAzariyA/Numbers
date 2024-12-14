@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
 import UserModel from "../../../models/user-model";
-import { BankAccountDetails, BankAccountModel } from "../../../models/bank-model";
+import { BankAccountModel } from "../../../models/bank-model";
 import { connectBankAccount } from "../../../redux/actions/bank-actions";
 import { importTransactions } from "../../../redux/actions/transaction-actions";
 import bankServices from "../../../services/banks";
@@ -12,6 +12,7 @@ import { getCompanyName, isArray, isArrayAndNotEmpty } from "../../../utils/help
 import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
 import TransactionModel from "../../../models/transaction";
 import { ImportModal } from "./ImportModal";
+import { TransactionsAccountResponse } from "../../../utils/types";
 
 export enum ConnectBankFormType {
   Connect_Bank = "Connect_Bank",
@@ -21,7 +22,7 @@ export enum ConnectBankFormType {
 interface ConnectBankFormProps {
   user: UserModel;
   setIsOkBtnActive?: (val: boolean) => void;
-  setResult?: (res: BankAccountDetails) => void;
+  setResult?: (res: BankAccountModel) => void;
   formType?: ConnectBankFormType;
   bankDetails?: BankAccountModel;
 };
@@ -58,30 +59,37 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
       return;
     }
 
-    let res;
+    let result;
     try {
       if (props.formType === ConnectBankFormType.Update_Bank) {
-        res = await bankServices.updateBankDetails(props.bankDetails?.bankName, props.user._id, values);
+        // todo: add updateBankDetails to redux action
+        result = await bankServices.updateBankDetails(props.bankDetails._id, props.user._id, values);
       } else {
-        res = await dispatch(connectBankAccount({ details: values, user_id: props.user._id })).unwrap();
+        result = await dispatch(connectBankAccount({ details: values, user_id: props.user._id })).unwrap();
       }
 
-      if (isArrayAndNotEmpty(res.account.txns)) {
-        showTransImportConfirmation(res.account.txns, res);
+      const { account, bank } = result;
+
+      const isCardProvider = bank?.isCardProvider || false;
+      if (isCardProvider && account.cardsPastOrFutureDebit) {
+        showTransImportConfirmation(isCardProvider, account);
       }
-      props?.setResult(res);
+      else if (isArrayAndNotEmpty(account.txns)) {
+        showTransImportConfirmation(isCardProvider, account);
+      }
+      props?.setResult(result.bank);
       props.setIsOkBtnActive(true);
     } catch (err: any) {
-      message.error(err.message);
+      message.error(err?.message || err);
     }
   };
 
-  const showTransImportConfirmation = async (transactions: Transaction[], res: BankAccountDetails): Promise<void> => {
-    const isCardProvider = res.bank?.isCardProvider || false;
-    let content: any = `We found ${transactions.length} transactions, would you like to import them?`;
-
-    if (isCardProvider) {
-      const cards = res.account?.creditCards || [];
+  const showTransImportConfirmation = async (isCardProvider: boolean, account: TransactionsAccountResponse): Promise<void> => {
+    let content: any;
+    if (!isCardProvider) {
+      content = `We found ${account.txns.length} transactions, would you like to import them?`;
+    } else {
+      const cards = account.cardsPastOrFutureDebit.cardsBlock || [];
 
       content = (
         <Space direction="vertical" style={{ width: '100%' }}>
@@ -104,7 +112,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         if (isCardProvider) {
           setShowImportConfirmationModal(false);
         } else {
-          await onTransactionsImportOk(transactions);
+          await onTransactionsImportOk(account.txns);
         }
       },
       content

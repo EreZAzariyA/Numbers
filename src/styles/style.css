@@ -1,56 +1,9 @@
-.sub-title {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  font-size: 20px;
-  font-weight: 600;
+.site-layout .page-title {
+  color: #00008b;
 }
 
 .logo {
   cursor: pointer;
-}
-.btn-18 {
-  font-size: 18px;
-  height: auto;
-}
-
-.page-container {
-  box-sizing: border-box;
-}
-
-.page-container .title-container {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.page-container .page-title {
-  font-size: 26px;
-  font-weight: 600;
-  text-align: left;
-  color: darkblue;
-}
-
-.dark-theme .page-container .page-title {
-  color: var(--default-white);
-}
-
-.inner-page .inner-page-title {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.dark-theme .editable .ant-table-thead,
-.dark-theme .editable .ant-table-tbody {
-  background: rgb(251, 3, 3) !important;
-}
-
-.inner-page .insert-form {
-  z-index: 1;
-  min-height: 0;
-
-  padding: 30px 20px 10px;
-  border: 1px solid lightgray;
-  border-radius: 10px;
 }
 
 .chart-container {

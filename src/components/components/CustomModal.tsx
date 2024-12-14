@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ConnectBankForm, { ConnectBankFormType } from "../bank-page/ConnectBankForm";
-import { BankAccountDetails, BankAccountModel } from "../../models/bank-model";
+import { BankAccountModel } from "../../models/bank-model";
 import UserModel from "../../models/user-model";
 import { Modal, ModalProps, Result } from "antd";
 
@@ -14,13 +14,17 @@ interface ConnectBankModelProps {
 }
 
 export const ConnectBankModel = (props: ConnectBankModelProps) => {
-  const [modalResult, setModalResult] = useState<BankAccountDetails>(null);
+  const [modalResult, setModalResult] = useState<BankAccountModel>(null);
 
-  const isCardProvider = modalResult?.bank?.isCardProvider;
-  let modalSubTitle = `Account number: ${modalResult?.account?.accountNumber || modalResult?.account?.cardNumber} Added. Current balance of ${modalResult?.account?.balance} added to your account`;
-  if (isCardProvider) {
-    const creditCards = modalResult?.account?.creditCards;
-    modalSubTitle = `${creditCards?.length} card added into your account`
+  let modalSubTitle = '';
+  if (modalResult) {
+    const isCardProvider = modalResult.isCardProvider || false;
+    if (!isCardProvider) {
+      modalSubTitle = `Account number: ${modalResult.details?.accountNumber} Added. Current balance of ${modalResult.details?.balance} added to your account`;
+    } else {
+      const creditCards = modalResult.cardsPastOrFutureDebit?.cardsBlock || [];
+      modalSubTitle = `${creditCards.length} card added into your account`
+    }
   }
 
   const onClose = () => {
@@ -37,7 +41,7 @@ export const ConnectBankModel = (props: ConnectBankModelProps) => {
         onCancel={onClose}
         onClose={onClose}
       >
-        {!modalResult && (
+        {!modalResult ? (
           <ConnectBankForm
             user={props.user}
             bankDetails={props.bank}
@@ -45,8 +49,7 @@ export const ConnectBankModel = (props: ConnectBankModelProps) => {
             setIsOkBtnActive={props?.setIsOkBtnActive}
             setResult={setModalResult}
           />
-        )}
-        {modalResult?.account && (
+        ) : (
           <Result
             status="success"
             title="Successfully Connected To Your Bank Account!"

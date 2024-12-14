@@ -10,6 +10,17 @@ export enum CardStatusCode {
   Disable = 9
 };
 
+export interface TransactionsAccountResponse {
+  accountNumber?: string;
+  balance?: number;
+  txns?: Transaction[];
+  info?: AccountInfoType;
+  pastOrFutureDebits?: PastOrFutureDebitType[];
+  cardsPastOrFutureDebit?: Partial<CardsPastOrFutureDebitType>;
+  saving?: AccountSavesType;
+  loans?: MainLoansType;
+}
+
 export type AccountInfoType = {
   accountName: string;
   accountAvailableBalance: number;

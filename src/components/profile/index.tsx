@@ -1,4 +1,4 @@
-import { Col, Divider, Form, Input, InputNumber, Row } from "antd";
+import { Col, Divider, Flex, Form, Input, InputNumber, Row, Typography } from "antd";
 import { useAppSelector } from "../../redux/store";
 import { useTranslation } from "react-i18next";
 import { asNumString, getBanksTotal } from "../../utils/helpers";
@@ -19,9 +19,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="page-container profile">
+    <Flex vertical gap={5} className="page-container profile">
       <div className="title-container">
-        <div className="page-title">{t('pages.profile')}</div>
+        <Typography.Title level={2} className="page-title">{t('pages.profile')}</Typography.Title>
       </div>
       <Form initialValues={initialValues} layout="horizontal">
         <Row gutter={[10, 10]}>
@@ -47,7 +47,7 @@ const Profile = () => {
           <InputNumber disabled style={{ width: '100%' }} />
         </Form.Item>
       </Form>
-    </div>
+    </Flex>
   );
 };
 
