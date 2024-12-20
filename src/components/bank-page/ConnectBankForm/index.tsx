@@ -30,7 +30,7 @@ interface ConnectBankFormProps {
 const ConnectBankForm = (props: ConnectBankFormProps) => {
   const { message, modal } = App.useApp();
   const dispatch = useAppDispatch();
-  const { loading: isLoading } = useAppSelector((state) => state.userBanks);
+  const { loading: isLoading, account } = useAppSelector((state) => state.userBanks);
   const [showImportConfirmationModal, setShowImportConfirmationModal] = useState<boolean>(false);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: props.bankDetails?.bankName || false,
@@ -38,9 +38,11 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     loginFields: props.bankDetails?.bankName ? SupportedScrapers[props.bankDetails.bankName].loginFields : []
   });
 
-  const bankList: MenuItem[] = Object.entries(SupportedCompaniesTypes).map(([bank, value]) => (
-    getMenuItem(getCompanyName(bank) || bank, bank, null, null, null, null, value)
-  ));
+  const userBanks = account.banks?.map((bank) => bank?.bankName);
+  const bankList: MenuItem[] = Object.entries(SupportedCompaniesTypes).map(([bank, value]) => ({
+    ...getMenuItem(getCompanyName(bank), bank, null, null, null, null, value),
+    disabled: userBanks.includes(bank)
+  }));
 
   const onSelectCompany = (companyId: SupportedCompaniesTypes) => {
     const company = SupportedScrapers[companyId];

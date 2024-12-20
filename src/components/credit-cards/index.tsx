@@ -1,7 +1,6 @@
 import { Button, Flex, Result, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
-
 const CreditCards = () => {
   const { t } = useTranslation();
 
