@@ -60,7 +60,7 @@ export const getThemeConfig = (currTheme: ThemeColorType): ThemeConfig => {
         headerBg: isDarkTheme ? '#001529' : '#ffff',
         siderBg: isDarkTheme ? '#141414' : '#ffff',
         headerPadding: 0,
-        headerHeight: 60,
+        headerHeight: 70,
       },
       Typography: {
         titleMarginBottom: 0,

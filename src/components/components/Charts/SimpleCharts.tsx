@@ -94,7 +94,7 @@ export const SimpleCharts = (props: SimpleChartsProps) => {
 
   if (loading && props.loading) return <Spin />
   return (
-    <ResponsiveContainer width={"100%"} height={200}>
+    <ResponsiveContainer width={"100%"} height={screen.xs ? 300 : 200}>
       <PieChart>
         <Pie
           activeIndex={state.activeIndex}

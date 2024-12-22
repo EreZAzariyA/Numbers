@@ -1,14 +1,14 @@
-import { Slider, SliderSingleProps } from "antd";
 import { CreditCardType } from "../../../utils/types";
-import "./CreditCard.css";
 import { asNumber } from "../../../utils/helpers";
+import { Slider, SliderSingleProps } from "antd";
+import "./CreditCard.css";
 
 interface CreditCardProps {
   card: CreditCardType;
 }
 
 export const CreditCard = (props: CreditCardProps) => {
-  const isActive = props.card.cardStatusCode === 0;
+  const isActive = props.card.cardStatusCode ? props.card.cardStatusCode === 0 : true;
   const cardFramework = props.card.cardFramework;
   const cardFrameworkUsed = props.card.cardFrameworkUsed;
   const percentage = asNumber((cardFrameworkUsed / cardFramework) * 100);

@@ -75,7 +75,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
                 )}
               </Typography.Title>
             </Flex>
-            <CreditCardsAndSavings currency={currency.symbol} bankAccount={bankAccount} />
+            <CreditCardsAndSavings currency={currency.symbol} account={props.account} />
           </Card>
         </Col>
 
@@ -84,7 +84,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
             <TotalAmountInput
               transactions={transactions}
               type={TotalAmountType.SPENT}
-              style={{ maxWidth: '30%' }}
+              style={{ maxWidth: '7rem' }}
             />
             <SimpleCharts transactions={transactions} loading={loading} />
           </Card>

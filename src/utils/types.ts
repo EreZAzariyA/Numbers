@@ -55,6 +55,7 @@ export type CreditCardType = {
   cardNumber: string;
   cardTypeDescription: string;
   cardValidityDate: string;
+  cardImage?: string;
   dateOfUpcomingDebit: string;
   NISTotalDebit: number;
   USDTotalDebit: number;

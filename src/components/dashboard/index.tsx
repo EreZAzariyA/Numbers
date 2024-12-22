@@ -5,7 +5,8 @@ import { useAppSelector } from "../../redux/store";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
-import { getAccountCreditCards, getGreeting, getUserfName } from "../../utils/helpers";
+import { getAccountCreditCards } from "../../utils/bank-utils";
+import { getGreeting, getUserfName } from "../../utils/helpers";
 import { Button, DatePicker, Flex, Space, Typography } from "antd";
 import "./Dashboard.css";
 

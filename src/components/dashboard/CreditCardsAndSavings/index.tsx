@@ -1,15 +1,15 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BankAccountModel } from "../../../models/bank-model";
+import { MainBanksAccount } from "../../../models/bank-model";
 import { asNumString } from "../../../utils/helpers";
-import { calculateCreditCardsUsage } from "../../../utils/bank-utils";
+import { getAccountCreditCards, getCreditCardsFramework, getCreditCardsUsed } from "../../../utils/bank-utils";
 import { Card, Divider, Flex, Typography } from "antd";
 import { GoCreditCard } from "react-icons/go";
 import "./CreditCardsAndSavings.css";
 
 interface CreditCardsAndSavingsProps {
   currency: string;
-  bankAccount: BankAccountModel;
+  account: MainBanksAccount;
 };
 
 const { Text, Title } = Typography;
@@ -26,9 +26,13 @@ const CardBlock = (props: { title: string, icon: React.ReactNode, value: number,
 
 export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
   const { t } = useTranslation();
-  const used = calculateCreditCardsUsage(props.bankAccount?.cardsPastOrFutureDebit);
-  const totalSaves = props?.bankAccount?.savings?.totalDepositsCurrentValue || 0;
-  const totalLoans = props.bankAccount?.loans?.summary?.totalBalance || 0;
+  const cards = getAccountCreditCards(props.account);
+  const cardsFramework = getCreditCardsFramework(cards);
+
+  const used = getCreditCardsUsed(cardsFramework);
+  const mainAccount = props.account?.banks.find((b) => b.isMainAccount) ?? props.account?.banks?.[0];
+  const totalSaves = mainAccount?.savings?.totalDepositsCurrentValue || 0;
+  const totalLoans = mainAccount?.loans?.summary?.totalBalance || 0;
 
   return (
     <Flex className="inner-card-container">

@@ -131,25 +131,6 @@ export const getInvoicesBySelectedMonth = (transactions: TransactionModel[], sel
   return transactionsByMonth;
 };
 
-export const getAccountCreditCards = (mainAccount: MainBanksAccount): CreditCardType[] => {
-  const banks = mainAccount?.banks;
-  if (!isArrayAndNotEmpty(banks)) {
-    return [];
-  }
-
-  const creditCards: CreditCardType[] = [];
-  for (const bank of banks) {
-    const cards = getBankCreditCards(bank);
-    if (isArrayAndNotEmpty(cards)) {
-      cards.forEach((card) => {
-        creditCards.push(card);
-      });
-    }
-  }
-
-  return creditCards;
-}
-
 export const getTotals = (arr: number[]): number => {
   let total = 0;
   if (isArrayAndNotEmpty(arr)) {

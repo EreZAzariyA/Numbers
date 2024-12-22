@@ -85,14 +85,15 @@ export const RefreshBankDataButton = (props: RefreshBankDataButtonProps) => {
 
         res.forEach((r) => {
           const { importedTransactions = [], bank } = r as RefreshedBankAccountDetails;
+          allImportedTransactions += importedTransactions.length || 0;
           if (r && bank) {
             const bankName = getCompanyName(bank.bankName);
             successedBanks.push(bankName);
-            allImportedTransactions += importedTransactions.length || 0;
           }
         });
+
+        message.success(`Banks: ${successedBanks.join(', ')} refreshed successfully. ${allImportedTransactions} transactions updated`);
       }
-      message.success(`Banks: ${successedBanks.join(', ')} refreshed successfully. ${allImportedTransactions} transactions updated`);
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
