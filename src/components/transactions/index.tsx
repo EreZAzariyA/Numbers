@@ -178,12 +178,7 @@ const Transactions = () => {
 
   return (
     <Flex vertical gap={5} className="page-container transactions">
-      <Flex align="center" justify="space-between">
-        <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
-        {step && (
-          <Button danger type="link" size="small" onClick={onBack}>Back</Button>
-        )}
-      </Flex>
+      <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
 
       {!step && (
         <EditTable
@@ -208,6 +203,7 @@ const Transactions = () => {
           categories={categories}
           newInvoiceCategoryId={newTransWithCategory_idFromCategories}
           isLoading={categoriesLoading}
+          onBack={onBack}
         />
       )}
       {(step && step === Steps.Update_Transaction) && (
@@ -216,6 +212,7 @@ const Transactions = () => {
           categories={categories}
           transaction={selectedTransaction}
           isLoading={categoriesLoading}
+          onBack={onBack}
         />
       )}
     </Flex>

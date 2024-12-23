@@ -9,8 +9,7 @@ import CategoryModel from "../models/category-model";
 import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
 import { BankAccountModel, MainBanksAccount } from "../models/bank-model";
 import { ThemeColors } from "./enums";
-import { CreditCardType, PastOrFutureDebitType } from "./types";
-import { getBankCreditCards } from "./bank-utils";
+import { PastOrFutureDebitType } from "./types";
 
 export type ColorType = {
   ICON: string;

@@ -7,7 +7,9 @@ import { TransactionStatuses } from "../../utils/transactions";
 import { SupportedCompaniesTypes } from "../../utils/definitions";
 import { DefaultOptionType } from "antd/es/select";
 import { Button, Col, DatePicker, Flex, Input, Row, Select, Tooltip } from "antd";
-import { LeftOutlined } from "@ant-design/icons";
+import LeftOutlined from "@ant-design/icons/LeftOutlined";
+import RightOutlined from "@ant-design/icons/RightOutlined";
+import { Languages } from "../../utils/enums";
 
 interface FiltersProps {
   datesFilter?: boolean;
@@ -54,6 +56,7 @@ export const Filters = (props: FiltersProps) => {
     width: (isMobile ? 200 : 250)
   };
   const { categories, loading } = useAppSelector((state) => state.categories);
+  const { lang } = useAppSelector((state) => state.config.language);
   const mappedCategories = categories.map((category) => {
     const transactions = getTransactionsByCategory(category._id);
     return {
@@ -80,6 +83,7 @@ export const Filters = (props: FiltersProps) => {
   ].filter(Boolean).length > 4;
 
   const handleCollapse = () => setCollapsed(!collapsed);
+  const isEN = lang === Languages.EN;
 
   return (
     <Row align={'middle'} justify={'start'} gutter={[10, 10]} className={`filters ${collapsed ? 'collapsed' : ''}`}>
@@ -89,8 +93,8 @@ export const Filters = (props: FiltersProps) => {
             <Tooltip title="More filters">
               <Button
                 type="text"
-                className="icon-btn"
-                icon={<LeftOutlined />}
+                className={`icon-btn ${isEN ? 'en' : ''}`}
+                icon={isEN ? <RightOutlined /> : <LeftOutlined />}
                 onClick={handleCollapse}
               />
             </Tooltip>

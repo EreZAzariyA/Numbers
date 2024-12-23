@@ -1,11 +1,12 @@
-import { Button, Col, Form, Input, Row, Space } from "antd";
-import "./newCategory.css";
 import { useState } from "react";
 import CategoryModel from "../../../models/category-model";
+import { Button, Divider, Flex, Form, Input, Space, Typography } from "antd";
+import "./newCategory.css";
 
 interface NewCategoryProps {
   category?: Partial<CategoryModel>;
   onFinish: (values: Partial<CategoryModel>) => void;
+  onBack: () => void;
   isLoading?: boolean;
 };
 
@@ -18,38 +19,33 @@ const NewCategory = (props: NewCategoryProps) => {
   const isUpdate = !!props.category;
 
   return (
-    <div className="inner-page new-category-page">
-      <Space direction="vertical" className="w-100">
-        <Row justify={'center'}>
-          <Col span={24}>
-            <div className="inner-page-title">{`${isUpdate ? 'Update' : 'New'} Category`}</div>
-          </Col>
-        </Row>
+    <Flex vertical align="center">
+      <Typography.Title level={3} className="text-center">{`${isUpdate ? 'Update' : 'New'} Category`}</Typography.Title>
+      <Divider />
 
-        <Row justify={'center'}>
-          <Col span={16}>
-            <Form
-              form={form}
-              initialValues={initialValues}
-              onFinish={() => props.onFinish(initialValues)}
-              className="insert-form add-category-form"
-            >
-              <Form.Item
-                label="Name"
-                name={'name'}
-                rules={[{ required: true, message: 'Please enter category for transactions'}]}
-              >
-                <Input onChange={(e) => setInitialValues({...initialValues, name: e.target.value})} />
-              </Form.Item>
+      <Form
+        form={form}
+        initialValues={initialValues}
+        onFinish={() => props.onFinish(initialValues)}
+        className="insert-form"
+        labelAlign="left"
+      >
+        <Form.Item
+          label="Name"
+          name={'name'}
+          rules={[{ required: true, message: 'Please enter category for transactions'}]}
+        >
+          <Input onChange={(e) => setInitialValues({...initialValues, name: e.target.value})} />
+        </Form.Item>
 
-              <Form.Item>
-                <Button htmlType="submit" loading={props.isLoading}>Submit</Button>
-              </Form.Item>
-            </Form>
-          </Col>
-        </Row>
-      </Space>
-    </div>
+        <Form.Item label={null} style={{ justifySelf: 'center' }}>
+          <Space size={"middle"}>
+            <Button type="primary" htmlType="submit" loading={props.isLoading}>Submit</Button>
+            <Button type="primary" danger onClick={props?.onBack}>Cancel</Button>
+          </Space>
+        </Form.Item>
+      </Form>
+    </Flex>
   );
 };
 

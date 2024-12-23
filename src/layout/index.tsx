@@ -41,10 +41,6 @@ const DashboardView = () => {
     setCurrent(path);
   }, [pathname]);
 
-  useEffect(() => {
-    setIsCollapsed(isMobile);
-  }, [isMobile]);
-
   const accountItems = user ? [
     getMenuItem(
       <Link to='/profile'>{t('menu.account.1')}</Link>,

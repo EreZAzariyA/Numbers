@@ -21,7 +21,7 @@ const Dashboard = () => {
 
   return (
     <Flex vertical gap={10} className="page-container dashboard">
-      <Flex align="flex-start" justify="space-between">
+      <Flex align="center" justify="space-between">
         <Flex vertical justify="flex-start">
           <Typography.Title level={2} className="page-title">{t('pages.dashboard')}</Typography.Title>
           <span>Hey {getUserfName(user)}, {getGreeting()}</span>

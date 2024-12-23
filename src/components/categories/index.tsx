@@ -215,12 +215,7 @@ const CategoriesPage = () => {
 
   return (
     <Flex vertical gap={5} className="page-container categories">
-      <Flex align="center" justify="space-between">
-        <Typography.Title level={2} className="page-title">{t('pages.categories')}</Typography.Title>
-        {step && (
-          <Button danger type="link" size="small" onClick={onBack}>Back</Button>
-        )}
-      </Flex>
+      <Typography.Title level={2} className="page-title">{t('pages.categories')}</Typography.Title>
 
       {!step && (
         <Space direction="vertical" size={"middle"}>
@@ -259,6 +254,7 @@ const CategoriesPage = () => {
         <NewCategory
           onFinish={onFinish}
           isLoading={isLoading}
+          onBack={onBack}
         />
       )}
       {(step && step === Steps.Update_Category) && (
@@ -266,6 +262,7 @@ const CategoriesPage = () => {
           onFinish={onFinish}
           category={selectedCategory}
           isLoading={isLoading}
+          onBack={onBack}
         />
       )}
     </Flex>

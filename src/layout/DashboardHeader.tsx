@@ -32,7 +32,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const { lang, loading } = useAppSelector((state) => state.config.language);
   const [current, setCurrent] = useState<string>('1');
   const [isOpen, setIsOpen] = useState(false);
-  const { isMobile } = useResize();
+  const { isMobile, isPhone } = useResize();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -109,7 +109,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
               </div>
             </Dropdown>
           )}
-          <Logo />
+          {!isPhone && <Logo />}
         </Flex>
         <Space align="center" style={{ padding: '0 20px'}} split={<Divider type="vertical" />}>
           <Dropdown
