@@ -7,7 +7,7 @@ import { queryFiltering } from "../../../utils/helpers";
 import { useAppSelector } from "../../../redux/store";
 import { Filters } from "../Filters";
 import dayjs, { Dayjs } from "dayjs";
-import { TransactionStatusesType } from "../../../utils/transactions";
+import { TransactionStatusesType, TransactionsType } from "../../../utils/transactions";
 import { TotalsContainer } from "../TotalsContainer";
 
 interface EditTableProps<T> {
@@ -17,6 +17,7 @@ interface EditTableProps<T> {
   setFilterState?: (object: any) => void;
 
   query?: object;
+  type?: TransactionsType;
 
   totals?: boolean;
   actionButton?: ReactNode;
@@ -42,9 +43,10 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
     const dispatchTransactions = async () => {
       const query = props.query || queryFiltering(props.filterState, { skip: (page - 1) * pageSize, limit: pageSize });
       setLoading(true);
+      const type = props.type === TransactionsType.CARD_TRANSACTIONS ? 'card' : null;
 
       try {
-        const { transactions, total } = await transactionsServices.fetchTransactions(user?._id, null, query);
+        const { transactions, total } = await transactionsServices.fetchTransactions(user?._id, type, query);
         setTransactions(transactions as T[]);
         setTotal(props.query ? transactions?.length : total);
       } catch (err: any) {
@@ -54,10 +56,15 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
     };
 
     dispatchTransactions();
-  }, [page, pageSize, props.filterState, message, user._id, props.query]);
+  }, [page, pageSize, props.filterState, message, user._id, props.query, props.type]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [props.type]);
 
   const handleFilterChange = (field: string, value: string | number[] | Dayjs[] | Dayjs): void => {
     props.setFilterState({ ...props.filterState, [field]: value });
+    setPage(1);
   };
 
   const resetFilters = () => {

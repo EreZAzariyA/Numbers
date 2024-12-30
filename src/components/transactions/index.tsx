@@ -7,7 +7,7 @@ import { addTransaction, removeTransaction, updateTransaction } from "../../redu
 import TransactionModel from "../../models/transaction";
 import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
-import { TransactionStatusesType } from "../../utils/transactions";
+import { TransactionStatusesType, TransactionsType } from "../../utils/transactions";
 import { asNumString, getError } from "../../utils/helpers";
 import { App, Button, Flex, Spin, TableProps, Tooltip, Typography } from "antd";
 
@@ -16,7 +16,11 @@ enum Steps {
   Update_Transaction = "Update_Transaction",
 };
 
-const Transactions = () => {
+interface TransactionsProps {
+  type: TransactionsType;
+}
+
+const Transactions = (props: TransactionsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { hash } = useLocation();
@@ -178,12 +182,13 @@ const Transactions = () => {
 
   return (
     <Flex vertical gap={5} className="page-container transactions">
-      <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
+      <Typography.Title level={2} className="page-title">{t(`pages.${props.type}`)}</Typography.Title>
 
       {!step && (
         <EditTable
           editable
           totals
+          type={props.type}
           filterState={filterState}
           setFilterState={setFilterState}
           actionButton={actionButton}

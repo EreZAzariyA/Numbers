@@ -13,6 +13,11 @@ export enum TransactionStatusesType {
   PENDING = "pending"
 };
 
+export enum TransactionsType {
+  ACCOUNT = "transactions",
+  CARD_TRANSACTIONS = "creditCards"
+};
+
 declare enum TransactionTypes {
   Normal = "normal",
   Installments = "installments"
