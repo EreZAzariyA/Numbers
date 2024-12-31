@@ -16,11 +16,7 @@ enum Steps {
   Update_Transaction = "Update_Transaction",
 };
 
-interface TransactionsProps {
-  type: TransactionsType;
-}
-
-const Transactions = (props: TransactionsProps) => {
+const Transactions = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { hash } = useLocation();
@@ -34,9 +30,10 @@ const Transactions = (props: TransactionsProps) => {
   const [filterState, setFilterState] = useState({
     month: dayjs(),
     status: TransactionStatusesType.COMPLETED,
+    transactionsType: TransactionsType.ACCOUNT
   });
 
-  const newTransWithCategory_idFromCategories = hash.split('#')?.[1];
+  const newTransCategory_idFromCategories = hash.split('#')?.[1];
 
   const onFinish = async (transaction: TransactionModel) => {
     if (!user) {
@@ -182,13 +179,13 @@ const Transactions = (props: TransactionsProps) => {
 
   return (
     <Flex vertical gap={5} className="page-container transactions">
-      <Typography.Title level={2} className="page-title">{t(`pages.${props.type}`)}</Typography.Title>
+      <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
 
       {!step && (
         <EditTable
           editable
           totals
-          type={props.type}
+          type={filterState.transactionsType}
           filterState={filterState}
           setFilterState={setFilterState}
           actionButton={actionButton}
@@ -206,7 +203,7 @@ const Transactions = (props: TransactionsProps) => {
         <NewTransaction
           onFinish={onFinish}
           categories={categories}
-          newInvoiceCategoryId={newTransWithCategory_idFromCategories}
+          newInvoiceCategoryId={newTransCategory_idFromCategories}
           isLoading={categoriesLoading}
           onBack={onBack}
         />

@@ -60,6 +60,10 @@
     "status": {
       "completed": "Completed",
       "pending": "Pending"
+    },
+    "transactionsType": {
+      "transactions": "Account",
+      "creditcards": "Credit Cards"
     }
   },
   "categories": {
@@ -80,7 +84,8 @@
       "Search For Category",
       "Search By Status",
       "Search By Text",
-      "Search By Company"
+      "Search By Company",
+      "Search By Transaction Type"
     ],
     "reset": "Reset"
   },

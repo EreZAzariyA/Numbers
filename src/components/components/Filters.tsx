@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../redux/store";
 import { getCompanyName, getTransactionsByCategory, useResize } from "../../utils/helpers";
-import { TransactionStatuses } from "../../utils/transactions";
+import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
 import { SupportedCompaniesTypes } from "../../utils/definitions";
 import { DefaultOptionType } from "antd/es/select";
 import { Button, Col, DatePicker, Flex, Input, Row, Select, Tooltip } from "antd";
@@ -12,6 +12,7 @@ import RightOutlined from "@ant-design/icons/RightOutlined";
 import { Languages } from "../../utils/enums";
 
 interface FiltersProps {
+  byTransType?: boolean;
   datesFilter?: boolean;
   monthFilter?: boolean;
   categoryFilter?: boolean;
@@ -25,7 +26,6 @@ interface FiltersProps {
   handleFilterChange: (field: string, val: string | number[] | Dayjs[]) => void;
   resetFilters?: () => void;
 };
-
 
 const transactionStatus = [
   {
@@ -118,6 +118,22 @@ export const Filters = (props: FiltersProps) => {
           )}
         </Flex>
       </Col>
+
+      {props.byTransType && (
+        <Col>
+          <Select
+            value={props.filterState.transactionsType}
+            allowClear
+            style={style}
+            placeholder={t('filters.placeholders.4')}
+            onChange={(val) => props.handleFilterChange('transactionsType', val)}
+            options={[TransactionsType.ACCOUNT, TransactionsType.CARD_TRANSACTIONS].map((c) => ({
+              label: t(`transactions.transactionsType.${c.toLocaleLowerCase()}`),
+              value: c.toLocaleLowerCase(),
+            }))}
+          />
+        </Col>
+      )}
 
       {props.datesFilter && (
         <Col>

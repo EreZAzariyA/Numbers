@@ -20,6 +20,7 @@ const NewTransaction = (props: NewTransactionProps) => {
 
   const [initialValues, setInitialValues] = useState<TransactionModel>({
     ...props.transaction,
+    category_id: props.newInvoiceCategoryId,
     date: dayjs(props.transaction?.date) || null,
   });
 

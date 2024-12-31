@@ -17,6 +17,7 @@ export enum TransactionsType {
   ACCOUNT = "transactions",
   CARD_TRANSACTIONS = "creditCards"
 };
+export type TransType = TransactionsType.ACCOUNT | TransactionsType.CARD_TRANSACTIONS;
 
 declare enum TransactionTypes {
   Normal = "normal",

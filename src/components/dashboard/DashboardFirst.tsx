@@ -38,7 +38,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
       const query = queryFiltering({ status: TransactionStatusesType.COMPLETED, month: props.monthToDisplay });
 
       try {
-        const { transactions } = await transactionsServices.fetchTransactions(props.user._id, null, query);
+        const { transactions } = await transactionsServices.fetchTransactions(props.user._id, query);
         setTransactions(transactions);
       } catch (err: any) {
         message.error(err);
