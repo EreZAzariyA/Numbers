@@ -43,10 +43,9 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
     const dispatchTransactions = async () => {
       const query = props.query || queryFiltering(props.filterState, { skip: (page - 1) * pageSize, limit: pageSize });
       setLoading(true);
-      const type = props.type === TransactionsType.CARD_TRANSACTIONS ? 'card' : null;
 
       try {
-        const { transactions, total } = await transactionsServices.fetchTransactions(user?._id, type, query);
+        const { transactions, total } = await transactionsServices.fetchTransactions(user?._id, query, props.type);
         setTransactions(transactions as T[]);
         setTotal(props.query ? transactions?.length : total);
       } catch (err: any) {

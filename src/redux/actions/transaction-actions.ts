@@ -20,7 +20,6 @@ export const fetchTransactions = createAsyncThunk<{transactions: TransactionMode
     try {
       const { transactions, total } = await transactionsServices.fetchTransactions(
         user_id,
-        type,
         query,
       );
 

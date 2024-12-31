@@ -39,7 +39,7 @@ const CategoriesPage = () => {
   useEffect(() => {
     const dispatchTransactions = async () => {
       const query = queryFiltering({ status: TransactionStatusesType.COMPLETED });
-      const { transactions } = await  transactionsServices.fetchTransactions(user._id, null, query);
+      const { transactions } = await  transactionsServices.fetchTransactions(user._id, query);
       setTransactions(transactions);
     }
 

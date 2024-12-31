@@ -15,7 +15,7 @@ export const TotalsContainer = (props: { filterState: {} }) => {
     const dispatchTransactions = async () => {
       const query = queryFiltering(props.filterState);
       try {
-        const { transactions } = await transactionsServices.fetchTransactions(user._id, null, query);
+        const { transactions } = await transactionsServices.fetchTransactions(user._id, query, props.type);
         setTransactions(transactions);
       } catch (err: any) {
         message.error(err);
