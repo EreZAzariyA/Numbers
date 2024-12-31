@@ -7,7 +7,7 @@ import { queryFiltering } from "../../../utils/helpers";
 import { useAppSelector } from "../../../redux/store";
 import { Filters } from "../Filters";
 import dayjs, { Dayjs } from "dayjs";
-import { TransactionStatusesType, TransactionsType } from "../../../utils/transactions";
+import { TransactionStatusesType, TransType } from "../../../utils/transactions";
 import { TotalsContainer } from "../TotalsContainer";
 
 interface EditTableProps<T> {
@@ -17,7 +17,7 @@ interface EditTableProps<T> {
   setFilterState?: (object: any) => void;
 
   query?: object;
-  type?: TransactionsType;
+  type?: TransType;
 
   totals?: boolean;
   actionButton?: ReactNode;
@@ -110,6 +110,7 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
         {props.filterState && (
           <Filters
             type="transactions"
+            byTransType
             datesFilter
             monthFilter
             categoryFilter
@@ -123,9 +124,8 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
           />
         )}
         {props.totals && (
-          <TotalsContainer filterState={props.filterState} />
+          <TotalsContainer filterState={props.filterState} type={props.type} />
         )}
-
       </Flex>
       <Table
         {...props.tableProps}

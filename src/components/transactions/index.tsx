@@ -30,9 +30,10 @@ const Transactions = () => {
   const [filterState, setFilterState] = useState({
     month: dayjs(),
     status: TransactionStatusesType.COMPLETED,
+    transactionsType: TransactionsType.ACCOUNT
   });
 
-  const newTransWithCategory_idFromCategories = hash.split('#')?.[1];
+  const newTransCategory_idFromCategories = hash.split('#')?.[1];
 
   const onFinish = async (transaction: TransactionModel) => {
     if (!user) {
@@ -178,7 +179,7 @@ const Transactions = () => {
 
   return (
     <Flex vertical gap={5} className="page-container transactions">
-      <Typography.Title level={2} className="page-title">{t(`pages.${props.type}`)}</Typography.Title>
+      <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
 
       {!step && (
         <EditTable
@@ -202,7 +203,7 @@ const Transactions = () => {
         <NewTransaction
           onFinish={onFinish}
           categories={categories}
-          newInvoiceCategoryId={newTransWithCategory_idFromCategories}
+          newInvoiceCategoryId={newTransCategory_idFromCategories}
           isLoading={categoriesLoading}
           onBack={onBack}
         />
