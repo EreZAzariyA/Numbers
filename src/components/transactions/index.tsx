@@ -16,11 +16,7 @@ enum Steps {
   Update_Transaction = "Update_Transaction",
 };
 
-interface TransactionsProps {
-  type: TransactionsType;
-}
-
-const Transactions = (props: TransactionsProps) => {
+const Transactions = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { hash } = useLocation();
@@ -188,7 +184,7 @@ const Transactions = (props: TransactionsProps) => {
         <EditTable
           editable
           totals
-          type={props.type}
+          type={filterState.transactionsType}
           filterState={filterState}
           setFilterState={setFilterState}
           actionButton={actionButton}
