@@ -122,11 +122,11 @@ export const Filters = (props: FiltersProps) => {
       {props.byTransType && (
         <Col>
           <Select
-            value={props.filterState.transactionsType}
+            value={props.filterState.type}
             allowClear
             style={style}
             placeholder={t('filters.placeholders.4')}
-            onChange={(val) => props.handleFilterChange('transactionsType', val)}
+            onChange={(val) => props.handleFilterChange('type', val)}
             options={[TransactionsType.ACCOUNT, TransactionsType.CARD_TRANSACTIONS].map((c) => ({
               label: t(`transactions.transactionsType.${c.toLocaleLowerCase()}`),
               value: c.toLocaleLowerCase(),
@@ -144,10 +144,10 @@ export const Filters = (props: FiltersProps) => {
             value={props.filterState.dates}
             maxDate={dayjs()}
             onChange={(val) => {
-              if (!val) {
-                props.handleFilterChange('dates', null);
-                return;
-              }
+              // if (!val) {
+              //   props.handleFilterChange('dates', null);
+              //   return;
+              // }
               props.handleFilterChange('dates', val);
               props.handleFilterChange('month', null);
             }}
