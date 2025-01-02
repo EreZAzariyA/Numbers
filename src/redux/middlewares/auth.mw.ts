@@ -5,7 +5,6 @@ import UserModel from "../../models/user-model";
 import { removeUserConfig, setUserLang, setUserTheme } from "../slicers/user-config-slicer";
 import { banksHandleLogout } from "../slicers/bank-slicer";
 import { transactionsHandleLogout } from "../slicers/transaction-slicer";
-import { categoriesHandleLogout } from "../slicers/category-slicer";
 
 const authMiddleWare: Middleware = (store) => (next) => async (action: any) => {
   const { dispatch } = store;
@@ -23,7 +22,6 @@ const authMiddleWare: Middleware = (store) => (next) => async (action: any) => {
       localStorage.removeItem('token');
       dispatch(banksHandleLogout());
       dispatch(transactionsHandleLogout());
-      dispatch(categoriesHandleLogout());
       dispatch(removeUserConfig());
     break;
   }

@@ -7,7 +7,6 @@ import CredentialsModel from "../../models/credentials-model";
 import { setUserLang, setUserTheme } from "../slicers/user-config-slicer";
 import config from "../../utils/config";
 import { RootState } from "../store";
-import { fetchCategoriesAction } from "./category-actions";
 import { fetchBankAccounts } from "./bank-actions";
 
 export enum AuthActions {
@@ -24,7 +23,6 @@ export const fetchUserDataAction = createAsyncThunk<void>(
     try {
       const { user } = (thunkApi.getState() as RootState).auth;
       await thunkApi.dispatch(fetchBankAccounts(user._id)).unwrap();
-      await thunkApi.dispatch(fetchCategoriesAction(user._id)).unwrap();
     } catch (err: any) {
       thunkApi.rejectWithValue(err);
     }
