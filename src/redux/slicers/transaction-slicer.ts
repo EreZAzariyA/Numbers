@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
 import TransactionModel from "../../models/transaction";
-import { addTransaction, fetchTransactions, importTransactions, removeTransaction, updateTransaction } from "../actions/transaction-actions";
+import { addTransaction, importTransactions, removeTransaction, updateTransaction } from "../actions/transaction-actions";
 
 type InitialStateType = {
   transactions: TransactionModel[];
@@ -15,23 +15,6 @@ const initialState: InitialStateType = {
 };
 
 const extraReducers = (builder: ActionReducerMapBuilder<InitialStateType>) => {
-  // Fetch transactions:
-  builder.addCase(fetchTransactions.pending, (state) => ({
-    ...state,
-    loading: true
-  }))
-  .addCase(fetchTransactions.rejected, (state, action) => ({
-    ...state,
-    loading: false,
-    error: action.error
-  }))
-  .addCase(fetchTransactions.fulfilled, (state, action) => ({
-    ...state,
-    loading: false,
-    error: null,
-    transactions: action.payload.transactions
-  }));
-
   // Add transaction:
   builder.addCase(addTransaction.pending, (state) => ({
     ...state,

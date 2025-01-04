@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import CurrencyList from 'currency-list'
-import transactionsServices from "../../services/transactions";
-import TransactionModel from "../../models/transaction";
+import transactionsServices, { MainTransaction } from "../../services/transactions";
 import UserModel from "../../models/user-model";
 import { MainBanksAccount } from "../../models/bank-model";
 import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
@@ -12,7 +11,7 @@ import { TotalAmountInput } from "../components/TotalAmount";
 import { RefreshBankDataButton } from "../components/RefreshBankDataButton";
 import { asNumString, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
 import { TotalAmountType } from "../../utils/enums";
-import { TransactionStatusesType } from "../../utils/transactions";
+import { TransactionStatuses } from "../../utils/transactions";
 import { Card, Col, Flex, Grid, message, Row, Skeleton, Typography } from "antd";
 
 interface DashboardFirstProps {
@@ -24,7 +23,7 @@ interface DashboardFirstProps {
 
 const DashboardFirst = (props: DashboardFirstProps) => {
   const { t } = useTranslation();
-  const [transactions, setTransactions] = useState<TransactionModel[]>([]);
+  const [transactions, setTransactions] = useState<MainTransaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { lg } = Grid.useBreakpoint();
 
@@ -35,7 +34,7 @@ const DashboardFirst = (props: DashboardFirstProps) => {
   useEffect(() => {
     const dispatchTransactions = async () => {
       setLoading(true);
-      const query = queryFiltering({ status: TransactionStatusesType.COMPLETED, month: props.monthToDisplay });
+      const query = queryFiltering({ status: TransactionStatuses.completed, month: props.monthToDisplay });
 
       try {
         const { transactions } = await transactionsServices.fetchTransactions(props.user._id, query);
