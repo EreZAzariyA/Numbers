@@ -5,7 +5,7 @@ import TransactionModel from "../../models/transaction";
 import UserModel from "../../models/user-model";
 import { EditTable } from "../components/EditTable";
 import { asNumString, queryFiltering } from "../../utils/helpers";
-import { TransactionStatusesType } from "../../utils/transactions";
+import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
 import { Card, Flex, Tooltip } from "antd";
 import { TableProps } from "antd/lib";
 
@@ -19,7 +19,7 @@ const DashboardSecond = (props: DashboardSecondProps) => {
 
   const query = queryFiltering({
     month: props.monthToDisplay.toISOString(),
-    status: TransactionStatusesType.COMPLETED
+    status: TransactionStatuses.completed
   }, { limit: 5 });
 
   const columns: TableProps<TransactionModel>['columns'] = [
@@ -70,9 +70,10 @@ const DashboardSecond = (props: DashboardSecondProps) => {
     <Card title={cardTitle} className="dashboard-second">
       <EditTable
         query={query}
+        type={TransactionsType.ACCOUNT}
         tableProps={{
           columns,
-          bordered: false
+          bordered: false,
         }}
       />
     </Card>

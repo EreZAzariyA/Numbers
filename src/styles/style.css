@@ -1,5 +1,6 @@
 .site-layout .page-title {
   color: #00008b;
+  font-weight: 600;
 }
 
 .logo {
@@ -25,10 +26,18 @@
   transition: transform 0.3s linear;
   transform: rotate(-90deg);
 }
+.filters .icon-btn.en {
+  transform: rotate(90deg);
+}
 .filters .icon-btn.ant-btn:hover {
   background: transparent;
 }
 
 .filters.collapsed .icon-btn {
   transform: rotate(0deg);
+}
+
+.insert-form {
+  max-width: 500px;
+  justify-content: center;
 }

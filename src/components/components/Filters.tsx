@@ -2,14 +2,21 @@ import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../redux/store";
-import { getCompanyName, getTransactionsByCategory, useResize } from "../../utils/helpers";
-import { TransactionStatuses } from "../../utils/transactions";
+import { getCompanyName, getTransactionsByCategory, queryFiltering, useResize } from "../../utils/helpers";
+import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
 import { SupportedCompaniesTypes } from "../../utils/definitions";
 import { DefaultOptionType } from "antd/es/select";
 import { Button, Col, DatePicker, Flex, Input, Row, Select, Tooltip } from "antd";
-import { LeftOutlined } from "@ant-design/icons";
+import LeftOutlined from "@ant-design/icons/LeftOutlined";
+import RightOutlined from "@ant-design/icons/RightOutlined";
+import { Languages } from "../../utils/enums";
+import { useQuery } from "@tanstack/react-query";
+import CategoryModel from "../../models/category-model";
+import categoriesServices from "../../services/categories";
+import transactionsServices, { TransactionsResp } from "../../services/transactions";
 
 interface FiltersProps {
+  byTransType?: boolean;
   datesFilter?: boolean;
   monthFilter?: boolean;
   categoryFilter?: boolean;
@@ -23,7 +30,6 @@ interface FiltersProps {
   handleFilterChange: (field: string, val: string | number[] | Dayjs[]) => void;
   resetFilters?: () => void;
 };
-
 
 const transactionStatus = [
   {
@@ -53,9 +59,18 @@ export const Filters = (props: FiltersProps) => {
   const style: React.CSSProperties = {
     width: (isMobile ? 200 : 250)
   };
-  const { categories, loading } = useAppSelector((state) => state.categories);
+  const { lang } = useAppSelector((state) => state.config.language);
+  const user = useAppSelector((state) => state.auth?.user);
+
+  const { data: transResponse, isLoading: isTransactionsLoading } = useQuery<TransactionsResp>({
+    queryKey: ['transactions'],
+    queryFn: () => transactionsServices.fetchTransactions(user._id, queryFiltering({ status: TransactionStatuses.completed }))
+  });
+
+  const fetchCategories = async () => await categoriesServices.fetchCategories(user._id);
+  const { data: categories = [], isLoading: loading } = useQuery<CategoryModel[]>({ queryKey: ['categories', user._id], queryFn: fetchCategories });
   const mappedCategories = categories.map((category) => {
-    const transactions = getTransactionsByCategory(category._id);
+    const transactions = getTransactionsByCategory(category._id, transResponse?.transactions);
     return {
       label: (
         <Row justify={'space-between'}>
@@ -80,7 +95,7 @@ export const Filters = (props: FiltersProps) => {
   ].filter(Boolean).length > 4;
 
   const handleCollapse = () => setCollapsed(!collapsed);
-
+  const isEN = lang === Languages.EN;
   return (
     <Row align={'middle'} justify={'start'} gutter={[10, 10]} className={`filters ${collapsed ? 'collapsed' : ''}`}>
       <Col style={withCollapse && { width: (isMobile ? 210 : 260) }}>
@@ -89,8 +104,8 @@ export const Filters = (props: FiltersProps) => {
             <Tooltip title="More filters">
               <Button
                 type="text"
-                className="icon-btn"
-                icon={<LeftOutlined />}
+                className={`icon-btn ${isEN ? 'en' : ''}`}
+                icon={isEN ? <RightOutlined /> : <LeftOutlined />}
                 onClick={handleCollapse}
               />
             </Tooltip>
@@ -114,6 +129,22 @@ export const Filters = (props: FiltersProps) => {
           )}
         </Flex>
       </Col>
+
+      {props.byTransType && (
+        <Col>
+          <Select
+            value={props.filterState.type}
+            allowClear
+            style={style}
+            placeholder={t('filters.placeholders.4')}
+            onChange={(val) => props.handleFilterChange('type', val)}
+            options={[TransactionsType.ACCOUNT, TransactionsType.CARD_TRANSACTIONS].map((c) => ({
+              label: t(`transactions.transactionsType.${c.toLocaleLowerCase()}`),
+              value: c,
+            }))}
+          />
+        </Col>
+      )}
 
       {props.datesFilter && (
         <Col>
@@ -146,7 +177,7 @@ export const Filters = (props: FiltersProps) => {
             onChange={(val) => props.handleFilterChange('categories', val)}
             maxTagCount='responsive'
             options={mappedCategories}
-            loading={loading}
+            loading={loading || isTransactionsLoading}
           />
         </Col>
       )}

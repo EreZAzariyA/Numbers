@@ -1,5 +1,4 @@
 import { useState } from "react";
-import dayjs from "dayjs";
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { refreshBankData } from "../../redux/actions/bank-actions";
 import { getCompanyName, getTimeToRefresh, isArrayAndNotEmpty } from "../../utils/helpers";
@@ -29,7 +28,8 @@ export const RefreshBankDataButton = (props: RefreshBankDataButtonProps) => {
     ))?.[0]?.lastConnection;
 
   const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
-  const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
+  // const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
+  const isRefreshAvailable = true;
 
   const showModal = () => {
     modal.confirm({
@@ -81,6 +81,7 @@ export const RefreshBankDataButton = (props: RefreshBankDataButtonProps) => {
       );
 
       const res = await Promise.all(results);
+      console.log({ res });
       if (res.some((r) => typeof r !== 'boolean')) {
 
         res.forEach((r) => {

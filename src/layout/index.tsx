@@ -15,7 +15,6 @@ import { BsReceipt } from "react-icons/bs";
 import { FaAddressCard } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
-import { LuWalletCards } from "react-icons/lu";
 
 const { Sider, Content } = Layout;
 
@@ -40,10 +39,6 @@ const DashboardView = () => {
     const path = pathname.split('/')?.[1];
     setCurrent(path);
   }, [pathname]);
-
-  useEffect(() => {
-    setIsCollapsed(isMobile);
-  }, [isMobile]);
 
   const accountItems = user ? [
     getMenuItem(
@@ -90,12 +85,6 @@ const DashboardView = () => {
       <Link to='/categories'>{t('menu.categories')}</Link>,
       'categories',
       <CiCircleList size={Sizes.MENU_ICON} />,
-      null, style
-    ),
-    getMenuItem(
-      <Link to='/credit-cards'>{t('menu.creditCards')}</Link>,
-      'credit-cards',
-      <LuWalletCards size={Sizes.MENU_ICON} />,
       null, style
     ),
     getMenuItem(

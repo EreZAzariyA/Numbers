@@ -13,9 +13,11 @@ import './styles/global.css';
 import './styles/style.css';
 import './styles/darkmode.css';
 import './styles/DashboardView.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interceptorsService.createInterceptors();
 const userLang = localStorage.getItem('language');
+const queryClient = new QueryClient()
 
 i18n
 .use(initReactI18next)
@@ -41,9 +43,11 @@ import("./App").then((RootApp) => {
 
   root.render(
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </QueryClientProvider>
     </GoogleOAuthProvider>
   );
 });

@@ -7,7 +7,6 @@ import SignIn from "../components/auth/sign-in";
 import SignUp from "../components/auth/sign-up";
 import Dashboard from "../components/dashboard";
 import Transactions from "../components/transactions";
-import CreditCards from "../components/credit-cards";
 import CategoriesPage from "../components/categories";
 import Profile from "../components/profile";
 import PageNotFound from "../components/components/PageNotFound";
@@ -20,7 +19,6 @@ const UserRouter = () => (
         <Route index element={<Navigate to={'/dashboard'} replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="transactions" element={<Transactions />} />
-        <Route path="credit-cards" element={<CreditCards />} />
         <Route path="categories" element={<CategoriesPage />} />
         <Route path="bank" element={<BankPage />} />
         <Route path="profile" element={<Profile />} />

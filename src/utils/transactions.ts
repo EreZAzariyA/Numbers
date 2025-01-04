@@ -5,13 +5,19 @@ import { SupportedCompaniesTypes } from "./definitions";
 import { TransactionsAccountResponse } from "./types";
 
 export enum TransactionStatuses {
-  completed = "Completed",
-  pending = "Pending"
+  completed = "completed",
+  pending = "pending"
 };
-export enum TransactionStatusesType {
-  COMPLETED = "completed",
-  PENDING = "pending"
+export interface TransactionInstallments {
+  number: number;
+  total: number;
+}
+
+export enum TransactionsType {
+  ACCOUNT = "transactions",
+  CARD_TRANSACTIONS = "creditCards"
 };
+export type TransType = TransactionsType.ACCOUNT | TransactionsType.CARD_TRANSACTIONS;
 
 declare enum TransactionTypes {
   Normal = "normal",
