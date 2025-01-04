@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../redux/store";
-import { getCompanyName, getTransactionsByCategory, useResize } from "../../utils/helpers";
+import { getCompanyName, getTransactionsByCategory, queryFiltering, useResize } from "../../utils/helpers";
 import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
 import { SupportedCompaniesTypes } from "../../utils/definitions";
 import { DefaultOptionType } from "antd/es/select";
@@ -10,6 +10,10 @@ import { Button, Col, DatePicker, Flex, Input, Row, Select, Tooltip } from "antd
 import LeftOutlined from "@ant-design/icons/LeftOutlined";
 import RightOutlined from "@ant-design/icons/RightOutlined";
 import { Languages } from "../../utils/enums";
+import { useQuery } from "@tanstack/react-query";
+import CategoryModel from "../../models/category-model";
+import categoriesServices from "../../services/categories";
+import transactionsServices, { TransactionsResp } from "../../services/transactions";
 
 interface FiltersProps {
   byTransType?: boolean;
@@ -55,10 +59,18 @@ export const Filters = (props: FiltersProps) => {
   const style: React.CSSProperties = {
     width: (isMobile ? 200 : 250)
   };
-  const { categories, loading } = useAppSelector((state) => state.categories);
   const { lang } = useAppSelector((state) => state.config.language);
+  const user = useAppSelector((state) => state.auth?.user);
+
+  const { data: transResponse, isLoading: isTransactionsLoading } = useQuery<TransactionsResp>({
+    queryKey: ['transactions'],
+    queryFn: () => transactionsServices.fetchTransactions(user._id, queryFiltering({ status: TransactionStatuses.completed }))
+  });
+
+  const fetchCategories = async () => await categoriesServices.fetchCategories(user._id);
+  const { data: categories = [], isLoading: loading } = useQuery<CategoryModel[]>({ queryKey: ['categories', user._id], queryFn: fetchCategories });
   const mappedCategories = categories.map((category) => {
-    const transactions = getTransactionsByCategory(category._id);
+    const transactions = getTransactionsByCategory(category._id, transResponse?.transactions);
     return {
       label: (
         <Row justify={'space-between'}>
@@ -84,7 +96,6 @@ export const Filters = (props: FiltersProps) => {
 
   const handleCollapse = () => setCollapsed(!collapsed);
   const isEN = lang === Languages.EN;
-
   return (
     <Row align={'middle'} justify={'start'} gutter={[10, 10]} className={`filters ${collapsed ? 'collapsed' : ''}`}>
       <Col style={withCollapse && { width: (isMobile ? 210 : 260) }}>
@@ -129,7 +140,7 @@ export const Filters = (props: FiltersProps) => {
             onChange={(val) => props.handleFilterChange('type', val)}
             options={[TransactionsType.ACCOUNT, TransactionsType.CARD_TRANSACTIONS].map((c) => ({
               label: t(`transactions.transactionsType.${c.toLocaleLowerCase()}`),
-              value: c.toLocaleLowerCase(),
+              value: c,
             }))}
           />
         </Col>
@@ -144,10 +155,10 @@ export const Filters = (props: FiltersProps) => {
             value={props.filterState.dates}
             maxDate={dayjs()}
             onChange={(val) => {
-              // if (!val) {
-              //   props.handleFilterChange('dates', null);
-              //   return;
-              // }
+              if (!val) {
+                props.handleFilterChange('dates', null);
+                return;
+              }
               props.handleFilterChange('dates', val);
               props.handleFilterChange('month', null);
             }}
@@ -166,7 +177,7 @@ export const Filters = (props: FiltersProps) => {
             onChange={(val) => props.handleFilterChange('categories', val)}
             maxTagCount='responsive'
             options={mappedCategories}
-            loading={loading}
+            loading={loading || isTransactionsLoading}
           />
         </Col>
       )}

@@ -1,10 +1,10 @@
-import TransactionModel from "../../models/transaction";
 import { asNumString, getInvoicesTotalsPrice } from "../../utils/helpers";
 import { TotalAmountType } from "../../utils/enums";
+import { MainTransaction } from "../../services/transactions";
 import { Input } from "antd";
 
 interface TotalAmountInputProps {
-  transactions: TransactionModel[];
+  transactions: MainTransaction[];
   type?: TotalAmountType;
   style?: React.CSSProperties;
 };

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAppSelector } from "../../../redux/store";
-import TransactionModel from "../../../models/transaction";
 import {
   Cell,
   Legend,
@@ -15,11 +14,15 @@ import {
   setCategoriesAndInvoicesArray,
 } from "../../../utils/helpers";
 import { Grid, Spin } from "antd";
+import categoriesServices from "../../../services/categories";
+import { useQuery } from "@tanstack/react-query";
+import CategoryModel from "../../../models/category-model";
+import { MainTransaction } from "../../../services/transactions";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 interface SimpleChartsProps {
-  transactions: TransactionModel[];
+  transactions: MainTransaction[];
   loading: boolean;
 };
 
@@ -73,7 +76,10 @@ const renderActiveShape = (props: any) => {
 };
 
 export const SimpleCharts = (props: SimpleChartsProps) => {
-  const { categories, loading } = useAppSelector((state) => state.categories);
+  const user = useAppSelector((state) => state.auth?.user);
+  const fetchCategories = async () => await categoriesServices.fetchCategories(user._id);
+  const { data: categories, isLoading: loading } = useQuery<CategoryModel[]>({ queryKey: ['categories', user?._id], queryFn: fetchCategories });
+
   const [state, setState] = useState({ activeIndex: 0 });
   const screen = Grid.useBreakpoint();
 

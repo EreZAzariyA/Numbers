@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import TransactionModel from "../../../models/transaction";
-import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, Flex, Pagination, Grid, Space, PaginationProps } from "antd";
+import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, Flex, Pagination, Space, PaginationProps } from "antd";
 import transactionsServices, { TransactionsResp } from "../../../services/transactions";
 import { queryFiltering } from "../../../utils/helpers";
 import { useAppSelector } from "../../../redux/store";
@@ -31,7 +31,6 @@ interface EditTableProps<T> {
 
 export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(props: Partial<EditTableProps<T>>) => {
   const { t } = useTranslation();
-  const screen = Grid.useBreakpoint();
   const user = useAppSelector((state) => state.auth.user);
 
   const [page, setPage] = useState<number>(1);

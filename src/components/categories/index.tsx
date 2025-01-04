@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dayjs } from "dayjs";
-import transactionsServices, { MainTransaction, TransactionsResp } from "../../services/transactions";
+import transactionsServices, { TransactionsResp } from "../../services/transactions";
 import { useAppSelector } from "../../redux/store";
 import CategoryModel from "../../models/category-model";
 import NewCategory from "./newCategory/newCategory";
