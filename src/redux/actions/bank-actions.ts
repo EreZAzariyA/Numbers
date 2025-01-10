@@ -1,10 +1,8 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { MainBanksAccount } from "../../models/bank-model";
-import { insertBulkTransactionsAction } from "../slicers/transaction-slicer";
 import config from "../../utils/config";
 import { RefreshedBankAccountDetails, ScraperCredentials } from "../../utils/transactions";
-import { isArrayAndNotEmpty } from "../../utils/helpers";
 
 export enum BanksActions {
   CONNECT_BANK = "banks/connectBank",
@@ -41,10 +39,6 @@ export const refreshBankData = createAsyncThunk<RefreshedBankAccountDetails, { b
     try {
       const response = await axios.put<RefreshedBankAccountDetails>(config.urls.bank.refreshBankData + `/${user_id}`, { bank_id });
       const data = response.data;
-
-      if (isArrayAndNotEmpty(data.importedTransactions)) {
-        thunkApi.dispatch(insertBulkTransactionsAction(data.importedTransactions));
-      }
       return thunkApi.fulfillWithValue(data);
     } catch (err: any) {
       return thunkApi.rejectWithValue(err);

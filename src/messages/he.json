@@ -48,6 +48,8 @@
         "category": "קטגוריה",
         "description": "תיאור",
         "amount": "סכום",
+        "chargedAmount": "סכום שחויב",
+        "cardNumber": "מס' כרטיס",
         "status": "סטטוס",
         "company": "חברה",
         "actions": "פעולות"

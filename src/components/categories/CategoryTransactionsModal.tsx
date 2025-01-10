@@ -5,7 +5,7 @@ import CategoryModel from "../../models/category-model";
 import TransactionModel from "../../models/transaction";
 import { EditTable } from "../components/EditTable";
 import { asNumString } from "../../utils/helpers";
-import { TransactionStatusesType } from "../../utils/transactions";
+import { TransactionStatuses } from "../../utils/transactions";
 import { Space, TableProps, Tooltip } from "antd";
 
 const CategoryTransactionsModal = (props: { category: CategoryModel }) => {
@@ -13,7 +13,7 @@ const CategoryTransactionsModal = (props: { category: CategoryModel }) => {
 
   const [filterState, setFilterState] = useState({
     categories: [props.category._id],
-    status: TransactionStatusesType.COMPLETED,
+    status: TransactionStatuses.completed,
   });
 
   const columns: TableProps<TransactionModel>['columns'] = [
@@ -24,9 +24,13 @@ const CategoryTransactionsModal = (props: { category: CategoryModel }) => {
       width: '33.3%',
       sorter: (a, b) => (dayjs(b.date).valueOf() - dayjs(a.date).valueOf()),
       defaultSortOrder: 'ascend',
-      render: (text, r) => (
-        <span>{new Date(text).toLocaleDateString()}</span>
-      ),
+      ellipsis: {
+        showTitle: false
+      },
+      render: (date) => {
+        const val = new Date(date).toLocaleDateString()
+        return <Tooltip title={val} children={val} />;
+      },
     },
     {
       title: t('transactions.table.header.description'),
@@ -37,9 +41,7 @@ const CategoryTransactionsModal = (props: { category: CategoryModel }) => {
         showTitle: false
       },
       render: (text) => (
-        <Tooltip title={text}>
-          {text}
-        </Tooltip>
+        <Tooltip title={text} children={text} />
       )
     },
     {
@@ -64,7 +66,7 @@ const CategoryTransactionsModal = (props: { category: CategoryModel }) => {
           columns,
           scroll: {
             y: 300,
-            x: 300
+            x: 50
           },
         }}
       />

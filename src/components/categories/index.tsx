@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dayjs } from "dayjs";
-import transactionsServices from "../../services/transactions";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { addCategoryAction, removeCategoryAction, updateCategoryAction } from "../../redux/actions/category-actions";
-import TransactionModel from "../../models/transaction";
+import { useAppSelector } from "../../redux/store";
 import CategoryModel from "../../models/category-model";
 import NewCategory from "./newCategory/newCategory";
 import CategoryTransactionsModal from "./CategoryTransactionsModal";
 import { Filters } from "../components/Filters";
-import { TransactionStatusesType } from "../../utils/transactions";
-import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
-import { App, Button, Divider, Flex, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
+import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
+import { App, Button, Divider, Flex, message, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import categoriesServices from "../../services/categories";
+import { useNavigate } from "react-router-dom";
+import { SortOrder } from "antd/lib/table/interface";
 
 enum Steps {
   New_Category = "New_Category",
@@ -19,32 +19,49 @@ enum Steps {
 };
 
 const CategoriesPage = () => {
-  const dispatch = useAppDispatch();
-  const { message, modal } = App.useApp();
+  const queryClient = useQueryClient();
+  const [messageApi, contextHolder] = message.useMessage();
+  const { modal } = App.useApp();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const { user } = useAppSelector((state) => state.auth);
-  const { categories, loading: isLoading } = useAppSelector((state) => state.categories);
-  const [transactions, setTransactions] = useState<TransactionModel[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Partial<CategoryModel>>(null);
   const [step, setStep] = useState<string>(null);
-
+  const [sortOrder, setSortOrder] = useState<SortOrder>('descend');
   const [filterState, setFilterState] = useState({
     name: null,
   });
+
+  const { data: categories, isLoading } = useQuery({
+    queryKey: ['categories', user?._id],
+    queryFn: () => categoriesServices.fetchCategories(user?._id),
+  });
+
   const [pagination, setPagination] = useState<Pick<TablePaginationConfig, "current" | "pageSize">>({
     current: 1,
     pageSize: 10,
   });
 
-  useEffect(() => {
-    const dispatchTransactions = async () => {
-      const query = queryFiltering({ status: TransactionStatusesType.COMPLETED });
-      const { transactions } = await  transactionsServices.fetchTransactions(user._id, query);
-      setTransactions(transactions);
-    }
-
-    dispatchTransactions();
-  }, [user._id]);
+  const updateCategory = useMutation<CategoryModel, unknown, { user_id: string, category: Partial<CategoryModel> }>({
+    mutationKey: ['categories', user._id],
+    mutationFn: ({ user_id, category }) => categoriesServices.updateCategory(user_id, category),
+  });
+  const addCategory = useMutation<CategoryModel, unknown, { user_id: string, categoryName: string }>({
+    mutationKey: ['categories', user._id],
+    mutationFn: ({ user_id, categoryName }) => categoriesServices.addCategory(user_id, categoryName),
+  });
+  const removeCategory = useMutation<void, unknown, { user_id: string, category_id: string }>({
+    mutationKey: ['categories', user._id],
+    mutationFn: ({ user_id, category_id }) => categoriesServices.removeCategory(user_id, category_id),
+    onError(error, variables) {
+      messageApi.error(`Error while trying to remove category id: ${variables.category_id}, ${JSON.stringify(error)}.`);
+    },
+    onSuccess(_, variables) {
+      messageApi.success(`Category id: ${variables.category_id} removed successfully.`);
+      queryClient.invalidateQueries({ queryKey: ['categories', user?._id] });
+    },
+  });
 
   const onBack = () => {
     setStep(null);
@@ -58,55 +75,32 @@ const CategoriesPage = () => {
 
   const onFinish = async (values: Partial<CategoryModel>) => {
     let successMessage = '';
+    const isUpdate = !!selectedCategory || step === Steps.Update_Category;
+    let res: CategoryModel;
 
     try {
-      if (selectedCategory) {
-        await dispatch(updateCategoryAction({
-          category: values,
-          user_id: user?._id
-        })).unwrap();
-        successMessage = `Category: ${values.name} updated successfully`
+      if (isUpdate) {
+        res = await updateCategory.mutateAsync({ user_id: user?._id, category: values });
       } else {
-        await dispatch(addCategoryAction({
-          categoryName: values.name,
-          user_id: user?._id
-        })).unwrap();
-        successMessage = `Category: ${values.name} added successfully`;
+        res = await addCategory.mutateAsync({ user_id: user?._id, categoryName: values.name });
       }
-
-      message.success(successMessage);
+      successMessage = `Category: ${res.name} ${isUpdate ? 'updated' : 'added'} successfully`;
+      messageApi.success(successMessage);
       onBack();
     } catch (error: any) {
       console.log({error});
-      message.error(getError(error));
-    }
-  };
-
-  const onRemove = async (record_id: string): Promise<void> => {
-    try {
-      await dispatch(removeCategoryAction({
-        category_id: record_id,
-        user_id: user._id
-      })).unwrap();
-
-      message.success('Category removed...');
-    } catch (err: any) {
-      message.error(err);
+      messageApi.error(getError(error));
     }
   };
 
   const handleFilterChange = (field: string, value: string | boolean | number[] | Dayjs | Dayjs[] | CategoryModel[]) => {
-    setFilterState({...filterState, [field]: value});
+    setFilterState({ ...filterState, [field]: value });
   };
 
   const resetFilters = () => {
     setFilterState({
       name: null,
     });
-  };
-
-  const handlePageChange = (page: number, pageSize: number) => {
-    setPagination({ current: page, pageSize });
   };
 
   const showModal = (record: CategoryModel) => {
@@ -116,7 +110,7 @@ const CategoriesPage = () => {
       maskClosable: true,
       destroyOnClose: true,
       style: { top: 20 },
-      width: 500,
+      width: 'min(80%, 500px)',
       content: <CategoryTransactionsModal category={record} />,
       footer: null
     });
@@ -133,20 +127,13 @@ const CategoriesPage = () => {
       data = [...data].filter((d) => d.name.toLowerCase().startsWith(filterState.name.toLowerCase()));
     }
 
-    return data.map((category) => {
-      const categoryTransactions = getTransactionsByCategory(category._id, transactions) || [];
-
-      let totalAmount = 0;
-      categoryTransactions.forEach((t) => {
-        totalAmount += t.amount;
-      });
-
-      return {
-        ...category,
-        spent: totalAmount,
-        transactions: categoryTransactions.length
-      };
-    }).sort((a, b) => (Math.abs(b.spent) - Math.abs(a.spent)));
+    return data.sort((a, b) => {
+      if (sortOrder === 'ascend') {
+        return Math.abs(a.spent) - Math.abs(b.spent);
+      } else {
+        return Math.abs(b.spent) - Math.abs(a.spent);
+      }
+    });
   };
 
   const filtered = categoriesFiltering(categories);
@@ -179,8 +166,13 @@ const CategoriesPage = () => {
       ellipsis: {
         showTitle: false
       },
-      render: (value, record: any) => (
-        <Tooltip title={value}>
+      sorter: (a, b) => Math.abs(a.spent) - Math.abs(b.spent),
+      sortOrder,
+      onHeaderCell: () => ({
+        onClick: () => setSortOrder(sortOrder === 'ascend' ? 'descend' : 'ascend')
+      }),
+      render: (value, record: CategoryModel) => (
+        <Tooltip title={asNumString(value)}>
           {`(${record.transactions}) ${asNumString(value)}`}
         </Tooltip>
       ),
@@ -194,7 +186,7 @@ const CategoriesPage = () => {
           <Typography.Link onClick={() => showModal(record)}>
             {t('actions.0')}
           </Typography.Link>
-          <Typography.Link href={`/transactions/#${record._id}`}>
+          <Typography.Link onClick={() => navigate('/transactions', { state: record._id })}>
             {t('actions.1')}
           </Typography.Link>
           <Typography.Link onClick={() => onEdit(record)}>
@@ -202,7 +194,7 @@ const CategoriesPage = () => {
           </Typography.Link>
           <Popconfirm
             title="Are you sure?"
-            onConfirm={() => onRemove(record?._id)}
+            onConfirm={() => removeCategory.mutateAsync({ user_id: user._id, category_id: record?._id })}
           >
             <Typography.Link>
               {t('actions.3')}
@@ -215,6 +207,7 @@ const CategoriesPage = () => {
 
   return (
     <Flex vertical gap={5} className="page-container categories">
+      {contextHolder}
       <Typography.Title level={2} className="page-title">{t('pages.categories')}</Typography.Title>
 
       {!step && (
@@ -245,7 +238,7 @@ const CategoriesPage = () => {
               current={pagination.current}
               pageSize={pagination.pageSize}
               total={filtered.length || 0}
-              onChange={handlePageChange}
+              onChange={(page, size) => setPagination({ current: page, pageSize: size })}
             />
           </Row>
         </Space>

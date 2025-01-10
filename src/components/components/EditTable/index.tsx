@@ -1,65 +1,55 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import TransactionModel from "../../../models/transaction";
-import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, App, Flex, Pagination, Grid, Space } from "antd";
-import transactionsServices from "../../../services/transactions";
+import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, Flex, Pagination, Space, PaginationProps } from "antd";
+import transactionsServices, { TransactionsResp } from "../../../services/transactions";
 import { queryFiltering } from "../../../utils/helpers";
 import { useAppSelector } from "../../../redux/store";
 import { Filters } from "../Filters";
 import dayjs, { Dayjs } from "dayjs";
-import { TransactionStatusesType, TransType } from "../../../utils/transactions";
+import { TransactionStatuses, TransactionsType, TransType } from "../../../utils/transactions";
 import { TotalsContainer } from "../TotalsContainer";
+import { useQuery } from "@tanstack/react-query";
+import CardTransactionModel from "../../../models/card-transaction";
+import { getAccountCreditCards } from "../../../utils/bank-utils";
 
 interface EditTableProps<T> {
-  tableProps?: TableProps<T>;
-  editable?: boolean;
-  filterState?: object;
-  setFilterState?: (object: any) => void;
+  tableProps: TableProps<T>;
+  paginationProps: PaginationProps;
+  editable: boolean;
+  filterState: any;
+  setFilterState: (object: any) => void;
 
-  query?: object;
-  type?: TransType;
+  query: object;
+  type: TransType;
 
-  totals?: boolean;
-  actionButton?: ReactNode;
-  handleAdd?: () => void;
-  onEditMode?: (record: T) => void;
-  removeHandler?: (record_id: string) => Promise<void>;
+  totals: boolean;
+  actionButton: ReactNode;
+  handleAdd: () => void;
+  onEditMode: (record: T) => void;
+  removeHandler: (record_id: string) => Promise<void>;
 };
 
-export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) => {
-  const { message } = App.useApp();
+export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(props: Partial<EditTableProps<T>>) => {
   const { t } = useTranslation();
-  const screen = Grid.useBreakpoint();
   const user = useAppSelector((state) => state.auth.user);
-
-  const [transactions, setTransactions] = useState<T[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const account = useAppSelector((state) => state.userBanks?.account);
+  const cards = getAccountCreditCards(account);
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [total, setTotal] = useState<number>(0);
 
-  useEffect(() => {
-    const dispatchTransactions = async () => {
-      const query = props.query || queryFiltering(props.filterState, { skip: (page - 1) * pageSize, limit: pageSize });
-      setLoading(true);
+  const type = props.type || props.filterState.type;
+  const skip = (page - 1) * pageSize;
+  const query = props.query || queryFiltering(props.filterState, { skip, limit: pageSize });
 
-      try {
-        const { transactions, total } = await transactionsServices.fetchTransactions(user?._id, query, props.type);
-        setTransactions(transactions as T[]);
-        setTotal(props.query ? transactions?.length : total);
-      } catch (err: any) {
-        message.error(err);
-      }
-      setLoading(false);
-    };
-
-    dispatchTransactions();
-  }, [page, pageSize, props.filterState, message, user._id, props.query, props.type]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [props.type]);
+  const { data, isLoading } = useQuery<TransactionsResp>({
+    queryKey: ['transactions', user?._id, props.filterState, query],
+    queryFn: () => transactionsServices.fetchTransactions(user?._id, query, type),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    gcTime: 1000 * 2,
+  });
 
   const handleFilterChange = (field: string, value: string | number[] | Dayjs[] | Dayjs): void => {
     props.setFilterState({ ...props.filterState, [field]: value });
@@ -69,11 +59,12 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
   const resetFilters = () => {
     props.setFilterState({
       month: dayjs(),
-      status: TransactionStatusesType.COMPLETED
+      status: TransactionStatuses.completed,
+      type: TransactionsType.ACCOUNT
     });
   };
 
-  const columnRender = (record: T) => (
+  const actionsColumnRender = (record: T) => (
     <Row align={'middle'}>
       <Col>
         <Typography.Link onClick={() => props.onEditMode(record)}>
@@ -100,16 +91,17 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
       title: t('transactions.table.header.actions'),
       key: 'action',
       width: 150,
-      render: (_: any, record: T) => columnRender(record),
+      render: (_: any, record: T) => actionsColumnRender(record),
     } : {})]
   ];
 
   return (
     <Space direction="vertical" size={"middle"}>
-      <Flex align="flex-start" gap={10} wrap={screen.xs}>
+      <Flex align="flex-start" justify="space-between" gap={10}>
         {props.filterState && (
           <Filters
             type="transactions"
+            cards={cards}
             byTransType
             datesFilter
             monthFilter
@@ -124,15 +116,15 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
           />
         )}
         {props.totals && (
-          <TotalsContainer filterState={props.filterState} type={props.type} />
+          <TotalsContainer filterState={props.filterState} type={type} />
         )}
       </Flex>
       <Table
         {...props.tableProps}
-        dataSource={transactions}
+        dataSource={data?.transactions as T[]}
         columns={columns}
         rowKey='_id'
-        loading={loading}
+        loading={isLoading}
         pagination={false}
       />
 
@@ -143,7 +135,8 @@ export const EditTable = <T extends TransactionModel>(props: EditTableProps<T>) 
         <Pagination
           pageSize={pageSize}
           current={page}
-          total={total}
+          showSizeChanger
+          total={props.query ? data?.transactions?.length : data?.total}
           hideOnSinglePage
           onChange={(page, pageSize) => {
             setPage(page);

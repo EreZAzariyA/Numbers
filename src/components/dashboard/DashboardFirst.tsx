@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import CurrencyList from 'currency-list'
-import transactionsServices from "../../services/transactions";
-import TransactionModel from "../../models/transaction";
+import transactionsServices, { TransactionsResp } from "../../services/transactions";
 import UserModel from "../../models/user-model";
 import { MainBanksAccount } from "../../models/bank-model";
 import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
@@ -12,8 +10,9 @@ import { TotalAmountInput } from "../components/TotalAmount";
 import { RefreshBankDataButton } from "../components/RefreshBankDataButton";
 import { asNumString, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
 import { TotalAmountType } from "../../utils/enums";
-import { TransactionStatusesType } from "../../utils/transactions";
-import { Card, Col, Flex, Grid, message, Row, Skeleton, Typography } from "antd";
+import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
+import { Card, Col, Flex, Grid, Row, Skeleton, Typography } from "antd";
+import { useQuery } from "@tanstack/react-query";
 
 interface DashboardFirstProps {
   monthToDisplay: Dayjs;
@@ -24,30 +23,20 @@ interface DashboardFirstProps {
 
 const DashboardFirst = (props: DashboardFirstProps) => {
   const { t } = useTranslation();
-  const [transactions, setTransactions] = useState<TransactionModel[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const { lg } = Grid.useBreakpoint();
 
   const banks = props.account?.banks || [];
   const bankAccount = banks.find((b) => b.isMainAccount) ?? banks?.[0];
   const currency = CurrencyList.get(bankAccount?.extraInfo?.accountCurrencyCode || "ILS");
 
-  useEffect(() => {
-    const dispatchTransactions = async () => {
-      setLoading(true);
-      const query = queryFiltering({ status: TransactionStatusesType.COMPLETED, month: props.monthToDisplay });
-
-      try {
-        const { transactions } = await transactionsServices.fetchTransactions(props.user._id, query);
-        setTransactions(transactions);
-      } catch (err: any) {
-        message.error(err);
-      }
-      setLoading(false);
-    };
-
-    dispatchTransactions();
-  }, [props.monthToDisplay, props.user._id]);
+  const query = queryFiltering({ status: TransactionStatuses.completed, month: props.monthToDisplay });
+  const { data, isLoading } = useQuery<TransactionsResp>({
+    queryKey: ['transactions', props.user?._id],
+    queryFn: () => transactionsServices.fetchTransactions(props.user?._id, query, TransactionsType.ACCOUNT),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    gcTime: 1000 * 2,
+  });
 
   let totalBanksBalance = 0;
   if (isArrayAndNotEmpty(banks)) {
@@ -82,11 +71,11 @@ const DashboardFirst = (props: DashboardFirstProps) => {
         <Col xs={24} lg={13}>
           <Card type="inner" styles={cardStyles} className="dashboard-card charts">
             <TotalAmountInput
-              transactions={transactions}
+              transactions={data?.transactions}
               type={TotalAmountType.SPENT}
               style={{ maxWidth: '7rem' }}
             />
-            <SimpleCharts transactions={transactions} loading={loading} />
+            <SimpleCharts transactions={data?.transactions} loading={isLoading} />
           </Card>
         </Col>
       </Row>

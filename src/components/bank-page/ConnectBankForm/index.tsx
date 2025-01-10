@@ -3,16 +3,14 @@ import { useAppDispatch, useAppSelector } from "../../../redux/store";
 import UserModel from "../../../models/user-model";
 import { BankAccountModel } from "../../../models/bank-model";
 import { connectBankAccount } from "../../../redux/actions/bank-actions";
-import { importTransactions } from "../../../redux/actions/transaction-actions";
 import bankServices from "../../../services/banks";
 import { SupportedCompaniesTypes, SupportedScrapers } from "../../../utils/definitions";
-import { Transaction } from "../../../utils/transactions";
 import { MenuItem, getMenuItem } from "../../../utils/antd";
 import { getCompanyName, isArray, isArrayAndNotEmpty } from "../../../utils/helpers";
 import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
-import TransactionModel from "../../../models/transaction";
 import { ImportModal } from "./ImportModal";
 import { TransactionsAccountResponse } from "../../../utils/types";
+import transactionsServices, { MainTransaction } from "../../../services/transactions";
 
 export enum ConnectBankFormType {
   Connect_Bank = "Connect_Bank",
@@ -121,13 +119,13 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     });
   };
 
-  const onTransactionsImportOk = async (transactions: Transaction[]): Promise<TransactionModel[]> => {
+  const onTransactionsImportOk = async (transactions: MainTransaction[]): Promise<MainTransaction[]> => {
     try {
-      const res = await dispatch(importTransactions({
+      const res = await transactionsServices.importTransactions(
+        props.user._id,
         transactions,
-        user_id: props.user._id,
-        companyId: (SupportedCompaniesTypes as any)[selectedCompany.companyId]
-      })).unwrap();
+        (SupportedCompaniesTypes as any)[selectedCompany.companyId]
+      );
       if (res && isArray(res)) {
         message.success(`imported transactions: ${res?.length || 0}`);
       }

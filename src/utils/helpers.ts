@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import TransactionModel from "../models/transaction";
 import dayjs, { Dayjs } from "dayjs";
-import store from "../redux/store";
 import { CategoryData } from "./interfaces";
-import { TransactionStatusesType } from "./transactions";
+import { TransactionStatuses } from "./transactions";
 import UserModel from "../models/user-model";
 import CategoryModel from "../models/category-model";
 import { SupportedCompaniesTypes, SupportedScrapers } from "./definitions";
 import { BankAccountModel, MainBanksAccount } from "../models/bank-model";
 import { ThemeColors } from "./enums";
 import { PastOrFutureDebitType } from "./types";
+import { MainTransaction } from "../services/transactions";
 
 export type ColorType = {
   ICON: string;
@@ -119,7 +119,7 @@ export const getInvoicesBySelectedMonth = (transactions: TransactionModel[], sel
   if (isArrayAndNotEmpty(transactions)) {
     transactions.forEach((i) => {
       if (status && i.status !== status) return;
-      if (i.status !== TransactionStatusesType.COMPLETED) return;
+      if (i.status !== TransactionStatuses.completed) return;
 
       const transactionDate = dayjs(i.date).format('YYYY-MM');
       if (transactionDate === selectedMonth?.format('YYYY-MM')) {
@@ -139,7 +139,7 @@ export const getTotals = (arr: number[]): number => {
   return total;
 };
 
-export const getInvoicesTotalsPrice = (transactions: TransactionModel[], status?: TransactionStatusesType): {spent: number, income: number } => {
+export const getInvoicesTotalsPrice = (transactions: MainTransaction[], status?: TransactionStatuses): {spent: number, income: number } => {
   const totals: number[] = [];
   const incomes: number[] = [];
 
@@ -149,10 +149,11 @@ export const getInvoicesTotalsPrice = (transactions: TransactionModel[], status?
       arr = filterInvoicesByStatus(arr, status);
     }
     arr.forEach((i) => {
+      const isCard = 'chargedAmount' in i;
       if (i.amount > 0) {
         incomes.push(i.amount);
       } else {
-        totals.push(i.amount);
+        totals.push(isCard ? i.chargedAmount : i.amount);
       }
     })
   }
@@ -163,8 +164,8 @@ export const getInvoicesTotalsPrice = (transactions: TransactionModel[], status?
   };
 };
 
-export const getInvoicesPricePerCategory = (transactions: TransactionModel[], status?: TransactionStatusesType) => {
-  const { categories } = store.getState().categories;
+export const getInvoicesPricePerCategory = (transactions: MainTransaction[], status?: TransactionStatuses) => {
+  const categories: any = [];
   const transactionsByCategory: any = {};
   let arr = [...transactions || []];
 
@@ -174,7 +175,7 @@ export const getInvoicesPricePerCategory = (transactions: TransactionModel[], st
 
   if (isArrayAndNotEmpty(arr) && isArrayAndNotEmpty(categories)) {
     for (const category of categories) {
-      const categoryInvoices: TransactionModel[] = [];
+      const categoryInvoices: MainTransaction[] = [];
 
       arr.forEach((transaction) => {
         if (transaction.category_id === category._id) {
@@ -189,7 +190,7 @@ export const getInvoicesPricePerCategory = (transactions: TransactionModel[], st
   return transactionsByCategory;
 };
 
-export const getNumOfTransactionsPerCategory = (transactions: TransactionModel[], categories: CategoryModel[], status?: TransactionStatusesType) => {
+export const getNumOfTransactionsPerCategory = (transactions: MainTransaction[], categories: CategoryModel[], status?: TransactionStatuses) => {
   const numOfTransPerCategory: any = {};
   let arr = [...transactions];
   if (status) {
@@ -198,7 +199,7 @@ export const getNumOfTransactionsPerCategory = (transactions: TransactionModel[]
 
   if (isArrayAndNotEmpty(arr) && isArrayAndNotEmpty(categories)) {
     for (const category of categories) {
-      const categoryInvoices: TransactionModel[] = [];
+      const categoryInvoices: MainTransaction[] = [];
       let numOfTrans = 0;
 
       arr.forEach((transaction) => {
@@ -219,7 +220,7 @@ export const getNumOfTransactionsPerCategory = (transactions: TransactionModel[]
   return numOfTransPerCategory;
 }
 
-export const findCategoryWithLargestSpentAmount = (data: CategoryData, status?: TransactionStatusesType): { category: string, amount: number } => {
+export const findCategoryWithLargestSpentAmount = (data: CategoryData, status?: TransactionStatuses): { category: string, amount: number } => {
   let maxCategory: string | null = null;
   let maxValue: number = -Infinity;
 
@@ -235,7 +236,7 @@ export const findCategoryWithLargestSpentAmount = (data: CategoryData, status?: 
   return { category: maxCategory, amount: maxValue };
 };
 
-export const findCategoryWithLowestAmount = (data: CategoryData, status?: TransactionStatusesType): { category: string, amount: number } | null => {
+export const findCategoryWithLowestAmount = (data: CategoryData, status?: TransactionStatuses): { category: string, amount: number } | null => {
   let minCategory: string | null = null;
   let minValue: number = Infinity;
 
@@ -254,7 +255,7 @@ export const findCategoryWithLowestAmount = (data: CategoryData, status?: Transa
   return { category: minCategory, amount: minValue };
 };
 
-export const filterInvoicesByStatus = (transactions: TransactionModel[] = [], status: TransactionStatusesType): TransactionModel[] => {
+export const filterInvoicesByStatus = (transactions: MainTransaction[] = [], status: TransactionStatuses): MainTransaction[] => {
   if (!!isArrayAndNotEmpty(transactions)) {
     return transactions.filter((i) => i.status === status).sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
   }
@@ -294,27 +295,25 @@ export const getUserfName = (user: UserModel) => {
   return user.profile.first_name;
 };
 
-const getCategory = (category_id: string): CategoryModel => {
-  const categories = store.getState().categories.categories;
-  return categories.find((c) => c._id === category_id);
+const getCategory = (categories: CategoryModel[] = [], category_id: string): CategoryModel => {
+  const map = new Map(categories.map((c) => [c._id, c]));
+  return map.get(category_id);
 }
 
-export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: TransactionModel[] = []) => {
-  const categoryInvoiceAmounts: Record<string, number> = {};
+export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: MainTransaction[] = []) => {
+  const categoryInvoiceAmounts = new Map<string, number>();
 
   transactions.forEach((transaction) => {
-    const category = getCategory(transaction.category_id);
-    const categoryName = category?.name;
+    const category = getCategory(categories, transaction.category_id);
+    if (!category) return;
 
-    if (transaction?.category_id === category?._id && transaction?.amount < 0) {
-      if (!categoryInvoiceAmounts[categoryName]) {
-        categoryInvoiceAmounts[categoryName] = 0;
-      }
-      categoryInvoiceAmounts[categoryName] += transaction.amount;
-    }
+    const categoryName = category.name;
+    const currentAmount = categoryInvoiceAmounts.get(categoryName) || 0;
+
+    categoryInvoiceAmounts.set(categoryName, currentAmount + transaction.amount);
   });
 
-  const result = Object.entries(categoryInvoiceAmounts).map(([name, amount]) => ({
+  const result = Array.from(categoryInvoiceAmounts.entries()).map(([name, amount]) => ({
     name,
     value: Math.abs(asNumber(amount))
   }));
@@ -379,11 +378,10 @@ const getDataFromStringDate = (stringDate: string): string => {
   return dayjs().set('year', year).set('month', month).format('MM-YYYY');
 };
 
-export const getTransactionsByCategory = (categoryId: string, sentTransactions?: TransactionModel[]): TransactionModel[] => {
-  const trans = sentTransactions || store.getState().transactions.transactions;
-  const transactions: TransactionModel[] = [];
+export const getTransactionsByCategory = (categoryId: string, sentTransactions: MainTransaction[] = []): MainTransaction[] => {
+  const transactions: MainTransaction[] = [];
 
-  for (const transaction of trans) {
+  for (const transaction of sentTransactions) {
     if (transaction.category_id === categoryId) {
       transactions.push(transaction);
     }
@@ -485,6 +483,12 @@ export const queryFiltering = (filterState: any = {}, options: object = {}, proj
       amount: {
         [byIncome ? '$gte' : '$lte']: 0
       }
+    };
+  }
+  if (filterState.cardNumber) {
+    query = {
+      ...query,
+      cardNumber: filterState.cardNumber
     };
   }
 

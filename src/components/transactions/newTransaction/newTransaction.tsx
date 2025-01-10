@@ -5,22 +5,25 @@ import TransactionModel from "../../../models/transaction";
 import { Button, DatePicker, DatePickerProps, Divider, Flex, Form, InputNumber, Select, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { DefaultOptionType } from "antd/es/select";
+import CardTransactionModel from "../../../models/card-transaction";
+import { TransactionsType } from "../../../utils/transactions";
 
-interface NewTransactionProps {
-  transaction?: TransactionModel;
+interface NewTransactionProps<T> {
+  transaction?: T;
   categories?: CategoryModel[];
-  onFinish: (values: TransactionModel) => void;
+  type: TransactionsType;
+  onFinish: (values: T) => void;
   onBack: () => void;
   newInvoiceCategoryId?: string;
   isLoading?: boolean;
 };
 
-const NewTransaction = (props: NewTransactionProps) => {
+const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props: NewTransactionProps<T>) => {
   const [form] = Form.useForm();
-
-  const [initialValues, setInitialValues] = useState<TransactionModel>({
+  const [initialValues, setInitialValues] = useState<T | null>({
     ...props.transaction,
-    category_id: props.newInvoiceCategoryId,
+    type: props.type,
+    category_id: props.transaction?.category_id || props.newInvoiceCategoryId || null,
     date: dayjs(props.transaction?.date) || null,
   });
 
@@ -32,10 +35,20 @@ const NewTransaction = (props: NewTransactionProps) => {
     setInitialValues({ ...initialValues, [field]: value });
   };
 
-  const options: DefaultOptionType[] = [...props.categories].map((category) => ({
+  const options: DefaultOptionType[] = [...props.categories || []].map((category) => ({
     label: category.name,
     value: category._id
   }));
+  const typeOptions: DefaultOptionType[] = [
+    {
+      label: 'Transactions',
+      value: TransactionsType.ACCOUNT
+    },
+    {
+      label: 'Credit Card',
+      value: TransactionsType.CARD_TRANSACTIONS
+    }
+  ];
 
   return (
     <Flex vertical align="center">
@@ -66,7 +79,19 @@ const NewTransaction = (props: NewTransactionProps) => {
           <Select
             options={options}
             onChange={(e) => handleChange('category_id', e)}
-            placeholder="Select category"
+            placeholder="Select Category"
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Type"
+          name={'type'}
+          rules={[{ required: true, message: 'Type is required' }]}
+        >
+          <Select
+            options={typeOptions}
+            onChange={(e) => handleChange('type', e)}
+            placeholder="Select type"
           />
         </Form.Item>
 
@@ -80,7 +105,7 @@ const NewTransaction = (props: NewTransactionProps) => {
         >
           <TextArea
             onChange={(e) => handleChange('description', e.target.value)}
-            placeholder="Enter description"
+            placeholder="Enter Description"
           />
         </Form.Item>
 
