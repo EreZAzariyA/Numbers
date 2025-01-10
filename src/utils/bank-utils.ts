@@ -52,6 +52,8 @@ export const getAccountCreditCards = (mainAccount: MainBanksAccount): CreditCard
     const cards = getBankCreditCards(bank);
     if (isArrayAndNotEmpty(cards)) {
       cards.forEach((card) => {
+        if (creditCards.find((c) => c.cardNumber === card.cardNumber)) return;
+        if (card.cardStatusCode && card.cardStatusCode === CardStatusCode.Disable) return;
         creditCards.push(card);
       });
     }

@@ -149,10 +149,11 @@ export const getInvoicesTotalsPrice = (transactions: MainTransaction[], status?:
       arr = filterInvoicesByStatus(arr, status);
     }
     arr.forEach((i) => {
+      const isCard = 'chargedAmount' in i;
       if (i.amount > 0) {
         incomes.push(i.amount);
       } else {
-        totals.push(i.amount);
+        totals.push(isCard ? i.chargedAmount : i.amount);
       }
     })
   }
@@ -294,26 +295,25 @@ export const getUserfName = (user: UserModel) => {
   return user.profile.first_name;
 };
 
-const getCategory = (categories: CategoryModel[], category_id: string): CategoryModel => {
-  return categories.find((c) => c._id === category_id);
+const getCategory = (categories: CategoryModel[] = [], category_id: string): CategoryModel => {
+  const map = new Map(categories.map((c) => [c._id, c]));
+  return map.get(category_id);
 }
 
 export const setCategoriesAndInvoicesArray = (categories: CategoryModel[], transactions: MainTransaction[] = []) => {
-  const categoryInvoiceAmounts: Record<string, number> = {};
+  const categoryInvoiceAmounts = new Map<string, number>();
 
   transactions.forEach((transaction) => {
     const category = getCategory(categories, transaction.category_id);
-    const categoryName = category?.name;
+    if (!category) return;
 
-    if (transaction?.category_id === category?._id && transaction?.amount < 0) {
-      if (!categoryInvoiceAmounts[categoryName]) {
-        categoryInvoiceAmounts[categoryName] = 0;
-      }
-      categoryInvoiceAmounts[categoryName] += transaction.amount;
-    }
+    const categoryName = category.name;
+    const currentAmount = categoryInvoiceAmounts.get(categoryName) || 0;
+
+    categoryInvoiceAmounts.set(categoryName, currentAmount + transaction.amount);
   });
 
-  const result = Object.entries(categoryInvoiceAmounts).map(([name, amount]) => ({
+  const result = Array.from(categoryInvoiceAmounts.entries()).map(([name, amount]) => ({
     name,
     value: Math.abs(asNumber(amount))
   }));
@@ -483,6 +483,12 @@ export const queryFiltering = (filterState: any = {}, options: object = {}, proj
       amount: {
         [byIncome ? '$gte' : '$lte']: 0
       }
+    };
+  }
+  if (filterState.cardNumber) {
+    query = {
+      ...query,
+      cardNumber: filterState.cardNumber
     };
   }
 

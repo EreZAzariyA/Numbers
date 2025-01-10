@@ -2,12 +2,13 @@ import { useAppSelector } from "../../redux/store";
 import transactionsServices, { TransactionsResp } from "../../services/transactions";
 import { TotalAmountInput } from "./TotalAmount";
 import { TotalAmountType } from "../../utils/enums";
-import { Space } from "antd";
+import { Flex, Grid } from "antd";
 import { queryFiltering } from "../../utils/helpers";
 import { TransactionsType, TransType } from "../../utils/transactions";
 import { useQuery } from "@tanstack/react-query";
 
 export const TotalsContainer = (props: { filterState: {}, type: TransType }) => {
+  const screen = Grid.useBreakpoint();
   const isCardTransactions = props.type === TransactionsType.CARD_TRANSACTIONS;
   const query = queryFiltering(props.filterState);
 
@@ -20,11 +21,11 @@ export const TotalsContainer = (props: { filterState: {}, type: TransType }) => 
   });
 
   return (
-    <Space wrap>
+    <Flex align="center" justify="flex-end" gap={10} wrap={screen.xs}>
       <TotalAmountInput transactions={isSuccess ? data.transactions : []} type={TotalAmountType.SPENT} style={{ width: 100 }} />
       {!isCardTransactions && (
         <TotalAmountInput transactions={isSuccess ? data.transactions : []} type={TotalAmountType.INCOME} style={{ width: 100 }} />
       )}
-    </Space>
+    </Flex>
   );
 };

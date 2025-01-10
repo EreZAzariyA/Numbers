@@ -46,6 +46,12 @@ class TransactionsServices {
       }
     });
   };
+
+  importTransactions = async (user_id: string, transactions: MainTransaction[], companyId: string) => {
+    const response = await axios.post<MainTransaction[]>(config.urls.bank.importTransactions + `/${user_id}`, { transactions, companyId });
+    const insertedTransactions = response.data;
+    return insertedTransactions;
+  };
 }
 
 const transactionsServices = new TransactionsServices();

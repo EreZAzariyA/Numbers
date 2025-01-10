@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dayjs } from "dayjs";
-import transactionsServices, { TransactionsResp } from "../../services/transactions";
 import { useAppSelector } from "../../redux/store";
 import CategoryModel from "../../models/category-model";
 import NewCategory from "./newCategory/newCategory";
 import CategoryTransactionsModal from "./CategoryTransactionsModal";
 import { Filters } from "../components/Filters";
-import { TransactionStatuses } from "../../utils/transactions";
-import { asNumString, getError, getTransactionsByCategory, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
-import { App, Button, Divider, Flex, message, Pagination, Popconfirm, Row, Space, Spin, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
+import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
+import { App, Button, Divider, Flex, message, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import categoriesServices from "../../services/categories";
 import { useNavigate } from "react-router-dom";
+import { SortOrder } from "antd/lib/table/interface";
 
 enum Steps {
   New_Category = "New_Category",
@@ -29,21 +28,16 @@ const CategoriesPage = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [selectedCategory, setSelectedCategory] = useState<Partial<CategoryModel>>(null);
   const [step, setStep] = useState<string>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('descend');
+  const [filterState, setFilterState] = useState({
+    name: null,
+  });
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ['categories', user?._id],
     queryFn: () => categoriesServices.fetchCategories(user?._id),
   });
 
-  const query = queryFiltering({ status: TransactionStatuses.completed, });
-  const { data: transResponse, isLoading: isTransactionsLoading } = useQuery<TransactionsResp>({
-    queryKey: ['transactions'],
-    queryFn: () => transactionsServices.fetchTransactions(user._id, query)
-  });
-
-  const [filterState, setFilterState] = useState({
-    name: null,
-  });
   const [pagination, setPagination] = useState<Pick<TablePaginationConfig, "current" | "pageSize">>({
     current: 1,
     pageSize: 10,
@@ -133,19 +127,13 @@ const CategoriesPage = () => {
       data = [...data].filter((d) => d.name.toLowerCase().startsWith(filterState.name.toLowerCase()));
     }
 
-    return data.map((category) => {
-      const categoryTransactions = getTransactionsByCategory(category._id, transResponse?.transactions) || [];
-      let totalAmount = 0;
-      categoryTransactions.forEach((t) => {
-        totalAmount += t.amount;
-      });
-
-      return {
-        ...category,
-        spent: totalAmount,
-        transactions: categoryTransactions.length
-      };
-    }).sort((a, b) => (Math.abs(b.spent) - Math.abs(a.spent)));
+    return data.sort((a, b) => {
+      if (sortOrder === 'ascend') {
+        return Math.abs(a.spent) - Math.abs(b.spent);
+      } else {
+        return Math.abs(b.spent) - Math.abs(a.spent);
+      }
+    });
   };
 
   const filtered = categoriesFiltering(categories);
@@ -178,10 +166,13 @@ const CategoriesPage = () => {
       ellipsis: {
         showTitle: false
       },
-      render: (value, record: any) => isTransactionsLoading ? (
-        <Spin />
-      ) : (
-        <Tooltip title={value}>
+      sorter: (a, b) => Math.abs(a.spent) - Math.abs(b.spent),
+      sortOrder,
+      onHeaderCell: () => ({
+        onClick: () => setSortOrder(sortOrder === 'ascend' ? 'descend' : 'ascend')
+      }),
+      render: (value, record: CategoryModel) => (
+        <Tooltip title={asNumString(value)}>
           {`(${record.transactions}) ${asNumString(value)}`}
         </Tooltip>
       ),

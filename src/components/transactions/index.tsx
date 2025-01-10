@@ -142,7 +142,7 @@ const Transactions = <T extends MainTransaction>() => {
         );
       }
     },
-    ...(isCardTransactions ? [{
+    {
       title: t('transactions.table.header.description'),
       dataIndex: 'description',
       key: 'description',
@@ -150,33 +150,30 @@ const Transactions = <T extends MainTransaction>() => {
       ellipsis: {
         showTitle: false
       },
-      render: (description: string, record: any) => {
-        let val = description;
-        if (record?.memo) {
-          val = record.memo;
-        }
+      render: (description, record) => {
+        const val = `${description} ${(record as CardTransactionModel)?.memo || ''}`;
         return (
           <Tooltip title={val}>
             {val}
           </Tooltip>
         )
       }
-    }] : [{
-      title: t('transactions.table.header.description'),
-      dataIndex: 'description',
-      key: 'description',
-      width: 130,
-      ellipsis: {
-        showTitle: false
+    },
+    ...(isCardTransactions ? [{
+      title: t('transactions.table.header.chargedAmount'),
+      dataIndex: 'chargedAmount',
+      key: 'chargedAmount',
+      width: 100,
+      sorter: (a: T, b: T) => {
+        if (a instanceof CardTransactionModel && b instanceof CardTransactionModel) {
+          return (b.chargedAmount - a.chargedAmount)
+        }
       },
-      render: (description: string) => {
-        return (
-          <Tooltip title={description}>
-            {description}
-          </Tooltip>
-        )
+      render: (val: number) => {
+        const chargedAmount = asNumString(val);
+        return <Tooltip title={chargedAmount}>{chargedAmount}</Tooltip>
       }
-    }]),
+    }] : []),
     {
       title: t('transactions.table.header.amount'),
       dataIndex: 'amount',
@@ -184,11 +181,19 @@ const Transactions = <T extends MainTransaction>() => {
       width: 100,
       sorter: (a, b) => (b.amount - a.amount),
       render: (val) => {
-        return (
-          asNumString(val)
-        );
+        const amount = asNumString(val);
+        return <Tooltip title={amount}>{amount}</Tooltip>
       }
     },
+    ...(isCardTransactions ? [{
+      title: t('transactions.table.header.cardNumber'),
+      dataIndex: 'cardNumber',
+      key: 'cardNumber',
+      width: 100,
+      render: (val: number) => {
+        return <Tooltip title={val}>{val}</Tooltip>
+      }
+    }] : []),
     {
       title: t('transactions.table.header.status'),
       dataIndex: 'status',
@@ -229,9 +234,10 @@ const Transactions = <T extends MainTransaction>() => {
           onEditMode={onEdit}
           removeHandler={onRemove}
           tableProps={{
+            bordered: true,
             columns,
             scroll: {
-              x: 800
+              x: 800,
             },
           }}
         />

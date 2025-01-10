@@ -49,6 +49,8 @@
         "category": "Category",
         "description": "Description",
         "amount": "Amount",
+        "chargedAmount": "Charged Amount",
+        "cardNumber": "Card Number",
         "status": "Status",
         "company": "Company",
         "actions": "Actions"

@@ -11,6 +11,7 @@ import { TransactionStatuses, TransactionsType, TransType } from "../../../utils
 import { TotalsContainer } from "../TotalsContainer";
 import { useQuery } from "@tanstack/react-query";
 import CardTransactionModel from "../../../models/card-transaction";
+import { getAccountCreditCards } from "../../../utils/bank-utils";
 
 interface EditTableProps<T> {
   tableProps: TableProps<T>;
@@ -32,6 +33,8 @@ interface EditTableProps<T> {
 export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(props: Partial<EditTableProps<T>>) => {
   const { t } = useTranslation();
   const user = useAppSelector((state) => state.auth.user);
+  const account = useAppSelector((state) => state.userBanks?.account);
+  const cards = getAccountCreditCards(account);
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -40,10 +43,9 @@ export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(p
   const skip = (page - 1) * pageSize;
   const query = props.query || queryFiltering(props.filterState, { skip, limit: pageSize });
 
-  const fetchTransactions = async () => await transactionsServices.fetchTransactions(user?._id, query, type);
   const { data, isLoading } = useQuery<TransactionsResp>({
     queryKey: ['transactions', user?._id, props.filterState, query],
-    queryFn: fetchTransactions,
+    queryFn: () => transactionsServices.fetchTransactions(user?._id, query, type),
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     gcTime: 1000 * 2,
@@ -95,10 +97,11 @@ export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(p
 
   return (
     <Space direction="vertical" size={"middle"}>
-      <Flex align="flex-start" gap={10} wrap>
+      <Flex align="flex-start" justify="space-between" gap={10}>
         {props.filterState && (
           <Filters
             type="transactions"
+            cards={cards}
             byTransType
             datesFilter
             monthFilter

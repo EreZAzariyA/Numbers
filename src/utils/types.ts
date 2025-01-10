@@ -1,5 +1,5 @@
+import { MainTransaction } from "../services/transactions";
 import { Languages, ThemeColors } from "./enums";
-import { Transaction } from "./transactions";
 
 export type LanguageType = typeof Languages[keyof typeof Languages];
 export type ThemeColorType = ThemeColors.LIGHT | ThemeColors.DARK;
@@ -13,7 +13,7 @@ export enum CardStatusCode {
 export interface TransactionsAccountResponse {
   accountNumber?: string;
   balance?: number;
-  txns?: Transaction[];
+  txns?: MainTransaction[];
   info?: AccountInfoType;
   pastOrFutureDebits?: PastOrFutureDebitType[];
   cardsPastOrFutureDebit?: Partial<CardsPastOrFutureDebitType>;
@@ -43,7 +43,7 @@ export type PastOrFutureDebitType = {
 
 export type CreditCardType = {
   _id: string;
-  txns?: Transaction[];
+  txns?: MainTransaction[];
   cardFamilyDescription: string;
   cardFrameworkNotUsed: number;
   cardFramework: number;
