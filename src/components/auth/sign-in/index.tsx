@@ -71,7 +71,7 @@ const SignIn = () => {
 
           <Space direction="vertical">
             <Button htmlType="submit" loading={loading}>Sign-in</Button>
-            <p>D`ont have account? <Link to={'/auth/sign-up'}>Sign-Up</Link></p>
+            <p>D`ont have account? <Link to={'/auth/sign-up'} replace>Sign-Up</Link></p>
           </Space>
 
           <div className="google-login">

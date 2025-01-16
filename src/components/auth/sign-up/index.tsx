@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../redux/store";
 import UserModel from "../../../models/user-model";
 import { signupAction } from "../../../redux/actions/auth-actions";
-import { App, Button, Col, Form, Input, Row, Typography } from "antd";
+import { App, Button, Col, Form, Input, Row, Space, Typography } from "antd";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -104,8 +104,10 @@ const SignUp = () => {
             <Input.Password />
           </Form.Item>
 
-          <Button htmlType="submit">Sign-up</Button>
-          <p>Already have account? <Link to={'/auth/sign-in'}>Sign-in</Link></p>
+          <Space direction="vertical">
+            <Button htmlType="submit">Sign-up</Button>
+            <p>Already have account? <Link to={'/auth/sign-in'} replace>Sign-in</Link></p>
+          </Space>
         </Form>
       </div>
     </div>

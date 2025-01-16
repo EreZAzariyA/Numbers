@@ -21,9 +21,11 @@ const { Sider, Content } = Layout;
 const DashboardView = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
   const { isMobile } = useResize();
   const { user } = useAppSelector((state) => state.auth);
+
   const { themeColor: { theme }, language: { lang } } = useAppSelector((state) => state.config);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile);
   const [current, setCurrent] = useState<string>('dashboard');
@@ -36,7 +38,7 @@ const DashboardView = () => {
   }
 
   useEffect(() => {
-    const path = pathname.split('/')?.[1];
+    const path = pathname.split('/').at(1);
     setCurrent(path);
   }, [pathname]);
 

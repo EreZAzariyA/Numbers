@@ -13,10 +13,14 @@ export enum BanksActions {
 
 export const fetchBankAccounts = createAsyncThunk<MainBanksAccount, string>(
   BanksActions.FETCH_BANK_ACCOUNT,
-  async (user_id) => {
-    const response = await axios.get<MainBanksAccount>(config.urls.bank.fetchAllBanksAccounts + `/${user_id}`);
-    const mainBanksAccount = response.data;
-    return mainBanksAccount;
+  async (user_id, thunkApi) => {
+    try {
+      const response = await axios.get<MainBanksAccount>(config.urls.bank.fetchAllBanksAccounts + `/${user_id}`);
+      const mainBanksAccount = response.data;
+      return mainBanksAccount;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
   }
 );
 

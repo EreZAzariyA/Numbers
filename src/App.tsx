@@ -1,11 +1,12 @@
 import { useAppSelector } from "./redux/store";
-import UserRouter from "./routes/UserRouter";
 import { Languages } from "./utils/enums";
 import { getThemeConfig } from "./utils/antd";
 import { ConfigProvider, App as AppContainer } from "antd";
 import il from 'antd/locale/he_IL';
 import en from 'antd/locale/en_US';
 import { useEffect } from "react";
+import { RouterProvider } from "react-router-dom";
+import { routes } from "./routes";
 
 const App = () => {
   const { themeColor: { theme }, language: { lang } } = useAppSelector((state) => state.config);
@@ -28,12 +29,8 @@ const App = () => {
       theme={getThemeConfig(theme)}
       locale={locale}
     >
-      <AppContainer
-        message={{
-          maxCount: 1,
-        }}
-      >
-        <UserRouter />
+      <AppContainer>
+        <RouterProvider router={routes} />
       </AppContainer>
     </ConfigProvider>
   );

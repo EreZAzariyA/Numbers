@@ -14,7 +14,6 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const { user, loading } = useAppSelector((state) => state.auth);
   const { account, loading: accountLoading } = useAppSelector((state) => state.userBanks);
-
   const currentMonth = dayjs();
   const [monthToDisplay, setMonthToDisplay] = useState<Dayjs>(currentMonth);
   const creditCards = getAccountCreditCards(account);

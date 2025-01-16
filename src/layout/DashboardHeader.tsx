@@ -52,9 +52,10 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
     setCurrent(currentLocation);
   }, [pathname]);
 
-  const onClick: MenuProps['onClick'] = (e) => {
+  const onClick: MenuProps['onClick'] = async (e) => {
     if (e.key === 'sign-out') {
-      return dispatch(logoutAction());
+      await dispatch(logoutAction()).unwrap();
+      return;
     }
     navigate(e.key);
     setCurrent(e.key);

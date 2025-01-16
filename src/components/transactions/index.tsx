@@ -169,8 +169,8 @@ const Transactions = <T extends MainTransaction>() => {
           return (b.chargedAmount - a.chargedAmount)
         }
       },
-      render: (val: number) => {
-        const chargedAmount = asNumString(val);
+      render: (val: number, record: T) => {
+        const chargedAmount = asNumString(val || record?.amount);
         return <Tooltip title={chargedAmount}>{chargedAmount}</Tooltip>
       }
     }] : []),

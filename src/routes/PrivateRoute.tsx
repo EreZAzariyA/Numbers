@@ -15,10 +15,14 @@ const PrivateRoute = (props: PrivateRouteProps) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+
     if (token) {
       const decodedToken: { exp: number } = jwtDecode(token);
+      const currentUnix = dayjs().unix();
+      const tokenExpiry = decodedToken.exp;
+      // const timeRemaining = tokenExpiry - currentUnix;
 
-      if (dayjs().unix() > decodedToken.exp) {
+      if (currentUnix > tokenExpiry) {
         dispatch(logoutAction());
       }
     }

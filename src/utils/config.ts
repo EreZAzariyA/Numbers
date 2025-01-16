@@ -58,8 +58,7 @@ abstract class Config {
 
 class DevelopmentConfig extends Config {
   public constructor() {
-    // super("https://pup-hot-fully.ngrok-free.app/api/");
-    super("http://127.0.0.1:5005/api/");
+    super("http://localhost:5005/api/");
   };
 };
 

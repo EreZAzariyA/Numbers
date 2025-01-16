@@ -14,6 +14,7 @@ import './styles/style.css';
 import './styles/darkmode.css';
 import './styles/DashboardView.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 
 interceptorsService.createInterceptors();
 const userLang = localStorage.getItem('language');
@@ -42,13 +43,15 @@ import("./App").then((RootApp) => {
   const App = RootApp.default;
 
   root.render(
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </QueryClientProvider>
-    </GoogleOAuthProvider>
+    <React.StrictMode>
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </QueryClientProvider>
+      </GoogleOAuthProvider>
+    </React.StrictMode>
   );
 });
 
