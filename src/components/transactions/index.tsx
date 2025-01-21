@@ -40,8 +40,11 @@ const Transactions = <T extends MainTransaction>() => {
 
   const { data: categories, isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories', user._id],
-    queryFn: () => categoriesServices.fetchCategories(user?._id)
+    queryFn: () => categoriesServices.fetchCategories(user?._id),
   });
+  const categoriesMap = new Map();
+  categories?.forEach((c) => categoriesMap.set(c._id, c));
+
 
   const updateTransaction = useMutation<MainTransaction, unknown, { user_id: string, transaction: MainTransaction, type: TransactionsType }>({
     mutationKey: ['transactions', user._id],
@@ -132,9 +135,10 @@ const Transactions = <T extends MainTransaction>() => {
       ellipsis: {
         showTitle: false,
       },
-      render:(value) => {
+      render: (value) => {
         if (categoriesLoading) return <Spin />
-        const category = categories.find((c) => c._id === value);
+        const category = categoriesMap.get(value);
+
         return (
           <Tooltip title={category?.name}>
             <span>{category?.name}</span>
@@ -213,7 +217,7 @@ const Transactions = <T extends MainTransaction>() => {
       },
       render: (val) => (
         <Tooltip title={t(`companies.${val}`)}>
-          {t(`companies.${val}`)}
+          {val ? t(`companies.${val}`) : ''}
         </Tooltip>
       )
     }
