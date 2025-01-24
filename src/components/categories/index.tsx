@@ -44,15 +44,15 @@ const CategoriesPage = () => {
   });
 
   const updateCategory = useMutation<CategoryModel, unknown, { user_id: string, category: Partial<CategoryModel> }>({
-    mutationKey: ['categories', user._id],
+    mutationKey: ['categories', user._id, 'update.category'],
     mutationFn: ({ user_id, category }) => categoriesServices.updateCategory(user_id, category),
   });
   const addCategory = useMutation<CategoryModel, unknown, { user_id: string, categoryName: string }>({
-    mutationKey: ['categories', user._id],
+    mutationKey: ['categories', user._id, 'add.category'],
     mutationFn: ({ user_id, categoryName }) => categoriesServices.addCategory(user_id, categoryName),
   });
   const removeCategory = useMutation<void, unknown, { user_id: string, category_id: string }>({
-    mutationKey: ['categories', user._id],
+    mutationKey: ['categories', user._id, 'remove.category'],
     mutationFn: ({ user_id, category_id }) => categoriesServices.removeCategory(user_id, category_id),
     onError(error, variables) {
       messageApi.error(`Error while trying to remove category id: ${variables.category_id}, ${JSON.stringify(error)}.`);
@@ -171,7 +171,7 @@ const CategoriesPage = () => {
       onHeaderCell: () => ({
         onClick: () => setSortOrder(sortOrder === 'ascend' ? 'descend' : 'ascend')
       }),
-      render: (value, record: CategoryModel) => (
+      render: (value, record) => (
         <Tooltip title={asNumString(value)}>
           {`(${record.transactions}) ${asNumString(value)}`}
         </Tooltip>

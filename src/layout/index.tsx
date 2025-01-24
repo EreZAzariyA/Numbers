@@ -106,9 +106,9 @@ const DashboardView = () => {
   const onClick: MenuProps['onClick'] = async (e) => {
     if (e.key === 'sign-out') {
       await dispatch(logoutAction()).unwrap();
-      return;
+    } else {
+      setCurrent(e.key);
     }
-    setCurrent(e.key);
   };
 
   return (

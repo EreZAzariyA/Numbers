@@ -53,7 +53,7 @@ export const getThemeConfig = (currTheme: ThemeColorType): ThemeConfig => {
       fontSize: 14,
       fontFamily: 'Noto Serif Hebrew',
       fontFamilyCode: 'serif',
-      motionDurationSlow: '0.2',
+      motionDurationSlow: '0.5ms',
     },
     components: {
       Layout: {
