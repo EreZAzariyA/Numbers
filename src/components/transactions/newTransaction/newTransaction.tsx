@@ -1,12 +1,11 @@
 import dayjs from "dayjs";
 import { useState } from "react";
 import CategoryModel from "../../../models/category-model";
-import TransactionModel from "../../../models/transaction";
 import { Button, DatePicker, DatePickerProps, Divider, Flex, Form, InputNumber, Select, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { DefaultOptionType } from "antd/es/select";
-import CardTransactionModel from "../../../models/card-transaction";
 import { TransactionsType } from "../../../utils/transactions";
+import { MainTransaction } from "../../../services/transactions";
 
 interface NewTransactionProps<T> {
   transaction?: T;
@@ -18,22 +17,8 @@ interface NewTransactionProps<T> {
   isLoading?: boolean;
 };
 
-const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props: NewTransactionProps<T>) => {
+const NewTransaction = <T extends MainTransaction>(props: NewTransactionProps<T>) => {
   const [form] = Form.useForm();
-  const [initialValues, setInitialValues] = useState<T | null>({
-    ...props.transaction,
-    type: props.type,
-    category_id: props.transaction?.category_id || props.newInvoiceCategoryId || null,
-    date: dayjs(props.transaction?.date) || null,
-  });
-
-  const onChange: DatePickerProps['onChange'] = (_, dateString) => {
-    handleChange('date', dateString);
-  };
-
-  const handleChange = (field: string, value: any) => {
-    setInitialValues({ ...initialValues, [field]: value });
-  };
 
   const options: DefaultOptionType[] = [...props.categories || []].map((category) => ({
     label: category.name,
@@ -56,8 +41,8 @@ const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props
       <Divider />
       <Form
         form={form}
-        initialValues={initialValues}
-        onFinish={() => props.onFinish(initialValues)}
+        initialValues={{ ...props.transaction, date: dayjs(props.transaction?.date), type: props.type }}
+        onFinish={props.onFinish}
         className="insert-form"
         labelAlign="left"
         wrapperCol={{ xs: 16 }}
@@ -68,7 +53,7 @@ const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props
           name={'date'}
           rules={[{ required: true, message: 'Date is required' }]}
         >
-          <DatePicker allowClear onChange={onChange} style={{ width: '100%' }} />
+          <DatePicker allowClear style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item
@@ -78,7 +63,6 @@ const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props
         >
           <Select
             options={options}
-            onChange={(e) => handleChange('category_id', e)}
             placeholder="Select Category"
           />
         </Form.Item>
@@ -90,7 +74,6 @@ const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props
         >
           <Select
             options={typeOptions}
-            onChange={(e) => handleChange('type', e)}
             placeholder="Select type"
           />
         </Form.Item>
@@ -104,7 +87,6 @@ const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props
           ]}
         >
           <TextArea
-            onChange={(e) => handleChange('description', e.target.value)}
             placeholder="Enter Description"
           />
         </Form.Item>
@@ -118,7 +100,6 @@ const NewTransaction = <T extends TransactionModel | CardTransactionModel>(props
         >
           <InputNumber
             placeholder="0"
-            onChange={(value) => handleChange('amount', value)}
             formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
             style={{ minWidth: '100%' }}

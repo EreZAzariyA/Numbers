@@ -8,7 +8,7 @@ import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
 import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
 import { asNumString, getError } from "../../utils/helpers";
-import { Button, Flex, message, Spin, TableProps, Tooltip, Typography } from "antd";
+import { App, Button, Flex, Spin, TableProps, Tooltip, Typography } from "antd";
 import categoriesServices from "../../services/categories";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CardTransactionModel from "../../models/card-transaction";
@@ -21,7 +21,7 @@ enum Steps {
 
 const Transactions = <T extends MainTransaction>() => {
   const queryClient = useQueryClient();
-  const [messageApi, contextHolder] = message.useMessage();
+  const { message } = App.useApp();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -101,7 +101,7 @@ const Transactions = <T extends MainTransaction>() => {
   const onRemove = async (record_id: string): Promise<void> => {
     try {
       await removeTransaction.mutateAsync({ user_id: user._id, transaction_id: record_id, type: filterState.type });
-      messageApi.success(`Transaction id: ${record_id} removed successfully.`);
+      message.success(`Transaction id: ${record_id} removed successfully.`);
       queryClient.invalidateQueries({ queryKey: ['transactions', user?._id] });
     } catch (err: any) {
       message.error(getError(err));
@@ -225,7 +225,6 @@ const Transactions = <T extends MainTransaction>() => {
 
   return (
     <Flex vertical gap={5} className="page-container transactions">
-      {contextHolder}
       <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
 
       {!step && (
