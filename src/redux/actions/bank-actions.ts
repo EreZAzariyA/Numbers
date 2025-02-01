@@ -9,6 +9,7 @@ export enum BanksActions {
   FETCH_BANK_ACCOUNT = "banks/fetchBankAccount",
   REFRESH_BANK_ACCOUNT = "banks/refreshBankData",
   SET_AS_MAIN_ACCOUNT = "banks/setAsMainAccount",
+  REMOVE_BANK_ACCOUNT = "banks/removeBankAccount",
 };
 
 export const fetchBankAccounts = createAsyncThunk<MainBanksAccount, string>(
@@ -59,4 +60,15 @@ export const setBankAsMainAccount = createAsyncThunk<void, { user_id: string, ba
       return thunkApi.rejectWithValue(error);
     }
   }
-)
+);
+
+export const removeBankAccount = createAsyncThunk<void, { user_id: string, bank_id: string }>(
+  BanksActions.REMOVE_BANK_ACCOUNT,
+  async ({ user_id, bank_id }, thunkApi) => {
+    try {
+      await axios.delete<void>(config.urls.bank.removeBankAccount + `/${user_id}`, { data: { bank_id } });
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
