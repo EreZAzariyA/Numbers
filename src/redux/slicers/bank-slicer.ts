@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import { MainBanksAccount } from "../../models/bank-model";
-import { connectBankAccount, fetchBankAccounts, refreshBankData, setBankAsMainAccount } from "../actions/bank-actions";
+import { connectBankAccount, fetchBankAccounts, refreshBankData, removeBankAccount, setBankAsMainAccount } from "../actions/bank-actions";
 
 interface BanksAccountState {
   account: MainBanksAccount;
@@ -106,6 +106,25 @@ const extraReducers = (builder: ActionReducerMapBuilder<BanksAccountState>) => {
       }
     }
   })
+
+  builder.addCase(removeBankAccount.pending, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  }))
+  .addCase(removeBankAccount.rejected, (state, action) => ({
+    ...state,
+    loading: false,
+    error: action.error
+  }))
+  .addCase(removeBankAccount.fulfilled, (state, action) => {
+    state.loading = false;
+    state.error = null;
+    const bankIndex = state.account.banks.findIndex((bank) => bank._id === action.meta.arg.bank_id);
+    if (bankIndex !== -1) {
+      state.account.banks.splice(bankIndex, 1);
+    }
+  });
 };
 
 const bankSlicer = createSlice({

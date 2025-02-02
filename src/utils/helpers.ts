@@ -10,6 +10,7 @@ import { BankAccountModel, MainBanksAccount } from "../models/bank-model";
 import { ThemeColors } from "./enums";
 import { PastOrFutureDebitType } from "./types";
 import { MainTransaction } from "../services/transactions";
+import i18next from "i18next";
 
 export type ColorType = {
   ICON: string;
@@ -347,8 +348,11 @@ export const getBanksTotal = (banks: BankAccountModel[]) => {
 export const getLoginFields = (companyId: SupportedCompaniesTypes) => {
   return SupportedScrapers[companyId].loginFields || [];
 };
+// export const getCompanyName = (companyId: string) => {
+//   return SupportedScrapers[companyId]?.name || companyId;
+// }
 export const getCompanyName = (companyId: string) => {
-  return SupportedScrapers[companyId]?.name || companyId;
+  return i18next.t(`companies.${companyId}`);
 }
 
 export const getDebitsByDate = (account: MainBanksAccount, selectedMonth: Dayjs): Partial<PastOrFutureDebitType[]> => {

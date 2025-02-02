@@ -55,7 +55,7 @@ const BankAccountPage = (props: BankAccountPageProps) => {
       <Row justify={'center'} align={'middle'}>
         <Col span={12}>
           <Space align="center" direction="vertical" className="w-100" size={"small"}>
-            <Typography.Title level={4}>{getCompanyName(bankName)}</Typography.Title>
+            <Typography.Title level={2}>{getCompanyName(bankName)}</Typography.Title>
 
             <Typography.Text>
               <span>Last Update: </span>

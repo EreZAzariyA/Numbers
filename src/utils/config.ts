@@ -23,6 +23,7 @@ abstract class Config {
       updateBankDetails: "",
       importTransactions: "",
       setMainAccount: "",
+      removeBankAccount: "",
     }
   };
 
@@ -51,6 +52,7 @@ abstract class Config {
         updateBankDetails: baseUrl + "banks/update-bank-details",
         importTransactions: baseUrl + "banks/import-transactions",
         setMainAccount: baseUrl + "banks/set-main-account",
+        removeBankAccount: baseUrl + "banks/remove-bank"
       }
     }
   };
