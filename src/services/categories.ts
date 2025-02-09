@@ -3,8 +3,8 @@ import CategoryModel from "../models/category-model";
 import config from "../utils/config";
 
 class CategoriesServices {
-  fetchCategories = async (user_id: string): Promise<CategoryModel[]> => {
-    const response = await axios.get<CategoryModel[]>(config.urls.categories + `/${user_id}`);
+  fetchCategories = async (user_id: string, query: object = {}): Promise<CategoryModel[]> => {
+    const response = await axios.get<CategoryModel[]>(config.urls.categories + `/${user_id}`, { params: { query } });
     const userCategories = response.data;
     return userCategories;
   };

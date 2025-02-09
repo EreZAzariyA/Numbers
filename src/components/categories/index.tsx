@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useAppSelector } from "../../redux/store";
 import CategoryModel from "../../models/category-model";
 import NewCategory from "./newCategory/newCategory";
 import CategoryTransactionsModal from "./CategoryTransactionsModal";
 import { Filters } from "../components/Filters";
-import { asNumString, getError, isArrayAndNotEmpty } from "../../utils/helpers";
+import { asNumString, getError, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
 import { App, Button, Divider, Flex, message, Pagination, Popconfirm, Row, Space, Table, TablePaginationConfig, TableProps, Tooltip, Typography } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import categoriesServices from "../../services/categories";
@@ -31,11 +31,13 @@ const CategoriesPage = () => {
   const [sortOrder, setSortOrder] = useState<SortOrder>('descend');
   const [filterState, setFilterState] = useState({
     name: null,
+    month: dayjs(),
   });
+  const query = queryFiltering(filterState);
 
   const { data: categories, isLoading } = useQuery({
-    queryKey: ['categories', user?._id],
-    queryFn: () => categoriesServices.fetchCategories(user?._id),
+    queryKey: ['categories', user?._id, query],
+    queryFn: () => categoriesServices.fetchCategories(user?._id, query),
   });
 
   const [pagination, setPagination] = useState<Pick<TablePaginationConfig, "current" | "pageSize">>({
@@ -43,13 +45,13 @@ const CategoriesPage = () => {
     pageSize: 10,
   });
 
-  const updateCategory = useMutation<CategoryModel, unknown, { user_id: string, category: Partial<CategoryModel> }>({
-    mutationKey: ['categories', user._id, 'update.category'],
-    mutationFn: ({ user_id, category }) => categoriesServices.updateCategory(user_id, category),
-  });
   const addCategory = useMutation<CategoryModel, unknown, { user_id: string, categoryName: string }>({
     mutationKey: ['categories', user._id, 'add.category'],
     mutationFn: ({ user_id, categoryName }) => categoriesServices.addCategory(user_id, categoryName),
+  });
+  const updateCategory = useMutation<CategoryModel, unknown, { user_id: string, category: Partial<CategoryModel> }>({
+    mutationKey: ['categories', user._id, 'update.category'],
+    mutationFn: ({ user_id, category }) => categoriesServices.updateCategory(user_id, category),
   });
   const removeCategory = useMutation<void, unknown, { user_id: string, category_id: string }>({
     mutationKey: ['categories', user._id, 'remove.category'],
@@ -100,6 +102,7 @@ const CategoriesPage = () => {
   const resetFilters = () => {
     setFilterState({
       name: null,
+      month: dayjs(),
     });
   };
 
@@ -215,6 +218,7 @@ const CategoriesPage = () => {
           <Filters
             type="categories"
             categoryText
+            monthFilter
             filterState={filterState}
             handleFilterChange={handleFilterChange}
             resetFilters={resetFilters}
