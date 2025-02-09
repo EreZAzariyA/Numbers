@@ -78,15 +78,15 @@ const DashboardView = () => {
       null, style
     ),
     getMenuItem(
-      <Link to='/transactions'>{t('menu.transactions')}</Link>,
-      'transactions',
-      <BsReceipt size={Sizes.MENU_ICON} />,
-      null, style
-    ),
-    getMenuItem(
       <Link to='/categories'>{t('menu.categories')}</Link>,
       'categories',
       <CiCircleList size={Sizes.MENU_ICON} />,
+      null, style
+    ),
+    getMenuItem(
+      <Link to='/transactions'>{t('menu.transactions')}</Link>,
+      'transactions',
+      <BsReceipt size={Sizes.MENU_ICON} />,
       null, style
     ),
     getMenuItem(
