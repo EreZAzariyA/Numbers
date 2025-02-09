@@ -153,6 +153,7 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         validateTrigger="onChange"
         onFinish={onFinish}
         layout="vertical"
+        disabled={isLoading}
       >
         <Form.Item
           name={'companyId'}
