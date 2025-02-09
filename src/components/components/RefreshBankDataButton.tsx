@@ -74,8 +74,7 @@ export const RefreshBankDataButton = (props: RefreshBankDataButtonProps) => {
         return await dispatch(refreshBankData({ bank_id: bank._id, user_id: user._id }))
           .unwrap()
           .catch((err) => {
-            console.log({err});
-            return message.error(`An error occurred while trying to refresh ${bankName}, ${err}`)
+            return message.error(err);
           })
         }
       );
