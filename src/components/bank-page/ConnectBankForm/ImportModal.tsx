@@ -18,7 +18,7 @@ export const ImportModal = (props: ImportModalProps) => {
   const { message } = App.useApp();
   const { user } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
-  const [imported, setImported] = useState<boolean>(false);
+  const [imported, setImported] = useState<{ success: boolean, len: number }>({ success: false, len: 0 });
 
   const handleClick = async () => {
     setLoading(true);
@@ -32,7 +32,7 @@ export const ImportModal = (props: ImportModalProps) => {
           (SupportedCompaniesTypes as any)[companyId]
         );
         if (res && isArray(res)) {
-          setImported(true);
+          setImported({ success: true, len: res?.length });
           message.success(`imported transactions: ${res?.length || 0}`);
         }
       } catch (err: any) {
@@ -44,15 +44,15 @@ export const ImportModal = (props: ImportModalProps) => {
 
   return (
     <Row justify={'space-between'} align={'middle'} key={card._id}>
-      {imported && (
+      {imported.success && (
         <Col>
           <CheckCircleTwoTone twoToneColor="#339900" />
         </Col>
       )}
       <Col>{card?.cardNumber}</Col>
-      <Col>{card?.txns?.length}</Col>
+      <Col>{card?.txns?.length}/{imported.len}</Col>
       <Col>
-        <Button onClick={handleClick} loading={loading} disabled={imported}>Import</Button>
+        <Button onClick={handleClick} loading={loading} disabled={imported.success}>Import</Button>
       </Col>
     </Row>
   );
