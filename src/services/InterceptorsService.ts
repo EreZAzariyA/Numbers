@@ -6,13 +6,13 @@ import { logoutAction } from "../redux/actions/auth-actions";
 class InterceptorsService {
   public createInterceptors(): void {
     axios.interceptors.request.use((request) => {
-      
+
       const token = store.getState().auth.token;
       if (!!token) {
         request.headers["Authorization"] = `Bearer ${token}`;
       }
-      
-      if (process.env.NODE_ENV == 'production') {
+
+      if (process.env.NODE_ENV === 'production') {
         request.headers["ngrok-skip-browser-warning"] = true;
       }
       request.withCredentials = true;
@@ -26,6 +26,8 @@ class InterceptorsService {
       if (err.response?.status === 401) {
         store.dispatch(logoutAction());
       }
+      console.log({ 'interceptorsService': err });
+
       return Promise.reject(getError(err));
     });
   };

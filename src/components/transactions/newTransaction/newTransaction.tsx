@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
-import { useState } from "react";
 import CategoryModel from "../../../models/category-model";
-import { Button, DatePicker, DatePickerProps, Divider, Flex, Form, InputNumber, Select, Space, Typography } from "antd";
+import { Button, DatePicker, Divider, Flex, Form, InputNumber, Select, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { DefaultOptionType } from "antd/es/select";
 import { TransactionsType } from "../../../utils/transactions";

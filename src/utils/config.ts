@@ -45,7 +45,7 @@ abstract class Config {
       transactions: baseUrl + "transactions/",
       categories: baseUrl + "categories",
       bank: {
-        fetchAllBanksAccounts: baseUrl + "banks/fetch-all-banks-accounts",
+        fetchAllBanksAccounts: baseUrl + "banks/fetch-user-banks-accounts",
         fetchOneBankAccount: baseUrl + "banks/fetch-bank-account",
         connectBank: baseUrl + "banks/connect-bank",
         refreshBankData: baseUrl + "banks/refresh-bank-data",
@@ -60,7 +60,7 @@ abstract class Config {
 
 class DevelopmentConfig extends Config {
   public constructor() {
-    super("http://localhost:5005/api/");
+    super("http://localhost:5000/api/");
   };
 };
 
