@@ -1,5 +1,6 @@
 import TransactionModel from "../../models/transaction";
 import { Graph } from "../components/Charts/Graph";
+import { useTranslation } from "react-i18next";
 import { Tabs, Typography } from "antd";
 import { getCompanyName, isArrayAndNotEmpty } from "../../utils/helpers";
 import { ChartsTypes } from "../components/Charts/charts-utils";
@@ -11,6 +12,7 @@ interface DashboardFourthProps {
 };
 
 const DashboardFourth = (props: DashboardFourthProps) => {
+  const { t } = useTranslation();
 
   const banks = props.bankAccount.map((bank) => ({
     label: getCompanyName(bank.bankName),
@@ -24,7 +26,7 @@ const DashboardFourth = (props: DashboardFourthProps) => {
         <Tabs items={banks}/>
       ) : (
         <>
-          <Typography.Text className="sub-title pb-10">Add transactions to track your expenses</Typography.Text>
+          <Typography.Text className="sub-title pb-10">{t('dashboard.addTransactions')}</Typography.Text>
           <br />
           <br />
           <Graph data={[]} type={null} />

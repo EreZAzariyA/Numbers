@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlicer from "./slicers/auth-slicer";
-import bankSlicer from "./slicers/bank-slicer";
 import authMiddleWare from "./middlewares/auth.mw";
 import userConfigSlicer from "./slicers/user-config-slicer";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 const store = configureStore({
   reducer: {
     auth: authSlicer,
-    userBanks: bankSlicer,
     config: userConfigSlicer,
   },
   middleware: (defaultMiddleware) =>

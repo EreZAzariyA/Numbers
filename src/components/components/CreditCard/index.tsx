@@ -1,6 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { CreditCardType } from "../../../utils/types";
 import { asNumber } from "../../../utils/helpers";
-import { Slider, SliderSingleProps } from "antd";
 import "./CreditCard.css";
 
 interface CreditCardProps {
@@ -8,45 +8,53 @@ interface CreditCardProps {
 }
 
 export const CreditCard = (props: CreditCardProps) => {
+  const { t } = useTranslation();
   const isActive = props.card.cardStatusCode ? props.card.cardStatusCode === 0 : true;
   const cardFramework = props.card.cardFramework;
   const cardFrameworkUsed = props.card.cardFrameworkUsed;
   const percentage = asNumber((cardFrameworkUsed / cardFramework) * 100);
 
-  const marks: SliderSingleProps['marks'] = {
-    [cardFramework]: {
-      style: {
-        color: '#f50',
-      },
-      label: <strong>{cardFramework}</strong>,
-    },
-  };
-  const trackStyle = {
-    background: `green`,
-  };
-
   return (
     <div className="credit-card-main-container">
       <div className={`credit-card ${!isActive ? 'non-active' : ''}`}>
-        <div className="card-number">
-          {props.card.cardNumber}
-        </div>
-        <div className="card-percentage">
-          {percentage}%
+        <div className="card-top-row">
+          <div className="card-chip">
+            <div className="chip-line chip-line-h" />
+            <div className="chip-line chip-line-v" />
+          </div>
+          <span className="card-family">{props.card.cardFamilyDescription}</span>
         </div>
 
-          {isActive && (
-            <div className="slider">
-              <Slider
-                disabled
-                marks={marks}
-                styles={{ track: trackStyle }}
-                defaultValue={cardFrameworkUsed}
-                min={0}
-                max={cardFramework}
-              />
+        <div className="card-number">
+          •••• •••• •••• {props.card.cardNumber}
+        </div>
+
+        <div className="card-bottom-row">
+          <div className="card-holder-info">
+            <span className="card-label">{t('creditCard.cardHolder')}</span>
+            <span className="card-holder-name">
+              {props.card.cardHolderFirstName} {props.card.cardHolderLastName}
+            </span>
+          </div>
+          {props.card.cardValidityDate && (
+            <div className="card-expiry-info">
+              <span className="card-label">{t('creditCard.expires')}</span>
+              <span className="card-expiry">{props.card.cardValidityDate}</span>
             </div>
           )}
+        </div>
+
+        {isActive && (
+          <div className="card-usage-row">
+            <div className="card-usage-track">
+              <div
+                className="card-usage-fill"
+                style={{ width: `${Math.min(percentage, 100)}%` }}
+              />
+            </div>
+            <span className="card-usage-pct">{percentage}%</span>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import CategoryModel from "../../../models/category-model";
 import { Button, DatePicker, Divider, Flex, Form, InputNumber, Select, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
@@ -17,6 +18,7 @@ interface NewTransactionProps<T> {
 };
 
 const NewTransaction = <T extends MainTransaction>(props: NewTransactionProps<T>) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
 
   const options: DefaultOptionType[] = [...props.categories || []].map((category) => ({
@@ -25,18 +27,18 @@ const NewTransaction = <T extends MainTransaction>(props: NewTransactionProps<T>
   }));
   const typeOptions: DefaultOptionType[] = [
     {
-      label: 'Transactions',
+      label: t('transactions.transactionsType.transactions'),
       value: TransactionsType.ACCOUNT
     },
     {
-      label: 'Credit Card',
+      label: t('transactions.transactionsType.creditcards'),
       value: TransactionsType.CARD_TRANSACTIONS
     }
   ];
 
   return (
     <Flex vertical align="center">
-      <Typography.Title level={3} className="text-center">{props.transaction?._id ? 'Update' : 'New'} Transaction</Typography.Title>
+      <Typography.Title level={3} className="text-center">{props.transaction?._id ? t('transactions.form.titleUpdate') : t('transactions.form.titleNew')}</Typography.Title>
       <Divider />
       <Form
         form={form}
@@ -48,57 +50,57 @@ const NewTransaction = <T extends MainTransaction>(props: NewTransactionProps<T>
         labelCol={{ xs: 8 }}
       >
         <Form.Item
-          label="Date"
+          label={t('transactions.form.date')}
           name={'date'}
-          rules={[{ required: true, message: 'Date is required' }]}
+          rules={[{ required: true, message: t('transactions.form.dateRequired') }]}
         >
           <DatePicker allowClear style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item
-          label="Category"
+          label={t('transactions.form.category')}
           name={'category_id'}
-          rules={[{ required: true, message: 'Category is required' }]}
+          rules={[{ required: true, message: t('transactions.form.categoryRequired') }]}
         >
           <Select
             options={options}
-            placeholder="Select Category"
+            placeholder={t('transactions.form.selectCategory')}
           />
         </Form.Item>
 
         <Form.Item
-          label="Type"
+          label={t('transactions.form.type')}
           name={'type'}
-          rules={[{ required: true, message: 'Type is required' }]}
+          rules={[{ required: true, message: t('transactions.form.typeRequired') }]}
         >
           <Select
             options={typeOptions}
-            placeholder="Select type"
+            placeholder={t('transactions.form.selectType')}
           />
         </Form.Item>
 
         <Form.Item
-          label="Description"
+          label={t('transactions.form.description')}
           name={'description'}
           rules={[
-            { required: true, message: 'Description is required' },
-            { min: 10, message: 'Please describe more' },
+            { required: true, message: t('transactions.form.descriptionRequired') },
+            { min: 10, message: t('transactions.form.descriptionMin') },
           ]}
         >
           <TextArea
-            placeholder="Enter Description"
+            placeholder={t('transactions.form.enterDescription')}
           />
         </Form.Item>
 
         <Form.Item
-          label="Amount"
+          label={t('transactions.form.amount')}
           name={'amount'}
           rules={[
-            { required: true, message: 'Amount is required' },
+            { required: true, message: t('transactions.form.amountRequired') },
           ]}
         >
           <InputNumber
-            placeholder="0"
+            placeholder={t('transactions.form.placeholderAmount')}
             formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
             style={{ minWidth: '100%' }}
@@ -107,8 +109,8 @@ const NewTransaction = <T extends MainTransaction>(props: NewTransactionProps<T>
 
         <Form.Item label={null} style={{ justifySelf: 'center' }}>
           <Space size={"middle"}>
-            <Button type="primary" htmlType="submit" loading={props.isLoading || false}>Submit</Button>
-            <Button type="primary" danger onClick={props?.onBack}>Cancel</Button>
+            <Button type="primary" htmlType="submit" loading={props.isLoading || false}>{t('common.buttons.submit')}</Button>
+            <Button type="primary" danger onClick={props?.onBack}>{t('common.buttons.cancel')}</Button>
           </Space>
         </Form.Item>
       </Form>

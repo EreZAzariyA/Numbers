@@ -1,3 +1,16 @@
+/* ─── Account Status Card — teal top accent ──────────────────── */
+.page-container.dashboard .dashboard-first {
+  border-top: 3px solid var(--color-primary) !important;
+}
+
+/* ─── Recent Movements & Credit Cards — teal top accent ─────── */
+.page-container.dashboard .dashboard-second,
+.page-container.dashboard .dashboard-third,
+.page-container.dashboard .dashboard-fourth {
+  border-top: 3px solid var(--color-primary) !important;
+}
+
+/* ─── Recent Movements table — flush edges ───────────────────── */
 .page-container.dashboard .dashboard-second .ant-card-body {
   padding: 0;
   overflow: hidden;
@@ -8,9 +21,11 @@
   border-radius: 0;
 }
 
+/* ─── Credit Cards section ───────────────────────────────────── */
 .page-container.dashboard .dashboard-third .ant-card-body {
   width: 100%;
 }
+
 .page-container.dashboard .dashboard-third .ant-card-body .credit-cards {
   width: 100%;
   display: flex;
@@ -19,6 +34,206 @@
   overflow: auto;
   column-gap: 20px;
 }
+
 .page-container.dashboard .dashboard-third .ant-card-body .credit-cards.empty {
   justify-content: center;
+}
+
+/* ─── Balance KPI (left inner card) ──────────────────────────── */
+.balance-kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.balance-kpi-value {
+  font-size: 36px !important;
+  font-weight: 800 !important;
+  letter-spacing: -1.5px !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+}
+
+.balance-kpi-currency {
+  font-size: 22px;
+  font-weight: 600;
+  opacity: 0.5;
+  margin-inline-end: 3px;
+}
+
+/* ─── Dashboard greeting ─────────────────────────────────────── */
+.dashboard-greeting {
+  font-size: 13.5px;
+  opacity: 0.55;
+  margin-top: 2px;
+  letter-spacing: -0.1px;
+}
+
+/* ─── Chart card inner layout ────────────────────────────────── */
+.chart-card-inner {
+  height: 100%;
+}
+
+.chart-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+/* ─── Total Spent stat pill — teal brand colour ──────────────── */
+.total-amount-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.total-amount-stat.spent {
+  background: var(--color-primary-dim);
+  border: 1px solid rgba(13, 148, 136, 0.22);
+}
+
+.total-amount-stat.income {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.18);
+}
+
+.dark-theme .total-amount-stat.spent {
+  background: rgba(13, 148, 136, 0.12);
+  border-color: rgba(13, 148, 136, 0.3);
+}
+
+.dark-theme .total-amount-stat.income {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.total-amount-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+}
+
+.total-amount-stat.income .total-amount-label {
+  color: #065f46;
+}
+
+.dark-theme .total-amount-stat .total-amount-label {
+  color: #14B8A6;
+}
+
+.dark-theme .total-amount-stat.income .total-amount-label {
+  color: #34d399;
+}
+
+.total-amount-value {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #0F766E;
+}
+
+.total-amount-stat.income .total-amount-value {
+  color: #059669;
+}
+
+.dark-theme .total-amount-stat .total-amount-value {
+  color: #2DD4BF;
+}
+
+.dark-theme .total-amount-stat.income .total-amount-value {
+  color: #34d399;
+}
+
+/* ─── Refresh Bank Data — ghost primary button ───────────────── */
+.refresh-bank-btn.ant-btn {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  font-weight: 600;
+  font-size: 12.5px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: transparent !important;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.refresh-bank-btn.ant-btn:hover:not(:disabled) {
+  background: var(--color-primary-dim) !important;
+  border-color: var(--color-primary-light) !important;
+  color: var(--color-primary-light) !important;
+}
+
+.dark-theme .refresh-bank-btn.ant-btn {
+  border-color: rgba(13, 148, 136, 0.5) !important;
+  color: #14B8A6 !important;
+}
+
+.dark-theme .refresh-bank-btn.ant-btn:hover:not(:disabled) {
+  background: rgba(13, 148, 136, 0.12) !important;
+  border-color: #14B8A6 !important;
+}
+
+/* ─── Recent Movements — custom empty state ──────────────────── */
+.dashboard-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 44px 24px;
+  text-align: center;
+}
+
+.dashboard-empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-primary-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.dark-theme .dashboard-empty-icon {
+  background: rgba(13, 148, 136, 0.15);
+}
+
+.dashboard-empty-title {
+  margin: 0 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.dashboard-empty-desc {
+  font-size: 13px;
+  opacity: 0.55;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+/* ─── AI Insight block ───────────────────────────────────────── */
+.forecast-ai-insight {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--color-primary-dim);
+  border: 1px solid rgba(13, 148, 136, 0.22);
+  border-left: 3px solid var(--color-primary);
+}
+
+.dark-theme .forecast-ai-insight {
+  background: rgba(13, 148, 136, 0.12);
+  border-color: rgba(13, 148, 136, 0.3);
 }

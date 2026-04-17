@@ -1,29 +1,37 @@
 import i18n from "i18next";
 import "dayjs/locale/he";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { changeLanguageAction } from "../redux/actions/user-config-actions";
-import { fetchUserDataAction, logoutAction } from "../redux/actions/auth-actions";
+import { logoutAction } from "../redux/actions/auth-actions";
 import { MenuItem } from "../utils/antd";
 import { useResize } from "../utils/helpers";
 import { Languages } from "../utils/enums";
 import { LanguageType } from "../utils/types";
 import DarkModeButton from "../components/components/Darkmode-button";
 import Logo from "../components/components/logo/logo";
-import { App, Button, Divider, Dropdown, Flex, Layout, MenuProps, Space } from "antd";
+import { App, Button, Divider, Dropdown, Flex, Layout, MenuProps, Space, Typography } from "antd";
 import CloseOutlined from "@ant-design/icons/CloseOutlined";
+import GlobalOutlined from "@ant-design/icons/GlobalOutlined";
 import MenuOutlined from "@ant-design/icons/MenuOutlined";
 
 interface DashboardHeaderProps {
   collapsedHandler?: () => void;
   items: MenuItem[];
+  currentLabel?: string;
 };
 
 const { Header } = Layout;
 const languages = {...Languages};
+const languageLabels: Record<LanguageType, string> = {
+  [Languages.EN]: "English",
+  [Languages.HE]: "עברית",
+};
 
 const DashboardHeader = (props: DashboardHeaderProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { message } = App.useApp();
@@ -33,18 +41,6 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const [current, setCurrent] = useState<string>('1');
   const [isOpen, setIsOpen] = useState(false);
   const { isMobile, isPhone } = useResize();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        await dispatch(fetchUserDataAction()).unwrap();
-      } catch (err: any) {
-        message.error(err);
-      }
-    };
-
-    fetchUserData();
-  }, [dispatch, message]);
 
   useEffect(() => {
     const locationArray = pathname.split('/');
@@ -63,7 +59,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
 
   const handleChangeLang = async (selectedLang: LanguageType): Promise<void> => {
     if (!user) {
-      message.error('No user id');
+      message.error(t('errors.noUserId'));
       return;
     }
     if (selectedLang === lang) return;
@@ -80,9 +76,10 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   };
 
   const langs: MenuItem[] = Object.entries(languages).map(([key, value]) => ({
-    label: `${value}-${key}`,
+    label: languageLabels[value as LanguageType],
     value,
     key: key.toLowerCase(),
+    disabled: value === lang,
   }));
 
   return (
@@ -111,8 +108,14 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
             </Dropdown>
           )}
           {!isPhone && <Logo />}
+          {!isPhone && (
+            <div className="header-current-page">
+              <Typography.Text className="header-current-kicker">{t('common.workspace')}</Typography.Text>
+              <Typography.Text className="header-current-label">{props.currentLabel}</Typography.Text>
+            </div>
+          )}
         </Flex>
-        <Space align="center" style={{ padding: '0 20px'}} split={<Divider type="vertical" />}>
+        <Space align="center" className="header-right" split={<Divider type="vertical" />}>
           <Dropdown
             menu={{
               items: langs,
@@ -120,8 +123,9 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
               onClick: (e) => handleChangeLang(e.key as LanguageType),
             }}
           >
-            <Button type="link" size="small" loading={loading}>
-              {`${lang}-${lang?.toUpperCase()}`}
+            <Button type="link" size="small" loading={loading} className="header-lang-btn">
+              <GlobalOutlined />
+              <span>{lang?.toUpperCase()}</span>
             </Button>
           </Dropdown>
           <DarkModeButton />

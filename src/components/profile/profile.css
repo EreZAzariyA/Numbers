@@ -1,0 +1,126 @@
+/* ─── Avatar Card ────────────────────────────────────────────── */
+.profile-avatar-card {
+  border: 1px solid var(--border-light) !important;
+  border-top: 3px solid var(--color-primary) !important;
+  box-shadow: var(--shadow-md) !important;
+  border-radius: var(--radius-lg) !important;
+  text-align: center;
+}
+
+.dark-theme .profile-avatar-card {
+  border-color: var(--border-dark) !important;
+  border-top-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-dark-md) !important;
+}
+
+/* Avatar circle */
+.profile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+  flex-shrink: 0;
+}
+
+.profile-avatar-initials {
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.profile-full-name {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px;
+}
+
+.profile-email-display {
+  font-size: 13px;
+  opacity: 0.55;
+  word-break: break-all;
+}
+
+/* Balance section inside avatar card */
+.profile-balance-section {
+  width: 100%;
+  align-items: center;
+}
+
+.profile-balance-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+
+.profile-balance-value {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #1a202c;
+  line-height: 1.1;
+}
+
+.dark-theme .profile-balance-value {
+  color: #e2e8f0;
+}
+
+/* ─── Info Card ──────────────────────────────────────────────── */
+.profile-info-card {
+  border: 1px solid var(--border-light) !important;
+  border-top: 3px solid var(--color-primary) !important;
+  box-shadow: var(--shadow-md) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+.dark-theme .profile-info-card {
+  border-color: var(--border-dark) !important;
+  border-top-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-dark-md) !important;
+}
+
+.profile-info-card .ant-card-head {
+  border-bottom: 1px solid var(--border-light);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dark-theme .profile-info-card .ant-card-head {
+  border-bottom-color: var(--border-dark);
+}
+
+/* Section sublabels */
+.profile-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--color-primary);
+  opacity: 0.8;
+  margin-bottom: 14px;
+}
+
+/* Form field overrides */
+.profile-info-card .ant-form-item-label > label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  opacity: 0.55;
+}
+
+.profile-info-card .ant-input[disabled],
+.profile-info-card .ant-input-number-disabled .ant-input-number-input {
+  cursor: default;
+  font-weight: 500;
+  font-size: 14px;
+}

@@ -11,6 +11,10 @@ import CategoriesPage from "../components/categories";
 import Profile from "../components/profile";
 import PageNotFound from "../components/components/PageNotFound";
 import BankPage from "../components/bank-page";
+import LoansSavingsPage from "../components/loans-savings";
+import RecurringTransactions from "../components/recurring";
+import SavingsGoalsPage from "../components/savings-goals";
+import CashFlowPage from "../components/cash-flow";
 
 const dashboardRoutes: RouteObject[] = [
   {
@@ -36,6 +40,22 @@ const dashboardRoutes: RouteObject[] = [
       {
         path: "bank",
         element: <BankPage />,
+      },
+      {
+        path: "loans-savings",
+        element: <LoansSavingsPage />,
+      },
+      {
+        path: "recurring",
+        element: <RecurringTransactions />,
+      },
+      {
+        path: "savings-goals",
+        element: <SavingsGoalsPage />,
+      },
+      {
+        path: "cash-flow",
+        element: <CashFlowPage />,
       },
       {
         path: "profile",

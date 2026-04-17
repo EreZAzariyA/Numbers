@@ -1,11 +1,55 @@
-.inner-card-container {
-  -webkit-box-shadow: 0px 10px 15px -5px rgb(63 61 61 / 60%);
-  -moz-box-shadow: 0px 10px 15px -5px rgb(63 61 61 / 60%);
-  box-shadow: 0px 10px 15px -5px rgb(63 61 61 / 60%);
-  margin-top: 1.5rem;
+/* ─── Stat grid (2×2) ────────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-top: 20px;
 }
 
-.inner-card-container .box {
-  padding: 0.5rem;
-  width: 50%;
+.dark-theme .stat-grid {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.stat-grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--bg-subtle);
+  transition: background var(--transition-fast);
+}
+
+.dark-theme .stat-grid-item {
+  background: var(--bg-dark-subtle);
+}
+
+.stat-grid-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-grid-value {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: #1a202c;
+  line-height: 1.2;
+}
+
+.dark-theme .stat-grid-value {
+  color: #e2e8f0;
+}
+
+/* Legacy — kept for anything still using old class names */
+.inner-card-container {
+  margin-top: 1.25rem;
 }

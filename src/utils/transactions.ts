@@ -31,6 +31,10 @@ export interface RefreshedBankAccountDetails {
   importedCategories?: CategoryModel[];
 };
 
+export interface ScrapingJobResponse {
+  jobId: string;
+};
+
 export interface Transaction {
   type: TransactionTypes;
   identifier?: string | number;

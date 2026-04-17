@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import CategoryModel from "../../../models/category-model";
 import { Button, Divider, Flex, Form, Input, Space, Typography } from "antd";
 import "./newCategory.css";
@@ -11,6 +12,7 @@ interface NewCategoryProps {
 };
 
 const NewCategory = (props: NewCategoryProps) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [initialValues, setInitialValues] = useState<Partial<CategoryModel>>({
     _id: props.category?._id || null,
@@ -20,7 +22,7 @@ const NewCategory = (props: NewCategoryProps) => {
 
   return (
     <Flex vertical align="center">
-      <Typography.Title level={3} className="text-center">{`${isUpdate ? 'Update' : 'New'} Category`}</Typography.Title>
+      <Typography.Title level={3} className="text-center">{isUpdate ? t('categories.form.titleUpdate') : t('categories.form.titleNew')}</Typography.Title>
       <Divider />
 
       <Form
@@ -31,17 +33,17 @@ const NewCategory = (props: NewCategoryProps) => {
         labelAlign="left"
       >
         <Form.Item
-          label="Name"
+          label={t('categories.form.name')}
           name={'name'}
-          rules={[{ required: true, message: 'Please enter category for transactions'}]}
+          rules={[{ required: true, message: t('categories.form.nameRequired')}]}
         >
           <Input onChange={(e) => setInitialValues({...initialValues, name: e.target.value})} />
         </Form.Item>
 
         <Form.Item label={null} style={{ justifySelf: 'center' }}>
           <Space size={"middle"}>
-            <Button type="primary" htmlType="submit" loading={props.isLoading}>Submit</Button>
-            <Button type="primary" danger onClick={props?.onBack}>Cancel</Button>
+            <Button type="primary" htmlType="submit" loading={props.isLoading}>{t('common.buttons.submit')}</Button>
+            <Button type="primary" danger onClick={props?.onBack}>{t('common.buttons.cancel')}</Button>
           </Space>
         </Form.Item>
       </Form>

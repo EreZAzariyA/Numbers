@@ -55,10 +55,10 @@ const CategoriesPage = () => {
     mutationKey: ['categories', user._id, 'remove.category'],
     mutationFn: ({ user_id, category_id }) => categoriesServices.removeCategory(user_id, category_id),
     onError(error, variables) {
-      messageApi.error(`Error while trying to remove category id: ${variables.category_id}, ${JSON.stringify(error)}.`);
+      messageApi.error(t('categories.messages.removeError', { id: variables.category_id }) + `, ${JSON.stringify(error)}.`);
     },
     onSuccess(_, variables) {
-      messageApi.success(`Category id: ${variables.category_id} removed successfully.`);
+      messageApi.success(t('categories.messages.removed', { id: variables.category_id }));
       queryClient.invalidateQueries({ queryKey: ['categories', user?._id] });
     },
   });
@@ -74,7 +74,6 @@ const CategoriesPage = () => {
   };
 
   const onFinish = async (values: Partial<CategoryModel>) => {
-    let successMessage = '';
     const isUpdate = !!selectedCategory || step === Steps.Update_Category;
     let res: CategoryModel;
 
@@ -84,8 +83,7 @@ const CategoriesPage = () => {
       } else {
         res = await addCategory.mutateAsync({ user_id: user?._id, categoryName: values.name });
       }
-      successMessage = `Category: ${res.name} ${isUpdate ? 'updated' : 'added'} successfully`;
-      messageApi.success(successMessage);
+      messageApi.success(t(`categories.messages.${isUpdate ? 'updated' : 'added'}`, { name: res.name }));
       onBack();
     } catch (error: any) {
       console.log({error});
@@ -141,6 +139,9 @@ const CategoriesPage = () => {
     (pagination.current - 1) * pagination.pageSize,
     pagination.current * pagination.pageSize
   );
+  const totalSpend = filtered.reduce((sum, category) => sum + Math.abs(category?.spent || 0), 0);
+  const topCategory = filtered[0];
+  const avgSpend = filtered.length ? totalSpend / filtered.length : 0;
 
   const columns: TableProps<CategoryModel>['columns'] = [
     {
@@ -193,7 +194,7 @@ const CategoriesPage = () => {
             {t('actions.2')}
           </Typography.Link>
           <Popconfirm
-            title="Are you sure?"
+            title={t('common.messages.confirm')}
             onConfirm={() => removeCategory.mutateAsync({ user_id: user._id, category_id: record?._id })}
           >
             <Typography.Link>
@@ -208,40 +209,82 @@ const CategoriesPage = () => {
   return (
     <Flex vertical gap={5} className="page-container categories">
       {contextHolder}
-      <Typography.Title level={2} className="page-title">{t('pages.categories')}</Typography.Title>
-
-      {!step && (
-        <Space direction="vertical" size={"middle"}>
-          <Filters
-            type="categories"
-            categoryText
-            filterState={filterState}
-            handleFilterChange={handleFilterChange}
-            resetFilters={resetFilters}
-          />
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            bordered
-            loading={isLoading}
-            pagination={false}
-            rowKey={'_id'}
-            scroll={{
-              x: 650
-            }}
-          />
-          <Row justify={'space-between'}>
-            <Button onClick={() => setStep(Steps.New_Category)}>
+      <div className="page-shell">
+        <div className="page-heading">
+          <div className="page-heading-copy">
+            <div className="page-kicker">{t('categories.kicker')}</div>
+            <Typography.Title level={2} className="page-title">{t('pages.categories')}</Typography.Title>
+            <Typography.Text className="page-subtitle">
+              {t('categories.subtitle')}
+            </Typography.Text>
+          </div>
+          <div className="page-toolbar">
+            <Button type="primary" onClick={() => setStep(Steps.New_Category)}>
               {t('categories.buttons.add')}
             </Button>
-            <Pagination
-              current={pagination.current}
-              pageSize={pagination.pageSize}
-              total={filtered.length || 0}
-              onChange={(page, size) => setPagination({ current: page, pageSize: size })}
+          </div>
+        </div>
+
+        <div className="page-stat-grid">
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('categories.summary.trackedCategories')}</span>
+            <span className="page-stat-value">{filtered.length}</span>
+            <span className="page-stat-caption">{t('categories.summary.trackedCaption')}</span>
+          </div>
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('categories.summary.capturedSpend')}</span>
+            <span className="page-stat-value">₪{asNumString(totalSpend)}</span>
+            <span className="page-stat-caption">{t('categories.summary.capturedCaption')}</span>
+          </div>
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('categories.summary.averageSpend')}</span>
+            <span className="page-stat-value">₪{asNumString(avgSpend)}</span>
+            <span className="page-stat-caption">{t('categories.summary.averageCaption')}</span>
+          </div>
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('categories.summary.topCategory')}</span>
+            <span className="page-stat-value">{topCategory?.name || '—'}</span>
+            <span className="page-stat-caption">
+              {topCategory ? `₪${asNumString(Math.abs(topCategory.spent || 0))}` : t('categories.summary.noCategoryData')}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {!step && (
+        <div className="page-card">
+          <Space direction="vertical" size={"middle"} style={{ width: '100%' }}>
+            <Filters
+              type="categories"
+              categoryText
+              filterState={filterState}
+              handleFilterChange={handleFilterChange}
+              resetFilters={resetFilters}
             />
-          </Row>
-        </Space>
+            <Table
+              columns={columns}
+              dataSource={dataSource}
+              bordered
+              loading={isLoading}
+              pagination={false}
+              rowKey={'_id'}
+              scroll={{
+                x: 650
+              }}
+            />
+            <Row justify={'space-between'}>
+              <Button type="primary" onClick={() => setStep(Steps.New_Category)}>
+                {t('categories.buttons.add')}
+              </Button>
+              <Pagination
+                current={pagination.current}
+                pageSize={pagination.pageSize}
+                total={filtered.length || 0}
+                onChange={(page, size) => setPagination({ current: page, pageSize: size })}
+              />
+            </Row>
+          </Space>
+        </div>
       )}
       {(step && step === Steps.New_Category) && (
         <NewCategory

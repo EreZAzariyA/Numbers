@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ResponsiveContainer,
   Bar,
@@ -41,6 +42,7 @@ const customizedYAxisTick = (props: any) => {
 };
 
 export const BarCharts = (props: BarChartsProps) => {
+  const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState<number>(null);
 
   let data: any[] = [];
@@ -54,7 +56,7 @@ export const BarCharts = (props: BarChartsProps) => {
   } else if (props.type === ChartsTypes.PAST_DEBIT) {
 
   } else {
-    data = [{ name: 'No Data', spent: 0, income: 0 }];
+    data = [{ name: t('charts.noData'), spent: 0, income: 0 }];
   }
 
   data = [...data].filter((d) => d.spent !== 0);
@@ -65,19 +67,19 @@ export const BarCharts = (props: BarChartsProps) => {
     <>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" />
           <XAxis dataKey="name" tick={customizedXAxisTick} />
           <YAxis dataKey={"spent"} tick={customizedYAxisTick} />
           <Tooltip formatter={(val) => (val.toLocaleString())} />
-          <Bar dataKey="spent" name='Spent' onClick={(_, i) => setActiveIndex(i)} minPointSize={1}>
+          <Bar dataKey="spent" name={t('charts.spent')} onClick={(_, i) => setActiveIndex(i)} minPointSize={1}>
             {data.map((_, index) => (
-              <Cell cursor="pointer" fill={index === activeIndex ? '#82ca9d' : '#8884d8'} key={`cell-${index}`} />
+              <Cell cursor="pointer" fill={index === activeIndex ? '#14B8A6' : '#0D9488'} key={`cell-${index}`} />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
       {activeItem && (
-        <p className="content">{`Amount spent on "${activeItem.name}": ${activeItem.spent}`}</p>
+        <p className="content">{t('charts.amountSpentOn', { name: activeItem.name, amount: activeItem.spent })}</p>
       )}
     </>
   );

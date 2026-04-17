@@ -1,16 +1,22 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../redux/store";
+import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../../redux/store";
+import { useBanks } from "../../../hooks/useBanks";
+import queryClient from "../../../services/queryClient";
 import UserModel from "../../../models/user-model";
 import { BankAccountModel } from "../../../models/bank-model";
-import { connectBankAccount } from "../../../redux/actions/bank-actions";
 import bankServices from "../../../services/banks";
+import transactionsServices from "../../../services/transactions";
 import { SupportedCompaniesTypes, SupportedScrapers } from "../../../utils/definitions";
 import { MenuItem, getMenuItem } from "../../../utils/antd";
-import { getCompanyName, isArray, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { getCompanyName, isArrayAndNotEmpty } from "../../../utils/helpers";
+import { invalidateFinancialQueries } from "../../../utils/queryInvalidation";
 import { App, Button, Checkbox, Form, Input, Select, Space, Typography } from "antd";
-import { ImportModal } from "./ImportModal";
+import { CheckCircleFilled } from "@ant-design/icons";
+import { CiBank } from "react-icons/ci";
 import { TransactionsAccountResponse } from "../../../utils/types";
-import transactionsServices, { MainTransaction } from "../../../services/transactions";
+import ScrapingProgressModal from "../../components/ScrapingProgressModal";
+import "./ConnectBankForm.css";
 
 export enum ConnectBankFormType {
   Connect_Bank = "Connect_Bank",
@@ -26,10 +32,11 @@ interface ConnectBankFormProps {
 };
 
 const ConnectBankForm = (props: ConnectBankFormProps) => {
-  const { message, modal } = App.useApp();
-  const dispatch = useAppDispatch();
-  const { loading: isLoading, account } = useAppSelector((state) => state.userBanks);
-  const [showImportConfirmationModal, setShowImportConfirmationModal] = useState<boolean>(false);
+  const { t } = useTranslation();
+  const { message } = App.useApp();
+  const { data: account } = useBanks();
+  const { user: authUser } = useAppSelector((state) => state.auth);
+  const [scrapingJobId, setScrapingJobId] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState({
     isSelected: props.bankDetails?.bankName || false,
     companyId: props.bankDetails?.bankName || null,
@@ -53,128 +60,125 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
     }
   };
 
+  const handleImport = async (
+    data: { bank: BankAccountModel; account: TransactionsAccountResponse },
+    reportProgress?: (count: number) => void
+  ): Promise<void> => {
+    const { bank, account } = data;
+    const isCardProvider = bank?.isCardProvider || false;
+    let total = 0;
+
+    if (isCardProvider && account?.cardsPastOrFutureDebit?.cardsBlock) {
+      for (const card of account.cardsPastOrFutureDebit.cardsBlock) {
+        if (isArrayAndNotEmpty(card.txns)) {
+          const result = await transactionsServices.importTransactions(
+            props.user._id,
+            card.txns,
+            (SupportedCompaniesTypes as any)[selectedCompany.companyId]
+          );
+          total += result.length;
+          reportProgress?.(total);
+        }
+      }
+    } else if (isArrayAndNotEmpty(account?.txns)) {
+      const result = await transactionsServices.importTransactions(
+        props.user._id,
+        account.txns,
+        (SupportedCompaniesTypes as any)[selectedCompany.companyId]
+      );
+      total += result.length;
+      reportProgress?.(total);
+    }
+  };
+
+  const handleScrapingResult = (data: { bank: BankAccountModel; account: TransactionsAccountResponse }) => {
+    void invalidateFinancialQueries(queryClient, authUser?._id);
+    props?.setResult?.(data.bank);
+    props?.setIsOkBtnActive?.(true);
+  };
+
   const onFinish = async (values: any) => {
     if (!props.user._id) {
-      message.error('User is not define');
+      message.error(t('errors.userNotDefined'));
       return;
     }
 
-    let result;
     try {
       if (props.formType === ConnectBankFormType.Update_Bank) {
-        // todo: add updateBankDetails to redux action
-        result = await bankServices.updateBankDetails(props.bankDetails._id, props.user._id, values);
+        const result = await bankServices.updateBankDetails(props.bankDetails._id, props.user._id, values);
+        await handleImport(result).catch(() => {});
+        handleScrapingResult(result);
       } else {
-        result = await dispatch(connectBankAccount({ details: values, user_id: props.user._id })).unwrap();
+        const { jobId } = await bankServices.connectBank(props.user._id, values);
+        setScrapingJobId(jobId);
       }
-
-      const { account, bank } = result;
-
-      const isCardProvider = bank?.isCardProvider || false;
-      if (isCardProvider && account.cardsPastOrFutureDebit) {
-        showTransImportConfirmation(isCardProvider, account);
-      }
-      else if (isArrayAndNotEmpty(account.txns)) {
-        showTransImportConfirmation(isCardProvider, account);
-      }
-      props?.setResult(result.bank);
-      props.setIsOkBtnActive(true);
     } catch (err: any) {
       message.error(err?.message || err);
     }
   };
 
-  const showTransImportConfirmation = async (isCardProvider: boolean, account: TransactionsAccountResponse): Promise<void> => {
-    let content: any;
-    if (!isCardProvider) {
-      content = `We found ${account.txns.length} transactions, would you like to import them?`;
-    } else {
-      const cards = account.cardsPastOrFutureDebit.cardsBlock || [];
-
-      content = (
-        <Space direction="vertical" style={{ width: '100%' }}>
-          {cards.map((card) => (
-            <ImportModal
-              key={card.cardNumber}
-              card={card}
-              companyId={selectedCompany.companyId}
-            />
-            ))}
-        </Space>
-      );
-    }
-
-    modal.confirm({
-      open: showImportConfirmationModal,
-      okText: isCardProvider ? 'Done' : 'Import',
-      closable: false,
-      onOk: async () => {
-        if (isCardProvider) {
-          setShowImportConfirmationModal(false);
-        } else {
-          await onTransactionsImportOk(account.txns);
-        }
-      },
-      content
-    });
-  };
-
-  const onTransactionsImportOk = async (transactions: MainTransaction[]): Promise<MainTransaction[]> => {
-    try {
-      const res = await transactionsServices.importTransactions(
-        props.user._id,
-        transactions,
-        (SupportedCompaniesTypes as any)[selectedCompany.companyId]
-      );
-      if (res && isArray(res)) {
-        message.success(`imported transactions: ${res?.length || 0}`);
-      }
-      return res;
-    } catch (err: any) {
-      message.error(err);
-    }
-  };
+  const isConnect = !props.formType || props.formType === ConnectBankFormType.Connect_Bank;
 
   return (
-    <Space className="w-100" direction="vertical" size={'large'}>
-      <Typography.Title
-        style={{ margin: 0, textDecoration: 'underline' }}
-        level={4}
-      >
-        {(!props.formType || props.formType === ConnectBankFormType.Connect_Bank) && (
-          "Connect your bank account"
-        )}
-        {props.formType === ConnectBankFormType.Update_Bank && (
-          "Update your bank account details"
-        )}
-      </Typography.Title>
+    <Space className="w-100" direction="vertical" size={0}>
+      {/* Header */}
+      <div className="connect-bank-header">
+        <div className="connect-bank-header-icon">
+          <CiBank size={22} />
+        </div>
+        <div className="connect-bank-header-text">
+          <Typography.Title level={5} className="connect-bank-title">
+            {isConnect ? t('connectBank.connectTitle') : t('connectBank.updateTitle')}
+          </Typography.Title>
+          <span className="connect-bank-subtitle">
+            {isConnect ? t('connectBank.connectSubtitle') : t('connectBank.updateSubtitle')}
+          </span>
+        </div>
+      </div>
+
+      <ScrapingProgressModal
+        jobId={scrapingJobId}
+        bankName={selectedCompany.companyId ? getCompanyName(selectedCompany.companyId) : undefined}
+        onImport={handleImport}
+        onComplete={(data) => {
+          handleScrapingResult(data);
+        }}
+        onFailed={(err) => {
+          message.error(err);
+        }}
+        onClose={() => setScrapingJobId(null)}
+      />
 
       <Form
+        className="connect-bank-form"
         validateTrigger="onChange"
         onFinish={onFinish}
         layout="vertical"
-        disabled={isLoading}
+        disabled={!!scrapingJobId}
       >
         <Form.Item
           name={'companyId'}
-          label="Select your bank"
+          label={t('connectBank.selectBankLabel')}
           initialValue={props.bankDetails?.bankName}
         >
           <Select
             options={bankList}
-            placeholder='Select Bank'
+            placeholder={t('connectBank.selectBankPlaceholder')}
             onSelect={(e) => onSelectCompany(e)}
           />
         </Form.Item>
 
         {selectedCompany.isSelected && (
           <>
-            <Typography.Title level={3}>{getCompanyName(selectedCompany.companyId)}</Typography.Title>
+            <div className="connect-bank-selected-badge">
+              <CheckCircleFilled />
+              {getCompanyName(selectedCompany.companyId)}
+            </div>
             {selectedCompany.loginFields.map((field: any) => (
               <Form.Item
                 key={field}
                 name={field}
-                label={field}
+                label={t(`connectBank.fieldLabels.${field}`, { defaultValue: field })}
               >
                 {field === 'password' ? (
                   <Input.Password autoComplete="off" />
@@ -189,12 +193,21 @@ const ConnectBankForm = (props: ConnectBankFormProps) => {
         <Form.Item
           name="save"
           valuePropName="checked"
-          extra="Save your credentials to update data faster"
+          extra={t('connectBank.saveCredentialsExtra')}
+          className="connect-bank-save-row"
         >
-          <Checkbox>Save my credentials</Checkbox>
+          <Checkbox>{t('connectBank.saveCredentials')}</Checkbox>
         </Form.Item>
 
-        <Button loading={isLoading} disabled={!selectedCompany.companyId} type="link" htmlType="submit">Check</Button>
+        <Button
+          loading={!!scrapingJobId}
+          disabled={!selectedCompany.companyId || !!scrapingJobId}
+          type="primary"
+          htmlType="submit"
+          className="connect-bank-submit"
+        >
+          {isConnect ? t('connectBank.connectBtn') : t('connectBank.updateBtn')}
+        </Button>
       </Form>
     </Space>
   );

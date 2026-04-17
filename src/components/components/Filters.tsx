@@ -10,10 +10,8 @@ import { Button, Col, DatePicker, Flex, Grid, Input, Row, Select, Tooltip } from
 import LeftOutlined from "@ant-design/icons/LeftOutlined";
 import RightOutlined from "@ant-design/icons/RightOutlined";
 import { Languages } from "../../utils/enums";
-import { useQuery } from "@tanstack/react-query";
-import CategoryModel from "../../models/category-model";
-import categoriesServices from "../../services/categories";
 import { CreditCardType } from "../../utils/types";
+import { useCategories } from "../../hooks/useCategories";
 
 interface FiltersProps {
   byTransType?: boolean;
@@ -28,7 +26,7 @@ interface FiltersProps {
   cards?: CreditCardType[];
   filterState: any;
   type: 'categories' | 'transactions',
-  handleFilterChange: (field: string, val: string | number[] | Dayjs[]) => void;
+  handleFilterChange: (field: string, val: any) => void;
   resetFilters?: () => void;
 };
 
@@ -42,20 +40,14 @@ const transactionStatus = [
     value: TransactionStatuses.pending
   }
 ];
-const incomeType: DefaultOptionType[] = [
-  {
-    label: 'Income',
-    value: 'income'
-  },
-  {
-    label: 'Spent',
-    value: 'spent'
-  }
-];
-
 export const Filters = (props: FiltersProps) => {
   const screen = Grid.useBreakpoint();
   const { t } = useTranslation();
+
+  const incomeType: DefaultOptionType[] = [
+    { label: t('totals.income'), value: 'income' },
+    { label: t('totals.spent'),  value: 'spent'  },
+  ];
   const isPhone  = !screen.xs;
   const  isMobile = !screen.md;
   const [collapsed, setCollapsed] = useState<boolean>(true);
@@ -63,11 +55,8 @@ export const Filters = (props: FiltersProps) => {
     width: (isMobile ? 200 : 250)
   };
   const { lang } = useAppSelector((state) => state.config.language);
-  const user = useAppSelector((state) => state.auth?.user);
   const isCardTransactions = props.filterState.type === TransactionsType.CARD_TRANSACTIONS;
-
-  const fetchCategories = async () => await categoriesServices.fetchCategories(user._id);
-  const { data: categories = [], isLoading: loading } = useQuery<CategoryModel[]>({ queryKey: ['categories', user._id], queryFn: fetchCategories });
+  const { data: categories = [], isLoading: loading } = useCategories();
 
   const mappedCategories = categories.map((category) => {
     return {
@@ -104,7 +93,7 @@ export const Filters = (props: FiltersProps) => {
       <Col style={withCollapse && { width: (isMobile ? 210 : 260) }}>
         <Flex>
           {withCollapse && (
-            <Tooltip title="More filters" placement="topLeft">
+            <Tooltip title={t('filters.moreFilters')} placement="topLeft">
               <Button
                 type="text"
                 className={`icon-btn ${isEN ? 'en' : ''}`}
@@ -120,14 +109,7 @@ export const Filters = (props: FiltersProps) => {
               allowClear={!isPhone}
               style={{ width: '100%' }}
               value={props.filterState.month}
-              onChange={(val) => {
-                if (!val) {
-                  props.handleFilterChange('month', null);
-                  return;
-                }
-                props.handleFilterChange('dates', null);
-                props.handleFilterChange('month', val);
-              }}
+              onChange={(val) => props.handleFilterChange('month', val)}
             />
           )}
         </Flex>
@@ -152,10 +134,10 @@ export const Filters = (props: FiltersProps) => {
       {isCardTransactions && (
         <Col>
           <Select
-            value={props.filterState.card}
+            value={props.filterState.cardNumber}
             allowClear
             style={style}
-            placeholder={'Filter by Card'}
+            placeholder={t('filters.placeholders.6')}
             onChange={(val) => props.handleFilterChange('cardNumber', val)}
             options={cardOptions}
           />
@@ -186,14 +168,7 @@ export const Filters = (props: FiltersProps) => {
             style={style}
             value={props.filterState.dates}
             maxDate={dayjs()}
-            onChange={(val) => {
-              if (!val) {
-                props.handleFilterChange('dates', null);
-                return;
-              }
-              props.handleFilterChange('dates', val);
-              props.handleFilterChange('month', null);
-            }}
+            onChange={(val) => props.handleFilterChange('dates', val as [Dayjs, Dayjs] | null)}
           />
         </Col>
       )}
@@ -233,7 +208,7 @@ export const Filters = (props: FiltersProps) => {
             value={props.filterState.byIncome}
             allowClear
             style={style}
-            placeholder={'Filter by Income'}
+            placeholder={t('filters.placeholders.7')}
             onChange={(val) => props.handleFilterChange('byIncome', val)}
             options={incomeType}
           />

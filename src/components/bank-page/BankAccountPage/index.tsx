@@ -1,101 +1,133 @@
 import dayjs from "dayjs";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import relativeTime from "dayjs/plugin/relativeTime"
-import { AppDispatch } from "../../../redux/store";
-import { setBankAsMainAccount } from "../../../redux/actions/bank-actions";
+import { useMutation } from "@tanstack/react-query";
+import { useBanks, BANKS_QUERY_KEY } from "../../../hooks/useBanks";
+import bankServices from "../../../services/banks";
+import queryClient from "../../../services/queryClient";
 import UserModel from "../../../models/user-model";
 import { ConnectBankFormType } from "../ConnectBankForm";
 import { ConnectBankModel } from "../../components/CustomModal";
 import { RefreshBankDataButton } from "../../components/RefreshBankDataButton";
 import { BankAccountModel } from "../../../models/bank-model";
 import { asNumString, getCompanyName } from "../../../utils/helpers";
-import { App, Button, Col, Row, Space, Spin, Tooltip, Typography } from "antd";
+import { App, Button, Card, Col, Flex, Row, Tag, Tooltip, Typography } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 
 dayjs.extend(relativeTime);
 
 interface BankAccountPageProps {
   bankAccount: BankAccountModel;
   user: UserModel;
-  loading: boolean;
-  mainAccountLoading: boolean;
 };
 
 const BankAccountPage = (props: BankAccountPageProps) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
   const { message } = App.useApp();
+  const { isLoading: banksLoading } = useBanks();
   const { lastConnection, details, bankName, _id: bank_id, isCardProvider } = props.bankAccount;
   const lastConnectionDateString = dayjs(lastConnection).fromNow() || null;
   const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const isMainAccount = !!props.bankAccount.isMainAccount;
+  const cardsCount = props.bankAccount?.cardsPastOrFutureDebit?.cardsBlock?.length || 0;
+  const upcomingDebitsCount = props.bankAccount?.pastOrFutureDebits?.length || 0;
   const disabledMainAccountBtnTitle = isMainAccount ?
-  'This is already the main account' :
+  t('bankPage.account.isMainTitle') :
   isCardProvider ?
-  'This is an card provider company' : ''
+  t('bankPage.account.cardProviderTitle') : ''
+
+  const setMainMutation = useMutation({
+    mutationFn: () => bankServices.setMainAccount(props.user._id, bank_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [BANKS_QUERY_KEY, props.user._id] });
+      message.success(t('bankPage.account.setAsMainSuccess', { bank: getCompanyName(bankName) }));
+    },
+    onError: (err: any) => message.error(err),
+  });
 
   const editAccountDetails = () => {
     setIsOpen(true);
   };
 
-  const handleSetAsMainAccount = async () => {
-    try {
-      await dispatch(setBankAsMainAccount({
-        bank_id,
-        user_id: props.user?._id
-      })).unwrap();
-      message.success(`${getCompanyName(bankName)} is now the main account`);
-    } catch (err: any) {
-      message.error(err);
-    }
-  };
-
   return (
     <>
-      <Row justify={'center'} align={'middle'}>
-        <Col span={12}>
-          <Space align="center" direction="vertical" className="w-100" size={"small"}>
-            <Typography.Title level={2}>{getCompanyName(bankName)}</Typography.Title>
+      <Row justify="center" className="bank-account-detail-row">
+        <Col xs={24} sm={20} md={16} lg={12} xl={10}>
+          <Card className="bank-account-card" bordered={false}>
+            {/* Header */}
+            <Flex align="center" justify="space-between" className="bank-card-header">
+              <Flex align="center" gap={12}>
+                <div className="bank-card-icon">
+                  <Typography.Text className="bank-card-initials">
+                    {getCompanyName(bankName)?.[0] ?? '?'}
+                  </Typography.Text>
+                </div>
+                <Flex vertical gap={2}>
+                  <Typography.Title level={4} style={{ margin: 0 }}>{getCompanyName(bankName)}</Typography.Title>
+                  {isMainAccount && <Tag color="teal" className="main-account-tag">{t('bankPage.account.mainAccount')}</Tag>}
+                </Flex>
+              </Flex>
+              <Button
+                icon={<EditOutlined />}
+                disabled={banksLoading}
+                onClick={editAccountDetails}
+                className="bank-edit-btn"
+              >
+                {t('bankPage.account.edit')}
+              </Button>
+            </Flex>
 
-            <Typography.Text>
-              <span>Last Update: </span>
-              {props.loading ? (
-                <Spin />
-              ) : (
-                lastConnectionDateString
-              )}
-            </Typography.Text>
+            {/* Stats */}
+            <div className="bank-stats-grid">
+              <div className="bank-stat-item">
+                <span className="bank-stat-label">{t('bankPage.account.balance')}</span>
+                <span className="bank-stat-value">
+                  ₪{asNumString(details?.balance || 0)}
+                </span>
+              </div>
+              <div className="bank-stat-item">
+                <span className="bank-stat-label">{t('bankPage.account.lastUpdated')}</span>
+                <span className="bank-stat-value bank-stat-secondary">
+                  {lastConnectionDateString ?? '—'}
+                </span>
+              </div>
+              <div className="bank-stat-item">
+                <span className="bank-stat-label">{t('bankPage.detail.accountNumber')}</span>
+                <span className="bank-stat-value bank-stat-secondary">
+                  {details?.accountNumber || t('bankPage.detail.unavailable')}
+                </span>
+              </div>
+              <div className="bank-stat-item">
+                <span className="bank-stat-label">{t('bankPage.detail.cardFeeds')}</span>
+                <span className="bank-stat-value">
+                  {cardsCount}
+                </span>
+              </div>
+            </div>
 
-            <Typography.Text>
-              <span>Balance: </span>
-              {props.loading ? (
-              <Spin />
-              ) : (
-                asNumString(details?.balance || 0)
-              )}
-            </Typography.Text>
+            <div className="page-inline-metadata">
+              <span className="page-badge">{isCardProvider ? t('bankPage.detail.creditProvider') : t('bankPage.detail.bankAccount')}</span>
+              <span className="page-badge">{`${upcomingDebitsCount} ${t('bankPage.detail.futureDebitSnapshots')}`}</span>
+              {isMainAccount && <span className="page-badge">{t('bankPage.detail.primaryBalanceSource')}</span>}
+            </div>
 
-            <Row align={'middle'} justify={'center'} gutter={[10, 10]}>
-              <Col>
-                <RefreshBankDataButton
-                  bank={props.bankAccount}
-                  buttonProps={{
-                    type: 'link'
-                  }}
-                />
-              </Col>
-              <Col>
-                <Typography.Link disabled={props.loading} onClick={editAccountDetails}>Edit-details</Typography.Link>
-              </Col>
-            </Row>
-            <Row align={'middle'} justify={'center'}>
-              <Col>
-                <Tooltip title={disabledMainAccountBtnTitle}>
-                  <Button disabled={isMainAccount || isCardProvider} loading={props.mainAccountLoading} onClick={handleSetAsMainAccount}>Set as main account</Button>
-                </Tooltip>
-              </Col>
-            </Row>
-          </Space>
+            {/* Actions */}
+            <Flex gap={10} className="bank-actions">
+              <RefreshBankDataButton bank={props.bankAccount} />
+              <Tooltip title={disabledMainAccountBtnTitle}>
+                <Button
+                  disabled={isMainAccount || isCardProvider}
+                  loading={setMainMutation.isPending}
+                  onClick={() => setMainMutation.mutate()}
+                  className="bank-main-account-btn"
+                >
+                  {t('bankPage.account.setAsMain')}
+                </Button>
+              </Tooltip>
+            </Flex>
+          </Card>
         </Col>
       </Row>
       <ConnectBankModel
@@ -107,12 +139,9 @@ const BankAccountPage = (props: BankAccountPageProps) => {
         modalProps={{
           open: isOpen,
           onCancel: () => setIsOpen(false),
-          onClose: () => setIsOpen(false),
           closable: true,
-          confirmLoading: props.loading,
           cancelButtonProps: {
             onClick: () => setIsOpen(false),
-            disabled: props.loading
           },
           okButtonProps: {
             disabled: !isOkBtnActive,

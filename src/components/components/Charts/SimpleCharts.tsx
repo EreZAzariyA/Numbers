@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../redux/store";
 import {
   Cell,
@@ -18,8 +19,9 @@ import categoriesServices from "../../../services/categories";
 import { useQuery } from "@tanstack/react-query";
 import CategoryModel from "../../../models/category-model";
 import { MainTransaction } from "../../../services/transactions";
+import { ThemeColors } from "../../../utils/enums";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#14B8A6", "#6366F1", "#F59E0B", "#EF4444", "#8B5CF6", "#10B981", "#F97316", "#3B82F6", "#EC4899", "#84CC16"];
 
 interface SimpleChartsProps {
   transactions: MainTransaction[];
@@ -38,19 +40,34 @@ const renderActiveShape = (props: any) => {
     payload,
     percent,
     value,
+    isEmpty,
+    theme,
+    noDataLabel = "No data",
   } = props;
+
+  const mutedColor = theme === ThemeColors.LIGHT ? "#94a3b8" : "#64748b";
 
   return (
     <g>
-      <text x={cx} y={cy - 20} dy={8} textAnchor="middle" fill={fill}>
-        {payload.name}
-      </text>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {`Price ${asNumString(value)}`}
-      </text>
-      {(value > 0.1) && (
-        <text x={cx} y={cy + 20} dy={8} textAnchor="middle" fill={fill}>
-          {`(Rate ${(percent * 100).toFixed(2)}%)`}
+      {/* Center label: only show category name when there's real data */}
+      {!isEmpty && (
+        <text x={cx} y={cy - 10} dy={8} textAnchor="middle" fill={fill} fontSize={13} fontWeight={500}>
+          {payload.name}
+        </text>
+      )}
+      {isEmpty && (
+        <text x={cx} y={cy} dy={5} textAnchor="middle" fill={mutedColor} fontSize={13} fontWeight={500}>
+          {noDataLabel}
+        </text>
+      )}
+      {!isEmpty && value > 0.1 && (
+        <text x={cx} y={cy + 10} dy={8} textAnchor="middle" fill={fill} fontSize={13}>
+          {asNumString(value)}
+        </text>
+      )}
+      {!isEmpty && value > 0.1 && (
+        <text x={cx} y={cy + 26} dy={8} textAnchor="middle" fill="#94a3b8" fontSize={11}>
+          {`${(percent * 100).toFixed(1)}%`}
         </text>
       )}
       <Sector
@@ -76,7 +93,9 @@ const renderActiveShape = (props: any) => {
 };
 
 export const SimpleCharts = (props: SimpleChartsProps) => {
+  const { t } = useTranslation();
   const user = useAppSelector((state) => state.auth?.user);
+  const { theme } = useAppSelector((state) => state.config.themeColor);
   const fetchCategories = async () => await categoriesServices.fetchCategories(user._id);
   const { data: categories, isLoading: loading } = useQuery<CategoryModel[]>({ queryKey: ['categories', user?._id], queryFn: fetchCategories });
 
@@ -88,9 +107,12 @@ export const SimpleCharts = (props: SimpleChartsProps) => {
     props.transactions
   );
   data = data.sort((a, b) => b.value - a.value);
-  if (!isArrayAndNotEmpty(data)) {
-    data = [{ name: "No Data", value: 0.001 }];
+  const isEmpty = !isArrayAndNotEmpty(data);
+  if (isEmpty) {
+    data = [{ name: "", value: 0.001 }];
   }
+
+  const emptyColor = theme === ThemeColors.LIGHT ? "#e2e8f0" : "#1e293b";
 
   const onPieEnter = (_: any, index: number) => {
     setState({
@@ -104,7 +126,7 @@ export const SimpleCharts = (props: SimpleChartsProps) => {
       <PieChart>
         <Pie
           activeIndex={state.activeIndex}
-          activeShape={(props: any) => renderActiveShape({ ...props })}
+          activeShape={(props: any) => renderActiveShape({ ...props, isEmpty, theme, noDataLabel: t('charts.noData') })}
           data={data}
           innerRadius={60}
           outerRadius={80}
@@ -113,18 +135,20 @@ export const SimpleCharts = (props: SimpleChartsProps) => {
           onMouseEnter={onPieEnter}
         >
           {data.map((_, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell key={`cell-${index}`} fill={isEmpty ? emptyColor : COLORS[index % COLORS.length]} />
           ))}
         </Pie>
-        <Legend
-          layout={screen.sm ? "vertical" : "horizontal"}
-          verticalAlign={screen.sm ? "middle" : "bottom"}
-          align={screen.sm ? "right" : "center"}
-          onClick={(_, index) => setState({ activeIndex: index })}
-          formatter={(value) => (
-            <span style={{ marginRight: "10px" }}>{value}</span>
-          )}
-        />
+        {!isEmpty && (
+          <Legend
+            layout={screen.sm ? "vertical" : "horizontal"}
+            verticalAlign={screen.sm ? "middle" : "bottom"}
+            align={screen.sm ? "right" : "center"}
+            onClick={(_, index) => setState({ activeIndex: index })}
+            formatter={(value) => (
+              <span style={{ marginRight: "10px" }}>{value}</span>
+            )}
+          />
+        )}
       </PieChart>
     </ResponsiveContainer>
   );
