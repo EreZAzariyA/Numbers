@@ -5,7 +5,8 @@ abstract class Config {
       signup: "",
       signIn: "",
       googleSignIn: "",
-      logout: ""
+      logout: "",
+      refresh: ""
     },
     users: {
       config: {
@@ -14,6 +15,11 @@ abstract class Config {
       }
     },
     transactions: "",
+    recurringTransactions: "",
+    forecast: "",
+    savingsGoals: "",
+    financialHealth: "",
+    cashFlow: "",
     categories: "",
     bank: {
       fetchAllBanksAccounts: "",
@@ -35,6 +41,7 @@ abstract class Config {
         signIn: baseUrl + "auth/signin",
         googleSignIn: baseUrl + "auth/google",
         logout: baseUrl + "auth/logout",
+        refresh: baseUrl + "auth/refresh",
       },
       users: {
         config: {
@@ -43,6 +50,11 @@ abstract class Config {
         }
       },
       transactions: baseUrl + "transactions/",
+      recurringTransactions: baseUrl + "transactions/recurring/",
+      forecast: baseUrl + "forecast/",
+      savingsGoals: baseUrl + "savings-goals/",
+      financialHealth: baseUrl + "financial-health/",
+      cashFlow: baseUrl + "cash-flow/",
       categories: baseUrl + "categories",
       bank: {
         fetchAllBanksAccounts: baseUrl + "banks/fetch-user-banks-accounts",

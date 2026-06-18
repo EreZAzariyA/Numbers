@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { useTranslation } from "react-i18next";
 import { PastOrFutureDebitType } from "../../utils/types";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useState } from "react";
@@ -35,6 +36,7 @@ const customizedYAxisTick = (props: any) => {
 
 
 export const DebitsBarCharts = (props: DebitsBarChartsProps) => {
+  const { t } = useTranslation();
   const data = [...props?.pastDebits];
   const [activeIndex, setActiveIndex] = useState<number>(null);
   const activeItem = data[activeIndex];
@@ -49,7 +51,7 @@ export const DebitsBarCharts = (props: DebitsBarChartsProps) => {
           <XAxis dataKey="debitMonth" tick={customizedXAxisTick} padding={{ left: 0, right: 0 }} />
           <YAxis dataKey={"monthlyNISDebitSum"} tick={customizedYAxisTick} />
           <Tooltip formatter={(val) => (val.toLocaleString())} />
-          <Bar dataKey="monthlyNISDebitSum" name='Spent' onClick={(_, i) => setActiveIndex(i)} minPointSize={1}>
+          <Bar dataKey="monthlyNISDebitSum" name={t('charts.spent')} onClick={(_, i) => setActiveIndex(i)} minPointSize={1}>
             {data.map((_, index) => (
               <Cell cursor="pointer" fill={index === activeIndex ? '#82ca9d' : '#8884d8'} key={`cell-${index}`} />
             ))}
@@ -57,7 +59,7 @@ export const DebitsBarCharts = (props: DebitsBarChartsProps) => {
         </BarChart>
       </ResponsiveContainer>
       {activeItem && (
-        <p className="content">{`Amount spent on "${activeItem.debitMonth}": ${activeItem.monthlyNISDebitSum}`}</p>
+        <p className="content">{t('charts.amountSpentOn', { name: activeItem.debitMonth, amount: activeItem.monthlyNISDebitSum })}</p>
       )}
     </>
   )

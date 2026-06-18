@@ -1,11 +1,7 @@
 
 
-const BankAccountFirst = () => {
-  return (
-    <>
-      sad
-    </>
-  )
+const BankAccountFirst = (): null => {
+  return null;
 };
 
 export default BankAccountFirst;

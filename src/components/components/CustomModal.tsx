@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import ConnectBankForm, { ConnectBankFormType } from "../bank-page/ConnectBankForm";
 import { BankAccountModel } from "../../models/bank-model";
 import UserModel from "../../models/user-model";
@@ -14,16 +15,20 @@ interface ConnectBankModelProps {
 }
 
 export const ConnectBankModel = (props: ConnectBankModelProps) => {
+  const { t } = useTranslation();
   const [modalResult, setModalResult] = useState<BankAccountModel>(null);
 
   let modalSubTitle = '';
   if (modalResult) {
     const isCardProvider = modalResult.isCardProvider || false;
     if (!isCardProvider) {
-      modalSubTitle = `Account number: ${modalResult.details?.accountNumber} Added. Current balance of ${modalResult.details?.balance} added to your account`;
+      modalSubTitle = t('connectBank.successAccountSubtitle', {
+        accountNumber: modalResult.details?.accountNumber,
+        balance: modalResult.details?.balance,
+      });
     } else {
       const creditCards = modalResult.cardsPastOrFutureDebit?.cardsBlock || [];
-      modalSubTitle = `${creditCards.length} card added into your account`
+      modalSubTitle = t('connectBank.successCardsSubtitle', { count: creditCards.length });
     }
   }
 
@@ -39,7 +44,6 @@ export const ConnectBankModel = (props: ConnectBankModelProps) => {
         width={400}
         footer={modalResult ? false : undefined}
         onCancel={onClose}
-        onClose={onClose}
       >
         {!modalResult ? (
           <ConnectBankForm
@@ -52,7 +56,7 @@ export const ConnectBankModel = (props: ConnectBankModelProps) => {
         ) : (
           <Result
             status="success"
-            title="Successfully Connected To Your Bank Account!"
+            title={t('connectBank.successTitle')}
             subTitle={modalSubTitle}
           />
         )}

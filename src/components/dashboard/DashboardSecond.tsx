@@ -6,8 +6,9 @@ import UserModel from "../../models/user-model";
 import { EditTable } from "../components/EditTable";
 import { asNumString, queryFiltering } from "../../utils/helpers";
 import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
-import { Card, Flex, Tooltip } from "antd";
+import { Card, Flex, Tooltip, Typography } from "antd";
 import { TableProps } from "antd/lib";
+import { LuActivity } from "react-icons/lu";
 
 interface DashboardSecondProps {
   user: UserModel;
@@ -62,9 +63,21 @@ const DashboardSecond = (props: DashboardSecondProps) => {
   const cardTitle = (
     <Flex align="center" justify="space-between">
       {t('dashboard.second.0')}
-      <Link to={'/transactions'}>{t('dashboard.second.1')}</Link>
+      <Link to={'/transactions'} className="more-link">{t('dashboard.second.1')}</Link>
     </Flex>
-  )
+  );
+
+  const emptyState = (
+    <div className="dashboard-empty-state">
+      <div className="dashboard-empty-icon">
+        <LuActivity size={28} />
+      </div>
+      <Typography.Text className="dashboard-empty-title">{t('dashboard.empty')}</Typography.Text>
+      <Typography.Text className="dashboard-empty-desc">
+        {t('dashboard.emptyDesc')}
+      </Typography.Text>
+    </div>
+  );
 
   return (
     <Card title={cardTitle} className="dashboard-second">
@@ -74,6 +87,7 @@ const DashboardSecond = (props: DashboardSecondProps) => {
         tableProps={{
           columns,
           bordered: false,
+          locale: { emptyText: emptyState },
         }}
       />
     </Card>

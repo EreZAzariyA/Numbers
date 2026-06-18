@@ -1,28 +1,182 @@
+/* ─── Card container ─────────────────────────────────────────── */
 .credit-card-main-container .credit-card {
   width: 100%;
-  min-width: 300px;
-  height: 150px;
+  min-width: 280px;
+  height: 168px;
   color: #ffffff;
-
-  border-radius: 6px;
-  padding: 10px 15px;
-  background: linear-gradient(90deg, #4BC87D 20%, #12AA54 100%);
-  box-shadow: 0 10px 16px 0 rgba(67, 96, 144, 0.24);
+  border-radius: 18px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #0F766E 0%, #0d9488 50%, #14B8A6 100%);
+  box-shadow:
+    0 2px 4px rgba(15, 118, 110, 0.15),
+    0 8px 24px rgba(15, 118, 110, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.credit-card-main-container .credit-card.non-active {
-  background: linear-gradient(90deg, #1a472c 100%, #12AA54 100%);
-}
-.credit-card-main-container .credit-card.non-active .card-number {
-  color: rgba(211, 211, 211, 0.4);
-}
-
-.credit-card-main-container .credit-card .slider {
-  width: 90%;
+/* ─── Decorative circles ─────────────────────────────────────── */
+.credit-card-main-container .credit-card::before {
+  content: '';
   position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.credit-card-main-container .credit-card::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: -20px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+/* ─── Hover ──────────────────────────────────────────────────── */
+.credit-card-main-container .credit-card:hover {
+  box-shadow:
+    0 4px 8px rgba(15, 118, 110, 0.2),
+    0 16px 40px rgba(15, 118, 110, 0.38);
+  transform: translateY(-2px);
+}
+
+/* ─── Non-active card ────────────────────────────────────────── */
+.credit-card-main-container .credit-card.non-active {
+  background: linear-gradient(135deg, #1e293b 0%, #2d3f55 50%, #334155 100%);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.credit-card-main-container .credit-card.non-active:hover {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.25),
+    0 16px 40px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+.credit-card-main-container .credit-card.non-active .card-number {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ─── Top row: chip + card family ────────────────────────────── */
+.credit-card-main-container .credit-card .card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ─── Chip ───────────────────────────────────────────────────── */
+.credit-card-main-container .credit-card .card-chip {
+  width: 34px;
+  height: 26px;
+  background: linear-gradient(135deg, #d4af37 0%, #f5d78e 40%, #c9962f 100%);
+  border-radius: 5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.credit-card-main-container .credit-card .chip-line {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.credit-card-main-container .credit-card .chip-line-h {
+  width: 100%;
+  height: 1px;
+}
+
+.credit-card-main-container .credit-card .chip-line-v {
+  height: 100%;
+  width: 1px;
+}
+
+/* ─── Card family name ───────────────────────────────────────── */
+.credit-card-main-container .credit-card .card-family {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  opacity: 0.9;
+  text-transform: uppercase;
+}
+
+/* ─── Card number ────────────────────────────────────────────── */
+.credit-card-main-container .credit-card .card-number {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  font-family: 'Courier New', monospace;
+}
+
+/* ─── Bottom row: holder + expiry ────────────────────────────── */
+.credit-card-main-container .credit-card .card-bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.credit-card-main-container .credit-card .card-label {
+  display: block;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.65;
+  margin-bottom: 2px;
+}
+
+.credit-card-main-container .credit-card .card-holder-name,
+.credit-card-main-container .credit-card .card-expiry {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* ─── Usage bar ──────────────────────────────────────────────── */
+.credit-card-main-container .credit-card .card-usage-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.credit-card-main-container .credit-card .card-usage-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.credit-card-main-container .credit-card .card-usage-fill {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.credit-card-main-container .credit-card .card-usage-pct {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.85;
+  min-width: 30px;
+  text-align: end;
 }

@@ -94,6 +94,39 @@ export interface MainLoansType {
   currentTimestamp: number;
 }
 
+export interface RecurringTransactionItem {
+  _id: string;
+  date: string;
+  processedDate: string;
+  amount: number;
+  description: string;
+  companyId: string;
+  kind: "income" | "expense";
+}
+
+export type Frequency =
+  | "weekly"
+  | "biweekly"
+  | "monthly"
+  | "bimonthly"
+  | "quarterly"
+  | "semiannual"
+  | "annual"
+  | "unknown"
+  | "irregular";
+
+export interface RecurringGroup {
+  description: string;
+  normalizedDescription: string;
+  kind: "income" | "expense";
+  amount: number;
+  frequency: Frequency;
+  occurrences: number;
+  nextExpected: string | null;
+  totalSpent: number;
+  transactions: RecurringTransactionItem[];
+}
+
 export type LoanType = {
   loanAccount: string;
   loanName: string;
@@ -122,3 +155,65 @@ export type LoanType = {
   numberOfPartialPrepayments: string;
   loanPurpose: string;
 };
+
+export interface MonthlySpend {
+  month: string;  // "YYYY-MM"
+  amount: number;
+}
+
+export interface ForecastResponse {
+  historicalMonths: MonthlySpend[];
+  currentMonthSpend: number;
+  forecastAmount: number;
+  averageMonthlySpend: number;
+  daysRemaining: number;
+  aiInsight: string;
+  trend: 'up' | 'down' | 'flat';
+}
+
+export interface ComponentResult {
+  score: number;
+  status: 'good' | 'warning' | 'bad' | 'neutral';
+  detail: string;
+}
+
+export interface FinancialHealthResponse {
+  score: number;
+  status: 'good' | 'warning' | 'bad';
+  components: {
+    cashFlow: ComponentResult;
+    categoryBudgets: ComponentResult;
+    savingsTrend: ComponentResult;
+    debtPressure: ComponentResult;
+  };
+  aiInsight: string;
+}
+
+export interface ProjectedEvent {
+  description: string;
+  amount: number;
+  expectedDate: string;
+  type: 'income' | 'expense';
+  alreadyReceived: boolean;
+}
+
+export interface CashFlowProjectionResponse {
+  incomeToDate: number;
+  expensesToDate: number;
+  netToDate: number;
+  expectedEvents: ProjectedEvent[];
+  projectedMonthNet: number;
+  projectedEndBalance: number | null;
+  currentBalance: number | null;
+  riskLevel: 'low' | 'medium' | 'high';
+  daysRemaining: number;
+}
+
+export interface SavingsGoalModel {
+  _id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate: string;  // "YYYY-MM-DD"
+  aiInsight?: string;
+}

@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/store"
-import { refreshBankData } from "../../redux/actions/bank-actions";
-import { getCompanyName, getTimeToRefresh, isArrayAndNotEmpty } from "../../utils/helpers";
+import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../redux/store"
+import { useBanks } from "../../hooks/useBanks";
+import { useBankRefresh } from "../../hooks/useBankRefresh";
+import { getCompanyName } from "../../utils/helpers";
 import { App, Button, ButtonProps, Tooltip } from "antd"
 import { BankAccountModel } from "../../models/bank-model";
-import { RefreshedBankAccountDetails } from "../../utils/transactions";
 import ConnectBankForm, { ConnectBankFormType } from "../bank-page/ConnectBankForm";
+import ScrapingProgressModal from "./ScrapingProgressModal";
 
 interface RefreshBankDataButtonProps {
   buttonProps?: ButtonProps;
@@ -13,25 +15,31 @@ interface RefreshBankDataButtonProps {
 }
 
 export const RefreshBankDataButton = (props: RefreshBankDataButtonProps) => {
-  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const { message, modal } = App.useApp();
-  const { account } = useAppSelector((state) => state.userBanks);
+  const { data: account } = useBanks();
   const { user } = useAppSelector((state) => state.auth);
-  const [loading, setLoading] = useState<boolean>(false);
   const [isOkBtnActive, setIsOkBtnActive] = useState<boolean>(false);
 
   const banksToRefresh: BankAccountModel[] = props.bank ? [props.bank] : [...account?.banks || []];
-
-  const lastConnection = !isArrayAndNotEmpty(banksToRefresh) ? null : banksToRefresh
-    .sort((a, b) => (
-      b?.lastConnection - a?.lastConnection
-    ))?.[0]?.lastConnection;
-
-  const timeLeftToRefreshData = getTimeToRefresh(lastConnection);
-  // const isRefreshAvailable = dayjs() > timeLeftToRefreshData;
-  const isRefreshAvailable = true;
+  const {
+    clearRefreshState,
+    handleSingleRefreshComplete,
+    handleSingleRefreshFailure,
+    isRefreshAvailable,
+    loading,
+    refreshManyBanks,
+    scrapingBankName,
+    scrapingJobId,
+    startSingleRefresh,
+    timeLeftToRefreshData,
+  } = useBankRefresh({
+    banks: banksToRefresh,
+    userId: user._id,
+  });
 
   const showModal = () => {
+    setIsOkBtnActive(false);
     modal.confirm({
       icon: null,
       closable: true,
@@ -56,63 +64,59 @@ export const RefreshBankDataButton = (props: RefreshBankDataButtonProps) => {
   };
 
   const handleRefresh = async () => {
-    setLoading(true);
-    if (props.bank && !props.bank?.credentials) {
-      setLoading(false);
-      return showModal();
-    }
-
-    try {
-      const successedBanks: string[] = [];
-      let allImportedTransactions: number = 0;
-      const results = banksToRefresh.map(async (bank) => {
-        const bankName = getCompanyName(bank.bankName);
-        if (!bank.credentials) {
-          return message.error(`Could not refresh ${bankName}. No Credentials found`);
-        };
-
-        return await dispatch(refreshBankData({ bank_id: bank._id, user_id: user._id }))
-          .unwrap()
-          .catch((err) => {
-            return message.error(err);
-          })
-        }
-      );
-
-      const res = await Promise.all(results);
-      console.log({ res });
-      if (res.some((r) => typeof r !== 'boolean')) {
-
-        res.forEach((r) => {
-          const { importedTransactions = [], bank } = r as RefreshedBankAccountDetails;
-          allImportedTransactions += importedTransactions.length || 0;
-          if (r && bank) {
-            const bankName = getCompanyName(bank.bankName);
-            successedBanks.push(bankName);
-          }
-        });
-
-        message.success(`Banks: ${successedBanks.join(', ')} refreshed successfully. ${allImportedTransactions} transactions updated`);
+    // Single bank path — keep modal flow
+    if (props.bank) {
+      if (!props.bank?.credentials) return showModal();
+      try {
+        await startSingleRefresh(props.bank);
+      } catch (err: any) {
+        message.error(err?.message || t('bank.refreshError'));
+        handleSingleRefreshFailure();
       }
-      setLoading(false);
-    } catch (err: any) {
-      setLoading(false);
-      message.error(err.message || 'An error occurred while trying to refresh banks, open the console to see more details');
+      return;
     }
+
+    // Multi-bank path — sequential, toast notifications
+    const validBanks = banksToRefresh.filter(b => b.credentials);
+    const invalidBanks = banksToRefresh.filter(b => !b.credentials);
+    invalidBanks.forEach(b =>
+      message.warning(t('bank.noCredentials', { name: getCompanyName(b.bankName) }))
+    );
+    if (!validBanks.length) return;
+    await refreshManyBanks(validBanks);
   };
 
-  const title = !isRefreshAvailable ? `Refresh will be able ${timeLeftToRefreshData.fromNow()}` : ''
+  const title = !isRefreshAvailable && timeLeftToRefreshData
+    ? t('bank.refreshAvailableAt', { time: timeLeftToRefreshData.fromNow() })
+    : '';
 
   return (
-    <Tooltip title={title}>
-      <Button
-        {...props.buttonProps}
-        loading={loading}
-        disabled={!isRefreshAvailable}
-        onClick={handleRefresh}
-      >
-        Refresh Bank Data
-      </Button>
-    </Tooltip>
+    <>
+      <ScrapingProgressModal
+        jobId={scrapingJobId}
+        bankName={scrapingBankName}
+        onComplete={(data) => {
+          handleSingleRefreshComplete();
+          message.success(t('bank.refreshSuccess', { name: getCompanyName(data.bank.bankName) }));
+        }}
+        onFailed={(err) => {
+          handleSingleRefreshFailure();
+          message.error(err);
+        }}
+        onClose={clearRefreshState}
+      />
+      <Tooltip title={title}>
+        <Button
+          {...props.buttonProps}
+          type="default"
+          loading={loading}
+          disabled={!isRefreshAvailable}
+          onClick={handleRefresh}
+          className="refresh-bank-btn"
+        >
+          {t('bank.refreshBtn')}
+        </Button>
+      </Tooltip>
+    </>
   );
 };

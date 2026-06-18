@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../redux/store";
 import {
   PieChart as Charts,
@@ -22,7 +23,7 @@ interface ChartsProps {
   transactions: TransactionModel[];
 }
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#14B8A6", "#6366F1", "#F59E0B", "#EF4444", "#8B5CF6", "#10B981", "#F97316", "#3B82F6", "#EC4899", "#84CC16"];
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -39,6 +40,8 @@ const renderActiveShape = (props: any) => {
     percent,
     value,
     theme,
+    isEmpty,
+    noDataLabel = "No data",
   } = props;
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
@@ -50,12 +53,16 @@ const renderActiveShape = (props: any) => {
   const ey = my;
   const textAnchor = cos >= 0 ? "end" : "start";
   const textColor = theme === ThemeColors.LIGHT ? "#333" : "#FFFFFF";
+  const mutedColor = theme === ThemeColors.LIGHT ? "#94a3b8" : "#64748b";
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {payload.name}
-      </text>
+      {/* Center label: only show when no real data */}
+      {isEmpty && (
+        <text x={cx} y={cy} dy={5} textAnchor="middle" fill={mutedColor} fontSize={13} fontWeight={500}>
+          {noDataLabel}
+        </text>
+      )}
       <Sector
         cx={cx}
         cy={cy}
@@ -74,7 +81,7 @@ const renderActiveShape = (props: any) => {
         outerRadius={outerRadius + 10}
         fill={fill}
       />
-      {value > 0.1 && (
+      {!isEmpty && value > 0.1 && (
         <>
           <path
             d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
@@ -87,15 +94,17 @@ const renderActiveShape = (props: any) => {
             y={ey}
             textAnchor={textAnchor}
             fill={textColor}
-          >{`Price ${asNumString(value)}`}</text>
+            fontSize={13}
+          >{asNumString(value)}</text>
           <text
             x={ex + (cos >= 0 ? 1 : -1) * 12}
             y={ey}
             dy={18}
             textAnchor={textAnchor}
             fill="#999"
+            fontSize={12}
           >
-            {`(Rate ${(percent * 100).toFixed(2)}%)`}
+            {`${(percent * 100).toFixed(1)}%`}
           </text>
         </>
       )}
@@ -104,6 +113,7 @@ const renderActiveShape = (props: any) => {
 };
 
 export const PieChart = (props: ChartsProps) => {
+  const { t } = useTranslation();
   const [state, setState] = useState({ activeIndex: 0 });
   const { theme } = useAppSelector((state) => state.config.themeColor);
 
@@ -111,8 +121,9 @@ export const PieChart = (props: ChartsProps) => {
     props.categories,
     props.transactions
   );
-  if (!isArrayAndNotEmpty(data)) {
-    data = [{ name: "No Data", value: 0.001 }];
+  const isEmpty = !isArrayAndNotEmpty(data);
+  if (isEmpty) {
+    data = [{ name: "", value: 0.001 }];
   }
 
   const onPieEnter = (_: any, index: number) => {
@@ -126,7 +137,7 @@ export const PieChart = (props: ChartsProps) => {
       <Charts>
         <Pie
           activeIndex={state.activeIndex}
-          activeShape={(props: any) => renderActiveShape({ ...props, theme })}
+          activeShape={(props: any) => renderActiveShape({ ...props, theme, isEmpty, noDataLabel: t('charts.noData') })}
           data={data}
           innerRadius={60}
           outerRadius={80}
@@ -138,19 +149,21 @@ export const PieChart = (props: ChartsProps) => {
             data.map((_, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
+                fill={isEmpty ? (theme === ThemeColors.LIGHT ? "#e2e8f0" : "#1e293b") : COLORS[index % COLORS.length]}
               />
             ))}
         </Pie>
-        <Legend
-          layout="horizontal"
-          verticalAlign="bottom"
-          align="center"
-          margin={{ top: 100 }}
-          formatter={(value) => (
-            <span style={{ marginRight: "10px" }}>{value}</span>
-          )}
-        />
+        {!isEmpty && (
+          <Legend
+            layout="horizontal"
+            verticalAlign="bottom"
+            align="center"
+            margin={{ top: 100 }}
+            formatter={(value) => (
+              <span style={{ marginRight: "10px" }}>{value}</span>
+            )}
+          />
+        )}
       </Charts>
     </ResponsiveContainer>
   );

@@ -21,10 +21,10 @@ export const TotalsContainer = (props: { filterState: {}, type: TransType }) => 
   });
 
   return (
-    <Flex align="center" justify="flex-end" gap={10} wrap={screen.xs}>
-      <TotalAmountInput transactions={isSuccess ? data.transactions : []} type={TotalAmountType.SPENT} style={{ width: 100 }} />
+    <Flex align="center" justify="flex-end" gap={8} wrap={screen.xs} style={{ flexShrink: 0 }}>
+      <TotalAmountInput transactions={isSuccess ? data.transactions : []} type={TotalAmountType.SPENT} />
       {!isCardTransactions && (
-        <TotalAmountInput transactions={isSuccess ? data.transactions : []} type={TotalAmountType.INCOME} style={{ width: 100 }} />
+        <TotalAmountInput transactions={isSuccess ? data.transactions : []} type={TotalAmountType.INCOME} />
       )}
     </Flex>
   );

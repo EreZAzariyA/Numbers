@@ -1,10 +1,7 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { MainBanksAccount } from "../../../models/bank-model";
 import { asNumString } from "../../../utils/helpers";
 import { getAccountCreditCards, getCreditCardsFramework, getCreditCardsUsed } from "../../../utils/bank-utils";
-import { Card, Divider, Flex, Typography } from "antd";
-import { GoCreditCard } from "react-icons/go";
 import "./CreditCardsAndSavings.css";
 
 interface CreditCardsAndSavingsProps {
@@ -12,16 +9,11 @@ interface CreditCardsAndSavingsProps {
   account: MainBanksAccount;
 };
 
-const { Text, Title } = Typography;
-
-const CardBlock = (props: { title: string, icon: React.ReactNode, value: number, currency: string }) => (
-  <Flex vertical>
-    <Flex gap={5} align="center" wrap={false}>
-      {props.icon}
-      <Text>{props.title}</Text>
-    </Flex>
-    <Title level={4}>{props.currency} {asNumString(props.value)}</Title>
-  </Flex>
+const StatItem = (props: { label: string, value: number, currency: string }) => (
+  <div className="stat-grid-item">
+    <span className="stat-grid-label">{props.label}</span>
+    <span className="stat-grid-value">{props.currency} {asNumString(props.value)}</span>
+  </div>
 );
 
 export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
@@ -35,17 +27,11 @@ export const CreditCardsAndSavings = (props: CreditCardsAndSavingsProps) => {
   const totalLoans = mainAccount?.loans?.summary?.totalBalance || 0;
 
   return (
-    <Flex className="inner-card-container">
-      <Card.Grid hoverable={false} className="box">
-        <CardBlock title={t('dashboard.first.2')} icon={<GoCreditCard />} value={used} currency={props.currency} />
-        <Divider className="custom-divider" />
-        <CardBlock title={t('dashboard.first.4')} icon={<GoCreditCard />} value={totalSaves} currency={props.currency} />
-      </Card.Grid>
-      <Card.Grid hoverable={false} className="box">
-        <CardBlock title={t('dashboard.first.5')} icon={<GoCreditCard />} value={totalLoans} currency={props.currency} />
-        <Divider className="custom-divider" />
-        <CardBlock title={t('dashboard.first.3')} icon={<GoCreditCard />} value={0} currency={props.currency} />
-      </Card.Grid>
-    </Flex>
+    <div className="stat-grid">
+      <StatItem label={t('dashboard.first.2')} value={used} currency={props.currency} />
+      <StatItem label={t('dashboard.first.5')} value={totalLoans} currency={props.currency} />
+      <StatItem label={t('dashboard.first.4')} value={totalSaves} currency={props.currency} />
+      <StatItem label={t('dashboard.first.3')} value={0} currency={props.currency} />
+    </div>
   );
 };

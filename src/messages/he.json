@@ -5,6 +5,10 @@
     "creditCards": "כרטיסי אשראי",
     "categories": "קטגוריות",
     "bankAccount": "חשבון בנק",
+    "loansSavings": "הלוואות וחסכונות",
+    "recurring": "עסקות קבועות",
+    "savingsGoals": "יעדי חיסכון",
+    "cashFlow": "תזרים מזומנים",
     "profile": "פרופיל",
     "account": [
       "חשבון",
@@ -21,9 +25,13 @@
     "creditCards": "כרטיסי אשראי",
     "categories": "קטגוריות",
     "bankAccount": "חשבון בנק",
-    "profile": "פרופיל"
+    "loansSavings": "הלוואות וחסכונות",
+    "recurring": "עסקות קבועות",
+    "profile": "פרופיל",
+    "savingsGoals": "יעדי חיסכון"
   },
   "dashboard": {
+    "subtitle": "שמור על החודש הנבחר מסונכרן עם ההוצאות, התזרים ובריאות חשבונות הבנק.",
     "first": [
       "מצב החשבון שלך",
       "יתרת חשבון",
@@ -31,7 +39,8 @@
       "ניירות ערך",
       "פקדונות וחסכונות",
       "הלוואות",
-      "דוח חודשי"
+      "דוח חודשי",
+      "הוצאות לפי קטגוריה"
     ],
     "second": [
       "תנועות אחרונות בחשבון",
@@ -39,9 +48,131 @@
     ],
     "third": [
       "כרטיסי אשראי"
-    ]
+    ],
+    "greeting": {
+      "morning": "בוקר טוב",
+      "afternoon": "צהריים טובים",
+      "evening": "ערב טוב",
+      "night": "לילה טוב"
+    },
+    "summary": {
+      "connectedBanks": "חשבונות מחוברים",
+      "connectedBanksCaption": "החשבונות שמזינים כרגע את לוח הבקרה.",
+      "currentBalance": "יתרה נוכחית",
+      "currentBalanceCaption": "היתרה המשולבת בכל חשבונות הבנק המסונכרנים.",
+      "cards": "כרטיסי אשראי",
+      "cardsCaption": "כרטיסים הזמינים למעקב חודשי.",
+      "lastSync": "סנכרון אחרון",
+      "lastSyncCaption": "הרענון האחרון של הבנק שמשתקף במערכת.",
+      "notSynced": "עדיין לא"
+    },
+    "fourth": {
+      "title": "תחזית הוצאות חודשית",
+      "actualSpend": "הוצאות עד כה החודש",
+      "projectedSpend": "תחזית לסוף החודש",
+      "monthlyAvg": "ממוצע 6 חודשים",
+      "daysRemaining": "ימים שנותרו",
+      "forecastLabel": "תחזית",
+      "error": "שגיאה בטעינת התחזית"
+    },
+    "fifth": {
+      "title": "בריאות פיננסית",
+      "error": "שגיאה בטעינת נתוני הבריאות הפיננסית",
+      "status": {
+        "good": "טוב",
+        "warning": "דורש תשומת לב",
+        "bad": "בסיכון"
+      },
+      "components": {
+        "cashFlow": "תזרים מזומנים",
+        "categoryBudgets": "מסגרות תקציב",
+        "savingsTrend": "מגמת חיסכון",
+        "debtPressure": "עומס חוב"
+      }
+    },
+    "resetMonth": "איפוס"
+  },
+  "cashFlow": {
+    "kicker": "תחזית",
+    "subtitle": "הבן לאן החודש מתקדם לפני שהכנסות צפויות והוצאות חוזרות באמת ייכנסו לחשבון.",
+    "title": "תחזית תזרים מזומנים",
+    "error": "שגיאה בטעינת נתוני התזרים",
+    "refreshBtn": "רענן תגובה",
+    "incomeToDate": "הכנסות החודש",
+    "expensesToDate": "הוצאות החודש",
+    "projectedNet": "נטו צפוי",
+    "currentBalance": "יתרה נוכחית",
+    "currentBalanceCaption": "יתרה בזמן אמת מחשבון הבנק הראשי שלך.",
+    "projectedBalance": "יתרה צפויה לסוף החודש",
+    "projectedBalanceCaption": "יתרה משוערת בסוף החודש לאחר הכנסות והוצאות חוזרות שעדיין ממתינות.",
+    "daysRemaining": "ימים נותרו",
+    "upcomingEvents": "צפוי החודש",
+    "noEvents": "אין פריטים חוזרים צפויים החודש",
+    "alreadyRecorded": "כבר נרשם",
+    "risk": {
+      "low": "סיכון נמוך",
+      "medium": "סיכון בינוני",
+      "high": "סיכון גבוה"
+    },
+    "summary": {
+      "riskLevel": "רמת סיכון",
+      "riskCaption": "קריאה מהירה של הלחץ הצפוי עד סוף החודש.",
+      "expectedEvents": "אירועים צפויים",
+      "expectedEventsCaption": "תנועות חוזרות שעדיין פתוחות לחודש הנוכחי.",
+      "projectedNet": "נטו צפוי",
+      "projectedNetCaption": "התנועה נטו הצפויה לאחר שכל האירועים המתוזמנים יתממשו.",
+      "daysRemaining": "ימים נותרו",
+      "daysRemainingCaption": "כמה זמן נשאר לחודש לשנות כיוון.",
+      "outlookTitle": "למה התצוגה הזו מיועדת",
+      "outlookCopy": "השתמש בדף הזה כדי להפריד בין מה שכבר קרה לבין מה שעדיין צפוי, ואז להחליט אם שארית החודש דורשת התערבות."
+    }
+  },
+  "totals": {
+    "spent": "סה\"כ הוצאות",
+    "income": "סה\"כ הכנסות"
+  },
+  "profile": {
+    "kicker": "מרכז החשבון",
+    "subtitle": "סקירה מהירה של הזהות, החשבונות המחוברים וההגדרות המרכזיות שמעצבות את מרחב העבודה.",
+    "title": "פרטי חשבון",
+    "sections": {
+      "personal": "פרטים אישיים",
+      "financials": "כספים"
+    },
+    "summary": {
+      "connectedBanks": "בנקים מחוברים",
+      "connectedBanksCaption": "חשבונות המחוברים כרגע למרחב העבודה שלך.",
+      "totalBalanceCaption": "היתרה המשולבת בכל המוסדות המסונכרנים.",
+      "language": "שפה",
+      "languageCaption": "השפה הפעילה כעת בכל האפליקציה."
+    },
+    "fields": {
+      "firstName": "שם פרטי",
+      "lastName": "שם משפחה",
+      "email": "כתובת אימייל",
+      "balance": "יתרה נוכחית",
+      "currency": "מטבע",
+      "totalBalance": "יתרה כוללת"
+    }
   },
   "transactions": {
+    "kicker": "תצוגת ספר תנועות",
+    "subtitle": "סקור את מקטע הפעילות הנוכחי, הדק את המסננים, וערוך את הרשומות שמשפיעות על הסיכומים החודשיים שלך.",
+    "summary": {
+      "scope": "טווח נוכחי",
+      "scopeCaption": "החודש הפעיל או טווח התאריכים המפורש שמוחל על ספר התנועות.",
+      "status": "סטטוס תצוגה",
+      "statusCaption": "האם המיקוד הוא בתנועות שהושלמו או בתנועות ממתינות.",
+      "type": "סוג תצוגה",
+      "typeCaption": "מעבר בין התנהגות של חשבון עו\"ש לבין כרטיסי אשראי.",
+      "cashLens": "זווית תזרימית",
+      "cashLensCaption": "התמצאות מהירה בערימת המסננים לפני סריקת השורות.",
+      "allTime": "כל התקופה",
+      "allStatuses": "כל הסטטוסים",
+      "incomeOnly": "הכנסות בלבד",
+      "spendingOnly": "הוצאות בלבד",
+      "allCashMovement": "כל תנועת הכסף"
+    },
     "table": {
       "header": {
         "date": "תאריך",
@@ -50,6 +181,7 @@
         "amount": "סכום",
         "chargedAmount": "סכום שחויב",
         "cardNumber": "מס' כרטיס",
+        "installments": "תשלומים",
         "status": "סטטוס",
         "company": "חברה",
         "actions": "פעולות"
@@ -65,9 +197,46 @@
     "transactionsType": {
       "transactions": "עובר ושב",
       "creditcards": "כרטיסי אשראי"
+    },
+    "messages": {
+      "userIdMissing": "מזהה המשתמש חסר",
+      "updated": "העסקה עודכנה בהצלחה",
+      "added": "העסקה נוספה בהצלחה",
+      "removed": "העסקה הוסרה בהצלחה"
+    },
+    "form": {
+      "titleNew": "עסקה חדשה",
+      "titleUpdate": "עריכת עסקה",
+      "date": "תאריך",
+      "dateRequired": "אנא בחר תאריך",
+      "category": "קטגוריה",
+      "categoryRequired": "אנא בחר קטגוריה",
+      "selectCategory": "בחר קטגוריה",
+      "type": "סוג",
+      "typeRequired": "אנא בחר סוג",
+      "selectType": "בחר סוג",
+      "description": "תיאור",
+      "descriptionRequired": "אנא הכנס תיאור",
+      "descriptionMin": "התיאור חייב להכיל לפחות 10 תווים",
+      "enterDescription": "הכנס תיאור",
+      "amount": "סכום",
+      "amountRequired": "אנא הכנס סכום",
+      "placeholderAmount": "הכנס סכום"
     }
   },
   "categories": {
+    "kicker": "מבנה ההוצאות",
+    "subtitle": "בדוק איך הכסף מקובץ, אילו קטגוריות עושות את רוב העבודה, ואיפה ניקוי ידני או חוקים חדשים יכולים לעזור.",
+    "summary": {
+      "trackedCategories": "קטגוריות במעקב",
+      "trackedCaption": "הקטגוריות הגלויות לאחר המסנן הנוכחי.",
+      "capturedSpend": "הוצאה מזוהה",
+      "capturedCaption": "סך ההוצאה המוחלטת שממופה לקטגוריות הגלויות.",
+      "averageSpend": "הוצאה ממוצעת",
+      "averageCaption": "רמת הלחץ הממוצעת לכל קטגוריה גלויה.",
+      "topCategory": "קטגוריה מובילה",
+      "noCategoryData": "עדיין אין נתוני קטגוריות."
+    },
     "table": {
       "header": {
         "category": "קטגוריה",
@@ -77,6 +246,18 @@
     },
     "buttons": {
       "add": "הוסף קטגוריה"
+    },
+    "messages": {
+      "added": "הקטגוריה \"{{name}}\" נוספה",
+      "updated": "הקטגוריה \"{{name}}\" עודכנה",
+      "removed": "הקטגוריה הוסרה בהצלחה",
+      "removeError": "שגיאה במחיקת הקטגוריה"
+    },
+    "form": {
+      "titleNew": "קטגוריה חדשה",
+      "titleUpdate": "עריכת קטגוריה",
+      "name": "שם",
+      "nameRequired": "אנא הכנס שם לקטגוריה"
     }
   },
   "actions": [
@@ -91,13 +272,338 @@
       "חיפוש קטגוריה",
       "חיפוש לפי סטטוס",
       "חיפוש לפי טקסט",
-      "חיפוש לפי סוג"
+      "חיפוש לפי סוג",
+      "חיפוש לפי חברה",
+      "סינון לפי כרטיס",
+      "סינון לפי הכנסה"
     ],
     "reset": "איפוס"
+  },
+  "loansSavings": {
+    "kicker": "התחייבויות ורזרבות",
+    "subtitle": "עקוב אחרי כמה הון יושב בחסכונות וכמה עדיין מחויב להחזרי חוב.",
+    "title": "הלוואות וחסכונות",
+    "summary": {
+      "totalSavings": "סך חסכונות",
+      "totalLoanBalance": "יתרת הלוואות",
+      "nextMonthPayments": "תשלומים חודש הבא",
+      "totalSavingsCaption": "פיקדונות וחסכונות כפי שדווחו מהבנקים המחוברים.",
+      "totalLoanBalanceCaption": "החוב שעדיין יושב על הלוואות פעילות.",
+      "nextMonthPaymentsCaption": "תשלומי ההלוואות הצפויים בקרוב.",
+      "loanAccounts": "חשבונות הלוואה",
+      "loanAccountsCaption": "לוחות סילוקין בודדים שנמצאים כרגע במעקב."
+    },
+    "savings": {
+      "title": "חסכונות",
+      "subtitle": "רזרבות מזומן ארוכות טווח ויתרות פיקדון לפי מוסד פיננסי.",
+      "empty": "לא נמצאו נתוני חסכונות",
+      "currentValue": "ערך נוכחי",
+      "currency": "מטבע",
+      "date": "תאריך עסקי"
+    },
+    "loans": {
+      "title": "הלוואות",
+      "subtitle": "התחייבויות אשראי פתוחות, קצב החזר ותשלומים קרובים.",
+      "empty": "לא נמצאו נתוני הלוואות",
+      "columns": {
+        "name": "שם הלוואה",
+        "amount": "סכום הלוואה",
+        "balance": "יתרה",
+        "nextPayment": "תשלום הבא",
+        "finishDate": "תאריך סיום",
+        "interest": "ריבית",
+        "repayment": "החזר"
+      },
+      "detail": {
+        "purpose": "מטרה",
+        "established": "תאריך פתיחה",
+        "prepaymentFee": "קנס פירעון מוקדם",
+        "paymentsRemaining": "תשלומים שנותרו"
+      }
+    }
+  },
+  "recurring": {
+    "kicker": "זיהוי דפוסים",
+    "subtitle": "בדוק מועמדים להכנסות ולהוצאות חוזרות לפני שהם נעלמים ברעש של החודש.",
+    "title": "עסקות קבועות",
+    "empty": "לא זוהו עסקות קבועות",
+    "error": "שגיאה בטעינת עסקות קבועות",
+    "summary": {
+      "groups": "קבוצות שזוהו",
+      "groupsCaption": "דפוסים שנראים כרגע חוזרים.",
+      "monthlyTotal": "הוצאות חודשיות",
+      "monthlyTotalCaption": "קבוצות חיוב חוזרות שסומנו כרגע כחודשיות.",
+      "monthlyIncome": "הכנסה חודשית",
+      "monthlyIncomeCaption": "קבוצות זכות חוזרות שסומנו כרגע כחודשיות.",
+      "nextExpected": "הבא הצפוי",
+      "nextExpectedCaption": "תאריך האירוע החוזר הקרוב ביותר שזוהה."
+    },
+    "panel": {
+      "title": "קבוצות חוזרות שזוהו",
+      "subtitle": "פתח קבוצה כדי לבדוק את התנועות שיצרו את הדפוס החוזר."
+    },
+    "columns": {
+      "description": "תיאור",
+      "flow": "סוג תזרים",
+      "avgAmount": "סכום ממוצע",
+      "frequency": "תדירות",
+      "occurrences": "כמות הופעות",
+      "nextExpected": "הבא הצפוי",
+      "totalSpent": "סך היסטורי"
+    },
+    "kind": {
+      "expense": "הוצאה",
+      "income": "הכנסה"
+    },
+    "frequency": {
+      "annual": "שנתי",
+      "biweekly": "דו-שבועי",
+      "bimonthly": "אחת לחודשיים",
+      "monthly": "חודשי",
+      "quarterly": "רבעוני",
+      "semiannual": "חצי-שנתי",
+      "unknown": "לא ידוע",
+      "weekly": "שבועי",
+      "irregular": "לא סדיר"
+    }
+  },
+  "savingsGoals": {
+    "kicker": "מעקב יעדים",
+    "subtitle": "שמור כל יעד גלוי, הבן את הפער, והחלט אם הקצב הנוכחי עדיין מתאים.",
+    "title": "יעדי חיסכון",
+    "addTitle": "הוסף יעד חיסכון",
+    "editTitle": "ערוך יעד חיסכון",
+    "empty": "אין יעדי חיסכון עדיין. התחל בהוספת היעד הראשון שלך!",
+    "deleteConfirm": "האם אתה בטוח שברצונך למחוק יעד זה?",
+    "buttons": {
+      "add": "הוסף יעד",
+      "edit": "עריכה",
+      "delete": "מחיקה",
+      "save": "שמור",
+      "cancel": "ביטול"
+    },
+    "form": {
+      "name": "שם היעד",
+      "nameRequired": "אנא הזן שם ליעד",
+      "targetAmount": "סכום יעד (₪)",
+      "targetRequired": "אנא הזן סכום יעד",
+      "currentAmount": "סכום שחסכת עד כה (₪)",
+      "targetDate": "תאריך יעד",
+      "dateRequired": "אנא בחר תאריך יעד"
+    },
+    "card": {
+      "saved": "נחסך",
+      "target": "יעד",
+      "remaining": "נותר",
+      "monthlyPace": "קצב חודשי",
+      "daysLeft": "ימים נותרו",
+      "achieved": "היעד הושג!",
+      "overdue": "חרג מהמועד"
+    },
+    "summary": {
+      "activeGoals": "יעדים פעילים",
+      "activeGoalsCaption": "יעדים שנמצאים כעת במעקב במרחב העבודה.",
+      "savedSoFar": "נחסך עד כה",
+      "savedSoFarCaption": "הסכום הכולל שהוקצה ליעדים שלך.",
+      "remaining": "פער שנותר",
+      "remainingCaption": "מה שעוד נדרש כדי לממן במלואם את היעדים הגלויים."
+    },
+    "messages": {
+      "added": "היעד נוסף בהצלחה",
+      "updated": "היעד עודכן בהצלחה",
+      "removed": "היעד הוסר בהצלחה"
+    }
+  },
+  "creditCard": {
+    "cardHolder": "בעל הכרטיס",
+    "expires": "תוקף"
+  },
+  "idleMonitor": {
+    "warningTitle": "הפגישה עומדת לפוג",
+    "warningDesc": "תצא מהמערכת בעוד דקה עקב חוסר פעילות. הזז את העכבר או לחץ על מקש כדי להישאר מחובר."
   },
   "companies": {
     "discount": "בנק דיסקונט",
     "max": "מקס",
     "visaCal": "ויזה כאל"
+  },
+  "connectBank": {
+    "connectTitle": "חבר את חשבון הבנק שלך",
+    "connectSubtitle": "הזן את פרטי הבנקאות המקוונת שלך",
+    "updateTitle": "עדכן פרטי חשבון הבנק",
+    "updateSubtitle": "עדכן את הפרטים השמורים שלך",
+    "selectBankLabel": "בחר את הבנק שלך",
+    "selectBankPlaceholder": "בחר בנק",
+    "saveCredentials": "שמור את הפרטים שלי",
+    "saveCredentialsExtra": "שמור פרטי כניסה לעדכון מהיר יותר",
+    "connectBtn": "חבר חשבון בנק",
+    "updateBtn": "עדכן פרטי כניסה",
+    "fieldLabels": {
+      "username": "שם משתמש",
+      "password": "סיסמה",
+      "id": "מספר זהות",
+      "num": "מספר משתמש"
+    },
+    "successTitle": "החיבור לחשבון הבנק הצליח!",
+    "successAccountSubtitle": "מספר חשבון: {{accountNumber}} נוסף. יתרה של {{balance}} נוספה לחשבונך",
+    "successCardsSubtitle": "{{count}} כרטיס נוסף לחשבונך",
+    "importTransactions": "נמצאו {{count}} עסקאות. האם ברצונך לייבא אותן?",
+    "importSuccess": "{{count}} עסקאות יובאו בהצלחה"
+  },
+  "scraping": {
+    "title": "מתחבר ל-{{bankName}}…",
+    "bank": "בנק",
+    "steps": {
+      "scraping": "איסוף נתונים",
+      "scrapingDesc": "מתחבר ושולף נתונים מהבנק שלך",
+      "processing": "עיבוד",
+      "processingDesc": "מפענח עסקאות ופרטי חשבון",
+      "saving": "שמירה",
+      "savingDesc": "שומר נתונים בחשבונך",
+      "savingProgress": "{{count}} עסקאות יובאו עד כה…"
+    },
+    "pending": "הפעולה עשויה לארוך עד דקה…",
+    "failedTitle": "החיבור נכשל",
+    "successTitle": "הבנק חובר בהצלחה!",
+    "transactionsImported": "{{count}} עסקאות חדשות יובאו",
+    "close": "סגור",
+    "done": "סיום"
+  },
+  "errors": {
+    "userNotDefined": "משתמש לא מוגדר",
+    "noUserId": "לא נמצא מזהה משתמש"
+  },
+  "common": {
+    "workspace": "מרחב עבודה",
+    "buttons": {
+      "done": "סיום",
+      "import": "ייבוא",
+      "submit": "שמור",
+      "cancel": "ביטול",
+      "reset": "איפוס"
+    },
+    "messages": {
+      "confirm": "האם אתה בטוח?"
+    }
+  },
+  "theme": {
+    "switchToLight": "עבור למצב בהיר",
+    "switchToDark": "עבור למצב כהה"
+  },
+  "bank": {
+    "refreshBtn": "רענן נתוני בנק",
+    "refreshAvailableAt": "ניתן לרענן {{time}}",
+    "refreshSuccess": "{{name}} עודכן בהצלחה",
+    "noCredentials": "לא ניתן לרענן את {{name}}. לא נמצאו פרטי כניסה",
+    "refreshError": "אירעה שגיאה בניסיון לרענן נתוני הבנק"
+  },
+  "charts": {
+    "noData": "אין נתונים",
+    "spent": "הוצאות",
+    "amountSpentOn": "סכום שהוצא על \"{{name}}\": {{amount}}"
+  },
+  "auth": {
+    "signIn": {
+      "title": "ברוך שובך",
+      "subtitle": "התחבר לחשבונך",
+      "button": "כניסה",
+      "success": "התחברת בהצלחה",
+      "or": "או",
+      "noAccount": "אין לך חשבון?",
+      "signUpLink": "הירשם",
+      "error": "הכניסה עם גוגל נכשלה"
+    },
+    "signUp": {
+      "title": "צור חשבון",
+      "subtitle": "מלא את הפרטים הבאים",
+      "button": "צור חשבון",
+      "success": "החשבון נוצר בהצלחה",
+      "googleSuccess": "נרשמת עם גוגל בהצלחה",
+      "error": "ההרשמה עם גוגל נכשלה",
+      "alreadyHaveAccount": "כבר יש לך חשבון?",
+      "signInLink": "כניסה"
+    },
+    "form": {
+      "email": {
+        "label": "אימייל",
+        "required": "אנא הכנס כתובת אימייל",
+        "placeholder": "הכנס כתובת אימייל",
+        "invalid": "אנא הכנס כתובת אימייל תקנית"
+      },
+      "password": {
+        "label": "סיסמה",
+        "required": "אנא הכנס סיסמה",
+        "placeholder": "הכנס סיסמה",
+        "min": "הסיסמה חייבת להכיל לפחות 6 תווים"
+      },
+      "firstName": {
+        "label": "שם פרטי",
+        "required": "אנא הכנס שם פרטי",
+        "min": "השם חייב להכיל לפחות 3 תווים"
+      },
+      "lastName": {
+        "label": "שם משפחה",
+        "required": "אנא הכנס שם משפחה",
+        "min": "שם המשפחה חייב להכיל לפחות 3 תווים"
+      },
+      "confirmPassword": {
+        "label": "אימות סיסמה",
+        "required": "אנא אמת את הסיסמה",
+        "mismatch": "הסיסמאות אינן תואמות"
+      }
+    }
+  },
+  "404": {
+    "title": "404",
+    "subtitle": "הדף שחיפשת לא קיים.",
+    "button": "חזרה לדף הבית"
+  },
+  "bankPage": {
+    "kicker": "מרחב הבנקים",
+    "subtitle": "נהל מוסדות מחוברים, בדוק את בריאות הרענון, ושמור על הגדרת החשבון הראשי ברורה.",
+    "connectAnother": "חבר בנק נוסף",
+    "summary": {
+      "connectedBanks": "בנקים מחוברים",
+      "connectedBanksCaption": "המוסדות הפעילים שמספקים נתונים לאפליקציה.",
+      "primaryAccount": "חשבון ראשי",
+      "primaryAccountCaption": "החשבון המשמש כנקודת הייחוס הראשית ליתרה.",
+      "notSet": "לא הוגדר",
+      "cardProviders": "ספקי כרטיסים",
+      "cardProvidersCaption": "ספקי כרטיסי אשראי מחוברים עם זרמי נתונים משלהם.",
+      "savedCredentials": "פרטי גישה שמורים",
+      "savedCredentialsCaption": "חשבונות שניתן לרענן בלי להקליד שוב את פרטי ההתחברות."
+    },
+    "panel": {
+      "title": "מוסדות מחוברים",
+      "subtitle": "השתמש בלשוניות כדי לעבור בין מוסדות מסונכרנים ולהסיר חיבורים מיושנים."
+    },
+    "detail": {
+      "accountNumber": "מספר חשבון",
+      "unavailable": "לא זמין",
+      "cardFeeds": "זרמי כרטיסים",
+      "creditProvider": "ספק כרטיס אשראי",
+      "bankAccount": "חשבון בנק",
+      "futureDebitSnapshots": "צילומי חיובים עתידיים",
+      "primaryBalanceSource": "משמש כמקור היתרה הראשי"
+    },
+    "messages": {
+      "removed": "{{bank}} הוסר בהצלחה",
+      "removeConfirm": "האם אתה בטוח שברצונך להסיר את {{bank}}?"
+    },
+    "empty": {
+      "title": "לא חוברו חשבונות בנק",
+      "desc": "חבר את חשבון הבנק שלך כדי להתחיל",
+      "button": "חבר חשבון בנק"
+    },
+    "account": {
+      "edit": "עריכה",
+      "balance": "יתרה",
+      "lastUpdated": "עודכן לאחרונה",
+      "setAsMain": "הגדר כחשבון ראשי",
+      "setAsMainSuccess": "{{bank}} הוגדר כחשבון ראשי",
+      "mainAccount": "חשבון ראשי",
+      "isMainTitle": "חשבון בנק ראשי",
+      "cardProviderTitle": "ספק כרטיס אשראי"
+    }
   }
 }

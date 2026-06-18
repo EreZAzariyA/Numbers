@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -6,13 +6,14 @@ import { useAppSelector } from "../../redux/store";
 import TransactionModel from "../../models/transaction";
 import NewTransaction from "./newTransaction/newTransaction";
 import { EditTable } from "../components/EditTable";
-import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
+import { TransactionsType } from "../../utils/transactions";
 import { asNumString, getError } from "../../utils/helpers";
 import { App, Button, Flex, Spin, TableProps, Tooltip, Typography } from "antd";
-import categoriesServices from "../../services/categories";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CardTransactionModel from "../../models/card-transaction";
 import transactionsServices, { MainTransaction } from "../../services/transactions";
+import { useCategories } from "../../hooks/useCategories";
+import { useTransactionFilters } from "../../hooks/useTransactionFilters";
 
 enum Steps {
   New_Transaction = "New_Transaction",
@@ -29,21 +30,12 @@ const Transactions = <T extends MainTransaction>() => {
 
   const [selectedTransaction, setSelectedTransaction] = useState<T>(null);
   const [step, setStep] = useState<string>(location.state ? Steps.New_Transaction : null);
-  const [filterState, setFilterState] = useState({
-    month: dayjs(),
-    status: TransactionStatuses.completed,
-    type: TransactionsType.ACCOUNT,
-    cardNumber: null
-  });
+  const [filterState, setFilterState] = useTransactionFilters();
   const isCardTransactions = filterState.type === TransactionsType.CARD_TRANSACTIONS;
   const newTransCategory_idFromCategories = location.state;
 
-  const { data: categories, isLoading: categoriesLoading } = useQuery({
-    queryKey: ['categories', user._id],
-    queryFn: () => categoriesServices.fetchCategories(user?._id),
-  });
-  const categoriesMap = new Map();
-  categories?.forEach((c) => categoriesMap.set(c._id, c));
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
+  const categoriesMap = useMemo(() => new Map(categories.map((category) => [category._id, category])), [categories]);
 
 
   const updateTransaction = useMutation<MainTransaction, unknown, { user_id: string, transaction: MainTransaction, type: TransactionsType }>({
@@ -61,23 +53,21 @@ const Transactions = <T extends MainTransaction>() => {
 
   const onFinish = async (transaction: T): Promise<void> => {
     if (!user) {
-      message.error("User id is missing");
+      message.error(t('transactions.messages.userIdMissing'));
       return;
     }
 
     try {
-      let successMessage = null;
       let res: TransactionModel | CardTransactionModel;
       const isUpdate = step === Steps.Update_Transaction;
 
       if (isUpdate) {
-        res = await updateTransaction.mutateAsync({ user_id: user._id, transaction, type: filterState.type});
+        res = await updateTransaction.mutateAsync({ user_id: user._id, transaction, type: filterState.type });
       } else {
-        res = await addTransaction.mutateAsync({ user_id: user._id, transaction, type: filterState.type});
+        res = await addTransaction.mutateAsync({ user_id: user._id, transaction, type: filterState.type });
       }
 
-      successMessage = `Transaction ${res._id} ${isUpdate ? 'updated' : 'added'} successfully.`;
-      message.success(successMessage);
+      message.success(t(`transactions.messages.${isUpdate ? 'updated' : 'added'}`, { id: res._id }));
       onBack();
     } catch (error: any) {
       console.log({error});
@@ -101,7 +91,7 @@ const Transactions = <T extends MainTransaction>() => {
   const onRemove = async (record_id: string): Promise<void> => {
     try {
       await removeTransaction.mutateAsync({ user_id: user._id, transaction_id: record_id, type: filterState.type });
-      message.success(`Transaction id: ${record_id} removed successfully.`);
+      message.success(t('transactions.messages.removed', { id: record_id }));
       queryClient.invalidateQueries({ queryKey: ['transactions', user?._id] });
     } catch (err: any) {
       message.error(getError(err));
@@ -109,7 +99,7 @@ const Transactions = <T extends MainTransaction>() => {
   };
 
   const actionButton = (
-    <Button onClick={() => setStep(Steps.New_Transaction)}>
+    <Button type="primary" onClick={() => setStep(Steps.New_Transaction)}>
       {t('transactions.buttons.add')}
     </Button>
   );
@@ -223,27 +213,78 @@ const Transactions = <T extends MainTransaction>() => {
     }
   ];
 
+  const scopeLabel = filterState.dates
+    ? `${filterState.dates[0].format('MMM D')} - ${filterState.dates[1].format('MMM D')}`
+    : filterState.month
+      ? filterState.month.format('MMM YYYY')
+      : t('transactions.summary.allTime');
+  const statusLabel = filterState.status ? t(`transactions.status.${filterState.status}`) : t('transactions.summary.allStatuses');
+  const typeLabel = filterState.type === TransactionsType.CARD_TRANSACTIONS
+    ? t('transactions.transactionsType.creditcards')
+    : t('transactions.transactionsType.transactions');
+  const incomeLabel = filterState.byIncome === 'income'
+    ? t('transactions.summary.incomeOnly')
+    : filterState.byIncome === 'spent'
+      ? t('transactions.summary.spendingOnly')
+      : t('transactions.summary.allCashMovement');
+
   return (
     <Flex vertical gap={5} className="page-container transactions">
-      <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
+      <div className="page-shell">
+        <div className="page-heading">
+          <div className="page-heading-copy">
+            <div className="page-kicker">{t('transactions.kicker')}</div>
+            <Typography.Title level={2} className="page-title">{t('pages.transactions')}</Typography.Title>
+            <Typography.Text className="page-subtitle">
+              {t('transactions.subtitle')}
+            </Typography.Text>
+          </div>
+          <div className="page-toolbar">{actionButton}</div>
+        </div>
+
+        <div className="page-stat-grid">
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('transactions.summary.scope')}</span>
+            <span className="page-stat-value">{scopeLabel}</span>
+            <span className="page-stat-caption">{t('transactions.summary.scopeCaption')}</span>
+          </div>
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('transactions.summary.status')}</span>
+            <span className="page-stat-value">{statusLabel}</span>
+            <span className="page-stat-caption">{t('transactions.summary.statusCaption')}</span>
+          </div>
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('transactions.summary.type')}</span>
+            <span className="page-stat-value">{typeLabel}</span>
+            <span className="page-stat-caption">{t('transactions.summary.typeCaption')}</span>
+          </div>
+          <div className="page-stat-card">
+            <span className="page-stat-label">{t('transactions.summary.cashLens')}</span>
+            <span className="page-stat-value">{incomeLabel}</span>
+            <span className="page-stat-caption">{t('transactions.summary.cashLensCaption')}</span>
+          </div>
+        </div>
+      </div>
 
       {!step && (
-        <EditTable
-          editable
-          totals
-          filterState={filterState}
-          setFilterState={setFilterState}
-          actionButton={actionButton}
-          onEditMode={onEdit}
-          removeHandler={onRemove}
-          tableProps={{
-            bordered: true,
-            columns,
-            scroll: {
-              x: 800,
-            },
-          }}
-        />
+        <div className="page-card">
+          <EditTable
+            editable
+            totals
+            filterState={filterState}
+            setFilterState={setFilterState}
+            actionButton={null}
+            onEditMode={onEdit}
+            removeHandler={onRemove}
+            tableProps={{
+              bordered: true,
+              columns,
+              scroll: {
+                x: 800,
+              },
+            }}
+          />
+        </div>
       )}
       {(step && step === Steps.New_Transaction) && (
         <NewTransaction

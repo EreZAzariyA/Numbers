@@ -13,12 +13,12 @@ import './styles/global.css';
 import './styles/style.css';
 import './styles/darkmode.css';
 import './styles/DashboardView.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from './services/queryClient';
 import React from 'react';
 
 interceptorsService.createInterceptors();
 const userLang = localStorage.getItem('language');
-const queryClient = new QueryClient()
 
 i18n
 .use(initReactI18next)

@@ -5,20 +5,22 @@ import { Table, Typography, Popconfirm, Row, Col, Divider, TableProps, Flex, Pag
 import transactionsServices, { TransactionsResp } from "../../../services/transactions";
 import { queryFiltering } from "../../../utils/helpers";
 import { useAppSelector } from "../../../redux/store";
+import { useBanks } from "../../../hooks/useBanks";
 import { Filters } from "../Filters";
-import dayjs, { Dayjs } from "dayjs";
-import { TransactionStatuses, TransactionsType, TransType } from "../../../utils/transactions";
+import { Dayjs } from "dayjs";
+import { TransType, TransactionsType } from "../../../utils/transactions";
 import { TotalsContainer } from "../TotalsContainer";
 import { useQuery } from "@tanstack/react-query";
 import CardTransactionModel from "../../../models/card-transaction";
 import { getAccountCreditCards } from "../../../utils/bank-utils";
+import { getDefaultTransactionFilterState } from "../../../hooks/useTransactionFilters";
 
 interface EditTableProps<T> {
   tableProps: TableProps<T>;
   paginationProps: PaginationProps;
   editable: boolean;
   filterState: any;
-  setFilterState: (object: any) => void;
+  setFilterState: (updater: any) => void;
 
   query: object;
   type: TransType;
@@ -33,7 +35,7 @@ interface EditTableProps<T> {
 export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(props: Partial<EditTableProps<T>>) => {
   const { t } = useTranslation();
   const user = useAppSelector((state) => state.auth.user);
-  const account = useAppSelector((state) => state.userBanks?.account);
+  const { data: account } = useBanks();
   const cards = getAccountCreditCards(account);
 
   const [page, setPage] = useState<number>(1);
@@ -49,19 +51,36 @@ export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(p
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     gcTime: 1000 * 2,
+    enabled: !!user?._id,
   });
 
-  const handleFilterChange = (field: string, value: string | number[] | Dayjs[] | Dayjs): void => {
-    props.setFilterState({ ...props.filterState, [field]: value });
+  const handleFilterChange = (field: string, value: string | string[] | Dayjs | [Dayjs, Dayjs] | null): void => {
+    props.setFilterState((currentFilters: any) => {
+      const nextFilters = {
+        ...currentFilters,
+        [field]: value,
+      };
+
+      if (field === "month" && value) {
+        nextFilters.dates = null;
+      }
+
+      if (field === "dates" && value) {
+        nextFilters.month = null;
+      }
+
+      if (field === "type" && value !== TransactionsType.CARD_TRANSACTIONS) {
+        nextFilters.cardNumber = null;
+      }
+
+      return nextFilters;
+    });
     setPage(1);
   };
 
   const resetFilters = () => {
-    props.setFilterState({
-      month: dayjs(),
-      status: TransactionStatuses.completed,
-      type: TransactionsType.ACCOUNT
-    });
+    props.setFilterState(getDefaultTransactionFilterState());
+    setPage(1);
   };
 
   const actionsColumnRender = (record: T) => (
@@ -74,7 +93,7 @@ export const EditTable = <T extends (CardTransactionModel | TransactionModel)>(p
       <Divider type="vertical" />
       <Col>
         <Popconfirm
-          title="Are you sure?"
+          title={t('common.messages.confirm')}
           onConfirm={() => props.removeHandler(record?._id)}
         >
           <Typography.Link>

@@ -7,14 +7,16 @@ import DashboardHeader from "./DashboardHeader";
 import { Colors, Sizes, useResize } from "../utils/helpers";
 import { MenuItem, getMenuItem } from "../utils/antd";
 import { Languages, ThemeColors } from "../utils/enums";
-import { Layout, Menu, MenuProps } from "antd";
+import { Avatar, Layout, Menu, MenuProps, Typography } from "antd";
 import { AiOutlineLogout, AiOutlineProfile } from "react-icons/ai";
 import { BiLogInCircle } from "react-icons/bi";
 import { CiCircleList, CiBank } from "react-icons/ci";
-import { BsReceipt } from "react-icons/bs";
+import { BsReceipt, BsGraphUpArrow } from "react-icons/bs";
 import { FaAddressCard } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
+import { TbRepeat, TbPigMoney, TbCashBanknote } from "react-icons/tb";
+import { useIdleMonitor } from '../hooks/useIdleMonitor';
 
 const { Sider, Content } = Layout;
 
@@ -24,7 +26,8 @@ const DashboardView = () => {
   const location = useLocation();
   const { pathname } = location;
   const { isMobile } = useResize();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, token } = useAppSelector((state) => state.auth);
+  useIdleMonitor(!!token);
 
   const { themeColor: { theme }, language: { lang } } = useAppSelector((state) => state.config);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile);
@@ -42,6 +45,23 @@ const DashboardView = () => {
     setCurrent(path);
   }, [pathname]);
 
+  const currentPageLabelMap: Record<string, string> = {
+    dashboard: t('menu.dashboard'),
+    categories: t('menu.categories'),
+    transactions: t('menu.transactions'),
+    bank: t('menu.bankAccount'),
+    'loans-savings': t('menu.loansSavings'),
+    recurring: t('menu.recurring'),
+    'savings-goals': t('menu.savingsGoals'),
+    'cash-flow': t('menu.cashFlow'),
+    profile: t('menu.account.1'),
+  };
+
+  const currentPageLabel = currentPageLabelMap[current] || t('menu.dashboard');
+  const verifiedEmail = user?.emails?.find((email) => email?.isValidate || email?.isActive)?.email || user?.emails?.[0]?.email || '';
+  const userName = [user?.profile?.first_name, user?.profile?.last_name].filter(Boolean).join(' ') || verifiedEmail;
+  const userInitials = `${user?.profile?.first_name?.[0] ?? ''}${user?.profile?.last_name?.[0] ?? ''}`.toUpperCase() || '?';
+
   const accountItems = user ? [
     getMenuItem(
       <Link to='/profile'>{t('menu.account.1')}</Link>,
@@ -57,13 +77,13 @@ const DashboardView = () => {
     )
   ] : [
     getMenuItem(
-      'Sign-in',
+      t('menu.account.3'),
       'auth/sign-in',
       <BiLogInCircle size={Sizes.SUB_MENU_ICON} />,
       null, style
     ),
     getMenuItem(
-      'Sign-up',
+      t('menu.account.4'),
       'auth/sign-up',
       <FaAddressCard size={Sizes.SUB_MENU_ICON} />,
       null, style
@@ -96,6 +116,30 @@ const DashboardView = () => {
       null, style
     ),
     getMenuItem(
+      <Link to='/loans-savings'>{t('menu.loansSavings')}</Link>,
+      'loans-savings',
+      <BsGraphUpArrow size={Sizes.MENU_ICON} />,
+      null, style
+    ),
+    getMenuItem(
+      <Link to='/recurring'>{t('menu.recurring')}</Link>,
+      'recurring',
+      <TbRepeat size={Sizes.MENU_ICON} />,
+      null, style
+    ),
+    getMenuItem(
+      <Link to='/savings-goals'>{t('menu.savingsGoals')}</Link>,
+      'savings-goals',
+      <TbPigMoney size={Sizes.MENU_ICON} />,
+      null, style
+    ),
+    getMenuItem(
+      <Link to='/cash-flow'>{t('menu.cashFlow')}</Link>,
+      'cash-flow',
+      <TbCashBanknote size={Sizes.MENU_ICON} />,
+      null, style
+    ),
+    getMenuItem(
       t('menu.account.0'),
       'account',
       <VscAccount size={Sizes.MENU_ICON} />,
@@ -116,6 +160,7 @@ const DashboardView = () => {
       <DashboardHeader
         collapsedHandler={() => setIsCollapsed(!isCollapsed)}
         items={items}
+        currentLabel={currentPageLabel}
       />
       <Layout hasSider>
         {!isMobile && (
@@ -126,13 +171,26 @@ const DashboardView = () => {
             collapsible
             onCollapse={(e) => setIsCollapsed(e)}
           >
-            <Menu
-              mode="inline"
-              theme={themeToSet}
-              items={items}
-              onClick={onClick}
-              selectedKeys={[current]}
-            />
+            <div className="sider-menu-wrap">
+              <Menu
+                mode="inline"
+                theme={themeToSet}
+                items={items}
+                onClick={onClick}
+                selectedKeys={[current]}
+              />
+            </div>
+            {user && (
+              <div className="sidebar-footer">
+                <Avatar size={isCollapsed ? 34 : 38}>{userInitials}</Avatar>
+                {!isCollapsed && (
+                  <div className="sidebar-user-copy">
+                    <Typography.Text className="sidebar-user-name">{userName}</Typography.Text>
+                    <Typography.Text className="sidebar-user-email">{verifiedEmail}</Typography.Text>
+                  </div>
+                )}
+              </div>
+            )}
           </Sider>
         )}
         <Content className="site-layout">

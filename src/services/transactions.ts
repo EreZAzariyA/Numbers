@@ -3,6 +3,7 @@ import TransactionModel from "../models/transaction";
 import config from "../utils/config";
 import { TransactionsType, TransType } from "../utils/transactions";
 import CardTransactionModel from "../models/card-transaction";
+import { RecurringGroup, ForecastResponse, FinancialHealthResponse, CashFlowProjectionResponse } from "../utils/types";
 
 export type MainTransaction = TransactionModel | CardTransactionModel;
 export type TransactionsResp = {
@@ -51,6 +52,26 @@ class TransactionsServices {
     const response = await axios.post<MainTransaction[]>(config.urls.bank.importTransactions + `/${user_id}`, { transactions, companyId });
     const insertedTransactions = response.data;
     return insertedTransactions;
+  };
+
+  fetchRecurringTransactions = async (user_id: string): Promise<RecurringGroup[]> => {
+    const response = await axios.get<RecurringGroup[]>(config.urls.recurringTransactions + user_id);
+    return response.data;
+  };
+
+  fetchForecast = async (user_id: string, language: string = 'en'): Promise<ForecastResponse> => {
+    const response = await axios.get<ForecastResponse>(config.urls.forecast + user_id, { params: { language } });
+    return response.data;
+  };
+
+  fetchFinancialHealth = async (user_id: string, language: string = 'en'): Promise<FinancialHealthResponse> => {
+    const response = await axios.get<FinancialHealthResponse>(config.urls.financialHealth + user_id, { params: { language } });
+    return response.data;
+  };
+
+  fetchCashFlowProjection = async (user_id: string): Promise<CashFlowProjectionResponse> => {
+    const response = await axios.get<CashFlowProjectionResponse>(config.urls.cashFlow + user_id);
+    return response.data;
   };
 }
 

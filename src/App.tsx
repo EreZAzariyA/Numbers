@@ -6,13 +6,17 @@ import il from 'antd/locale/he_IL';
 import en from 'antd/locale/en_US';
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
+import { useSocketSession } from "./hooks/useSocketSession";
 import { routes } from "./routes";
 
 const App = () => {
+  const { token } = useAppSelector((state) => state.auth);
   const { themeColor: { theme }, language: { lang } } = useAppSelector((state) => state.config);
   const isEN = lang === Languages.EN
   const direction = isEN ? 'ltr': 'rtl';
   const locale = isEN ? en : il;
+
+  useSocketSession(token);
 
   useEffect(() => {
     const body = document.body;

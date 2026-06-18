@@ -56,11 +56,11 @@ const DashboardFirst = (props: DashboardFirstProps) => {
       <Row align={"middle"} gutter={[20, 20]}>
         <Col xs={24} lg={11}>
           <Card type="inner" styles={cardStyles} className="dashboard-card">
-            <Flex vertical align="flex-start">
-              <Typography.Title level={4}>{t('dashboard.first.1')}</Typography.Title>
-              <Typography.Title level={3}>
+            <Flex vertical align="flex-start" gap={2}>
+              <span className="balance-kpi-label">{t('dashboard.first.1')}</span>
+              <Typography.Title level={2} className="balance-kpi-value">
                 {props.loading ? <Skeleton paragraph={{ rows: 0 }} active /> : (
-                  <>{currency.symbol} {asNumString(totalBanksBalance)}</>
+                  <><span className="balance-kpi-currency">{currency.symbol}</span>{asNumString(totalBanksBalance)}</>
                 )}
               </Typography.Title>
             </Flex>
@@ -70,12 +70,14 @@ const DashboardFirst = (props: DashboardFirstProps) => {
 
         <Col xs={24} lg={13}>
           <Card type="inner" styles={cardStyles} className="dashboard-card charts">
-            <TotalAmountInput
-              transactions={data?.transactions}
-              type={TotalAmountType.SPENT}
-              style={{ maxWidth: '7rem' }}
-            />
-            <SimpleCharts transactions={data?.transactions} loading={isLoading} />
+            <Flex vertical gap={12} className="chart-card-inner">
+              <span className="chart-section-label">{t('dashboard.first.7')}</span>
+              <TotalAmountInput
+                transactions={data?.transactions}
+                type={TotalAmountType.SPENT}
+              />
+              <SimpleCharts transactions={data?.transactions} loading={isLoading} />
+            </Flex>
           </Card>
         </Col>
       </Row>

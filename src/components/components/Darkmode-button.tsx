@@ -1,10 +1,12 @@
+import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { changeThemeAction } from "../../redux/actions/user-config-actions";
 import { ThemeColors } from "../../utils/enums";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { App, Switch } from "antd";
+import { App, Switch, Tooltip } from "antd";
+import { MoonOutlined, SunOutlined } from "@ant-design/icons";
 
 const DarkModeButton = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { message } = App.useApp();
   const { user } = useAppSelector((state) => state.auth);
@@ -24,13 +26,15 @@ const DarkModeButton = () => {
   };
 
   return (
-    <Switch
-      checkedChildren={<CheckOutlined />}
-      unCheckedChildren={<CloseOutlined />}
-      onChange={handleChangeTheme}
-      value={isDark}
-      loading={loading}
-    />
+    <Tooltip title={isDark ? t('theme.switchToLight') : t('theme.switchToDark')} placement="bottom">
+      <Switch
+        checkedChildren={<MoonOutlined />}
+        unCheckedChildren={<SunOutlined />}
+        onChange={handleChangeTheme}
+        value={isDark}
+        loading={loading}
+      />
+    </Tooltip>
   );
 };
 
