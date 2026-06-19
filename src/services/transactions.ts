@@ -69,8 +69,10 @@ class TransactionsServices {
     return response.data;
   };
 
-  fetchCashFlowProjection = async (user_id: string): Promise<CashFlowProjectionResponse> => {
-    const response = await axios.get<CashFlowProjectionResponse>(config.urls.cashFlow + user_id);
+  fetchCashFlowProjection = async (user_id: string, force = false): Promise<CashFlowProjectionResponse> => {
+    const response = await axios.get<CashFlowProjectionResponse>(config.urls.cashFlow + user_id, {
+      params: force ? { force: 'true' } : undefined,
+    });
     return response.data;
   };
 }

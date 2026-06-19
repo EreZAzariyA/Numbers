@@ -5,7 +5,8 @@ import { LanguageType, ThemeColorType } from "../../utils/types";
 
 export enum UserConfigActionsType {
   CHANGE_THEME = "userConfig/changeThemeAction",
-  CHANGE_LANG = "userConfig/changeLanguageAction"
+  CHANGE_LANG = "userConfig/changeLanguageAction",
+  CHANGE_PAY_DAY = "userConfig/changePayDayAction"
 };
 
 export const changeThemeAction = createAsyncThunk<ThemeColorType, { user_id: string, theme: ThemeColorType }>(
@@ -30,6 +31,18 @@ export const changeLanguageAction = createAsyncThunk<LanguageType, { user_id: st
       const selectedLanguage = response.data;
       localStorage.setItem('language', selectedLanguage)
       return thunkApi.fulfillWithValue(selectedLanguage);
+    } catch (err: any) {
+      return thunkApi.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const changePayDayAction = createAsyncThunk<number, { user_id: string, payDay: number }>(
+  UserConfigActionsType.CHANGE_PAY_DAY,
+  async ({ user_id, payDay }, thunkApi) => {
+    try {
+      const response = await axios.put<{ payDay: number }>(config.urls.users.config.payDay + `/${user_id}`, { payDay });
+      return thunkApi.fulfillWithValue(response.data.payDay);
     } catch (err: any) {
       return thunkApi.rejectWithValue(err.message);
     }

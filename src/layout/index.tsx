@@ -17,6 +17,7 @@ import { RxDashboard } from "react-icons/rx";
 import { VscAccount } from "react-icons/vsc";
 import { TbRepeat, TbPigMoney, TbCashBanknote } from "react-icons/tb";
 import { useIdleMonitor } from '../hooks/useIdleMonitor';
+import ChatPanel from '../components/chat';
 
 const { Sider, Content } = Layout;
 
@@ -54,7 +55,7 @@ const DashboardView = () => {
     recurring: t('menu.recurring'),
     'savings-goals': t('menu.savingsGoals'),
     'cash-flow': t('menu.cashFlow'),
-    profile: t('menu.account.1'),
+    settings: t('menu.settings'),
   };
 
   const currentPageLabel = currentPageLabelMap[current] || t('menu.dashboard');
@@ -64,8 +65,8 @@ const DashboardView = () => {
 
   const accountItems = user ? [
     getMenuItem(
-      <Link to='/profile'>{t('menu.account.1')}</Link>,
-      'profile',
+      <Link to='/settings/profile'>{t('menu.account.1')}</Link>,
+      'settings',
       <AiOutlineProfile size={Sizes.SUB_MENU_ICON} />,
       null, style
     ),
@@ -197,6 +198,7 @@ const DashboardView = () => {
           <Outlet />
         </Content>
       </Layout>
+      <ChatPanel />
     </Layout>
   );
 };

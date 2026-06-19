@@ -11,8 +11,10 @@ abstract class Config {
     users: {
       config: {
         theme: "",
-        language: ""
-      }
+        language: "",
+        payDay: ""
+      },
+      aiSettings: ""
     },
     transactions: "",
     recurringTransactions: "",
@@ -30,7 +32,10 @@ abstract class Config {
       importTransactions: "",
       setMainAccount: "",
       removeBankAccount: "",
-    }
+    },
+    agentChat: "",
+    agentHistory: "",
+    agentActions: ""
   };
 
   public constructor(baseUrl: string) {
@@ -47,7 +52,9 @@ abstract class Config {
         config: {
           theme: baseUrl + "users/config/theme",
           language: baseUrl + "users/config/language",
-        }
+          payDay: baseUrl + "users/config/pay-day",
+        },
+        aiSettings: baseUrl + "users/ai-settings"
       },
       transactions: baseUrl + "transactions/",
       recurringTransactions: baseUrl + "transactions/recurring/",
@@ -65,7 +72,10 @@ abstract class Config {
         importTransactions: baseUrl + "banks/import-transactions",
         setMainAccount: baseUrl + "banks/set-main-account",
         removeBankAccount: baseUrl + "banks/remove-bank"
-      }
+      },
+      agentChat: baseUrl + "agent/chat",
+      agentHistory: baseUrl + "agent/history",
+      agentActions: baseUrl + "agent/actions"
     }
   };
 };

@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import type { ReactNode } from "react";
 import { Navigate, RouteObject, createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
-import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 
 const DashboardView = lazy(() => import("../layout"));
@@ -19,6 +18,8 @@ const LoansSavingsPage = lazy(() => import("../components/loans-savings"));
 const RecurringTransactions = lazy(() => import("../components/recurring"));
 const SavingsGoalsPage = lazy(() => import("../components/savings-goals"));
 const CashFlowPage = lazy(() => import("../components/cash-flow"));
+const SettingsPage = lazy(() => import("../components/settings"));
+const ApiKeysSection = lazy(() => import("../components/settings/ApiKeysSection"));
 
 const routeFallback = (
   <div aria-busy="true" style={{ minHeight: 160 }}>
@@ -75,7 +76,25 @@ const dashboardRoutes: RouteObject[] = [
       },
       {
         path: "profile",
-        element: withSuspense(<Profile />),
+        element: <Navigate to="/settings/profile" replace />,
+      },
+      {
+        path: "settings",
+        element: withSuspense(<SettingsPage />),
+        children: [
+          {
+            index: true,
+            element: <Navigate to="profile" replace />,
+          },
+          {
+            path: "profile",
+            element: withSuspense(<Profile />),
+          },
+          {
+            path: "api-keys",
+            element: withSuspense(<ApiKeysSection />),
+          },
+        ],
       },
       {
         path: "*",

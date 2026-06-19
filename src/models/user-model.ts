@@ -26,7 +26,8 @@ class UserModel {
   };
   config: {
     lang?: string,
-    'theme-color'?: string
+    'theme-color'?: string,
+    payDay?: number,
   };
 
   constructor(user: UserModel) {

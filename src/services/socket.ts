@@ -26,18 +26,6 @@ class SocketService {
       reconnectionAttempts: 10,
     });
 
-    this.socket.on('connect', () => {
-      console.info('Socket connected');
-    });
-
-    this.socket.on('disconnect', (reason) => {
-      console.info(`Socket disconnected: ${reason}`);
-    });
-
-    this.socket.on('connect_error', (err) => {
-      console.warn(`Socket connection error: ${err.message}`);
-    });
-
     // Re-register any existing listeners
     this.listeners.forEach((callbacks, event) => {
       callbacks.forEach((cb) => {

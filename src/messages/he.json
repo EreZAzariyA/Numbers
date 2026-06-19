@@ -97,7 +97,7 @@
     "subtitle": "הבן לאן החודש מתקדם לפני שהכנסות צפויות והוצאות חוזרות באמת ייכנסו לחשבון.",
     "title": "תחזית תזרים מזומנים",
     "error": "שגיאה בטעינת נתוני התזרים",
-    "refreshBtn": "רענן תגובה",
+    "refreshBtn": "רענן תחזית",
     "incomeToDate": "הכנסות החודש",
     "expensesToDate": "הוצאות החודש",
     "projectedNet": "נטו צפוי",
@@ -109,6 +109,8 @@
     "upcomingEvents": "צפוי החודש",
     "noEvents": "אין פריטים חוזרים צפויים החודש",
     "alreadyRecorded": "כבר נרשם",
+    "missedEvents": "פספסו במחזור הזה",
+    "missedCaption": "פריטים חוזרים אלו היו צפויים אך טרם הופיעו. הם אינם נכללים בתחזית.",
     "risk": {
       "low": "סיכון נמוך",
       "medium": "סיכון בינוני",
@@ -137,7 +139,15 @@
     "title": "פרטי חשבון",
     "sections": {
       "personal": "פרטים אישיים",
-      "financials": "כספים"
+      "financials": "כספים",
+      "payCycle": "מחזור שכר"
+    },
+    "payCycle": {
+      "label": "יום קבלת שכר (יום בחודש)",
+      "description": "הגדר את היום בחודש שבו אתה מקבל שכר. הסוכן ישתמש בזה כדי לחשב את המחזור החודשי שלך במקום חודש לוח שנה.",
+      "save": "שמור",
+      "saved": "יום קבלת השכר נשמר.",
+      "error": "שמירת יום קבלת השכר נכשלה."
     },
     "summary": {
       "connectedBanks": "בנקים מחוברים",
@@ -604,6 +614,94 @@
       "mainAccount": "חשבון ראשי",
       "isMainTitle": "חשבון בנק ראשי",
       "cardProviderTitle": "ספק כרטיס אשראי"
+    }
+  },
+  "chat": {
+    "title": "עוזר פיננסי",
+    "subtitle": "שאל שאלות, בדוק פעולות ממתינות, ושמור על התמונה הפיננסית ברורה בלי לצאת ממרחב העבודה.",
+    "status": "עוזר מרחב העבודה",
+    "placeholder": "שאל אותי על ההוצאות שלך...",
+    "send": "שלח",
+    "empty": "שאל אותי כל שאלה על הכספים שלך.",
+    "emptyTitle": "כאן מתחילה השיחה שלך",
+    "emptyBody": "שאל על הוצאות, יתרות, תזרים מזומנים או הפעולה הבאה שתרצה לבצע.",
+    "loadingHistory": "טוען את השיחה…",
+    "loadingReply": "בודק את הנתונים הפיננסיים שלך…",
+    "error": "משהו השתבש. אנא נסה שוב.",
+    "stop": "עצור יצירה",
+    "clearHistory": "נקה היסטוריית שיחה",
+    "pendingAction": {
+      "title": "פעולה ממתינה",
+      "expires": "פג תוקף ב-{{time}}",
+      "expiredNotice": "תוקף הפעולה פג.",
+      "confirm": "אישור",
+      "cancel": "ביטול",
+      "dismiss": "סגירה",
+      "expired": "הפעולה כבר אינה זמינה. בקש/י ממני שוב כדי לבצע אותה מחדש."
+    }
+  },
+  "settings": {
+    "kicker": "שליטה במרחב העבודה",
+    "title": "הגדרות",
+    "subtitle": "שמור את פרטי הפרופיל, התנהגות ספק ה-AI וגישה מבוססת מפתחות במקום אחד כדי שהמערכת תישאר צפויה.",
+    "sections": {
+      "profile": "פרופיל",
+      "apiKeys": "מפתחות API"
+    },
+    "summary": {
+      "connectedBanks": "בנקים מחוברים",
+      "connectedBanksCaption": "המוסדות שממשיכים להזין יתרות ותנועות אל תוך מרחב העבודה.",
+      "activeProvider": "ספק AI פעיל",
+      "activeProviderCaption": "הספק שמשמש כרגע לצ׳אט ולתובנות שנוצרות בעזרת AI.",
+      "language": "שפה",
+      "languageCaption": "שפת האפליקציה הנוכחית השמורה לחשבון זה.",
+      "totalBalance": "יתרה כוללת",
+      "totalBalanceCaption": "היתרה המשולבת מכל מוסד פיננסי מסונכרן."
+    },
+    "providers": {
+      "ollama": "Ollama",
+      "gemini": "Gemini",
+      "claude": "Claude"
+    },
+    "aiSelectorLabel": "מודל AI",
+    "aiSelectorUpdated": "{{provider}} הוא כעת ספק ה-AI הפעיל",
+    "aiSelectorError": "לא ניתן היה לעדכן את ספק ה-AI",
+    "aiHealth": {
+      "ok": "מחובר — המפתח אומת",
+      "error": "אין תגובה — בדוק את מפתח ה-API",
+      "unknown": "לא מוגדר"
+    },
+    "apiKeys": {
+      "title": "מפתחות API",
+      "subtitle": "נהל גישה ברמת משתמש לספקי מודלים מתארחים, תוך שמירה על Ollama כאפשרות מקומית.",
+      "securityTitle": "איך הסודות נשמרים",
+      "securityCopy": "המפתחות נשמרים בשרת בצורה מוצפנת ורק סטטוס ממוסך מוחזר לאפליקציה.",
+      "available": "זמין",
+      "notAvailable": "לא זמין",
+      "savedMask": "מפתח משתמש שמור: {{masked}}",
+      "missing": "עדיין לא נשמר מפתח משתמש עבור ספק זה.",
+      "modelLabel": "מודל מוגדר: {{model}}",
+      "inputPlaceholder": "הזן מפתח API עבור {{provider}}",
+      "saveAction": "שמור מפתח",
+      "replaceAction": "החלף מפתח",
+      "clearAction": "נקה מפתח",
+      "saveSuccess": "המפתח של {{provider}} נשמר",
+      "saveError": "לא ניתן היה לשמור את מפתח ה-API",
+      "clearSuccess": "המפתח של {{provider}} הוסר",
+      "clearError": "לא ניתן היה לנקות את מפתח ה-API",
+      "ollamaReady": "Ollama זמין מתוך סביבת השרת ואינו דורש מפתח ברמת משתמש.",
+      "ollamaMissing": "Ollama לא מוגדר כרגע בשרת.",
+      "ollamaHint": "כדי להפעיל את Ollama, הגדר את סביבת השרת עם מודל Ollama וכתובת בסיס.",
+      "ollamaModelSelectLabel": "בחר מודל:",
+      "ollamaSelectPlaceholder": "בחר מודל Ollama מותקן",
+      "ollamaModelSave": "שמור מודל",
+      "ollamaModelSaveSuccess": "מודל Ollama עודכן",
+      "ollamaModelSaveError": "לא ניתן לעדכן את מודל Ollama",
+      "ollamaModelsLoadError": "לא ניתן לטעון מודלי Ollama מותקנים. ודא ש-Ollama פועל ואז טען מחדש.",
+      "ollamaThinkingLabel": "חשיבת המודל",
+      "ollamaThinkingHint": "כבה לתשובות מהירות בהרבה. מומלץ למודלי חשיבה כמו Qwen3.",
+      "ollamaThinkingSaveSuccess": "חשיבת המודל עודכנה",
+      "ollamaThinkingSaveError": "לא ניתן לעדכן את חשיבת המודל"
     }
   }
 }
