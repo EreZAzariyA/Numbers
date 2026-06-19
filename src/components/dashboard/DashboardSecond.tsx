@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
-import TransactionModel from "../../models/transaction";
+import { useQuery } from "@tanstack/react-query";
 import UserModel from "../../models/user-model";
-import { EditTable } from "../components/EditTable";
+import transactionsServices, { TransactionsResp } from "../../services/transactions";
 import { asNumString, queryFiltering } from "../../utils/helpers";
 import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
-import { Card, Flex, Tooltip, Typography } from "antd";
-import { TableProps } from "antd/lib";
+import { Card, Flex, Skeleton, Typography } from "antd";
 import { LuActivity } from "react-icons/lu";
 
 interface DashboardSecondProps {
@@ -17,48 +16,21 @@ interface DashboardSecondProps {
 
 const DashboardSecond = (props: DashboardSecondProps) => {
   const { t } = useTranslation();
+  const monthKey = props.monthToDisplay.format('YYYY-MM');
 
   const query = queryFiltering({
     month: props.monthToDisplay.toISOString(),
     status: TransactionStatuses.completed
   }, { limit: 5 });
 
-  const columns: TableProps<TransactionModel>['columns'] = [
-    {
-      title: t('transactions.table.header.date'),
-      dataIndex: 'date',
-      key: 'date',
-      width: '33.3%',
-      sorter: (a, b) => (dayjs(b.date).valueOf() - dayjs(a.date).valueOf()),
-      defaultSortOrder: 'ascend',
-      render: (text, r) => (
-        <span>{new Date(text).toLocaleDateString()}</span>
-      ),
-    },
-    {
-      title: t('transactions.table.header.description'),
-      dataIndex: 'description',
-      key: 'description',
-      width: '33.3%',
-      ellipsis: {
-        showTitle: false
-      },
-      render: (text) => (
-        <Tooltip title={text}>
-          {text}
-        </Tooltip>
-      )
-    },
-    {
-      title: t('transactions.table.header.amount'),
-      dataIndex: 'amount',
-      key: 'amount',
-      width: '33.3%',
-      render: (val) => (
-        asNumString(val)
-      )
-    },
-  ];
+  const { data, isLoading } = useQuery<TransactionsResp>({
+    queryKey: ['dashboard-recent-transactions', props.user?._id, monthKey],
+    queryFn: () => transactionsServices.fetchTransactions(props.user?._id, query, TransactionsType.ACCOUNT),
+    enabled: !!props.user?._id,
+    staleTime: 1000 * 60,
+  });
+
+  const transactions = data?.transactions ?? [];
 
   const cardTitle = (
     <Flex align="center" justify="space-between">
@@ -81,15 +53,32 @@ const DashboardSecond = (props: DashboardSecondProps) => {
 
   return (
     <Card title={cardTitle} className="dashboard-second">
-      <EditTable
-        query={query}
-        type={TransactionsType.ACCOUNT}
-        tableProps={{
-          columns,
-          bordered: false,
-          locale: { emptyText: emptyState },
-        }}
-      />
+      {isLoading ? (
+        <div className="dashboard-recent-loading">
+          <Skeleton active paragraph={{ rows: 4 }} />
+        </div>
+      ) : transactions.length === 0 ? (
+        emptyState
+      ) : (
+        <div className="dashboard-recent-list" role="table">
+          <div className="dashboard-recent-row dashboard-recent-head" role="row">
+            <span role="columnheader">{t('transactions.table.header.date')}</span>
+            <span role="columnheader">{t('transactions.table.header.description')}</span>
+            <span role="columnheader">{t('transactions.table.header.amount')}</span>
+          </div>
+          {transactions.map((transaction) => (
+            <div className="dashboard-recent-row" role="row" key={transaction._id}>
+              <span role="cell">{dayjs(transaction.date).format('DD/MM/YYYY')}</span>
+              <span role="cell" className="dashboard-recent-description" title={transaction.description}>
+                {transaction.description}
+              </span>
+              <span role="cell" className={transaction.amount < 0 ? 'dashboard-amount-expense' : 'dashboard-amount-income'}>
+                {asNumString(transaction.amount)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </Card>
   );
 };

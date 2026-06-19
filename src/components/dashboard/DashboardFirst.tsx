@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import CurrencyList from 'currency-list'
@@ -5,7 +6,6 @@ import transactionsServices, { TransactionsResp } from "../../services/transacti
 import UserModel from "../../models/user-model";
 import { MainBanksAccount } from "../../models/bank-model";
 import { CreditCardsAndSavings } from "./CreditCardsAndSavings";
-import { SimpleCharts } from "../components/Charts/SimpleCharts";
 import { TotalAmountInput } from "../components/TotalAmount";
 import { RefreshBankDataButton } from "../components/RefreshBankDataButton";
 import { asNumString, isArrayAndNotEmpty, queryFiltering } from "../../utils/helpers";
@@ -13,6 +13,10 @@ import { TotalAmountType } from "../../utils/enums";
 import { TransactionStatuses, TransactionsType } from "../../utils/transactions";
 import { Card, Col, Flex, Grid, Row, Skeleton, Typography } from "antd";
 import { useQuery } from "@tanstack/react-query";
+
+const SimpleCharts = lazy(() => (
+  import("../components/Charts/SimpleCharts").then((module) => ({ default: module.SimpleCharts }))
+));
 
 interface DashboardFirstProps {
   monthToDisplay: Dayjs;
@@ -30,9 +34,11 @@ const DashboardFirst = (props: DashboardFirstProps) => {
   const currency = CurrencyList.get(bankAccount?.extraInfo?.accountCurrencyCode || "ILS");
 
   const query = queryFiltering({ status: TransactionStatuses.completed, month: props.monthToDisplay });
+  const monthKey = props.monthToDisplay.format('YYYY-MM');
   const { data, isLoading } = useQuery<TransactionsResp>({
-    queryKey: ['transactions', props.user?._id],
+    queryKey: ['dashboard-transactions-summary', props.user?._id, monthKey],
     queryFn: () => transactionsServices.fetchTransactions(props.user?._id, query, TransactionsType.ACCOUNT),
+    enabled: !!props.user?._id,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     gcTime: 1000 * 2,
@@ -76,7 +82,9 @@ const DashboardFirst = (props: DashboardFirstProps) => {
                 transactions={data?.transactions}
                 type={TotalAmountType.SPENT}
               />
-              <SimpleCharts transactions={data?.transactions} loading={isLoading} />
+              <Suspense fallback={<div className="dashboard-chart-skeleton"><Skeleton active paragraph={{ rows: 3 }} /></div>}>
+                <SimpleCharts transactions={data?.transactions} loading={isLoading} />
+              </Suspense>
             </Flex>
           </Card>
         </Col>

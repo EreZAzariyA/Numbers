@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CredentialResponse } from "@react-oauth/google";
+import type { CredentialResponse } from "@react-oauth/google";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import UserModel from "../../models/user-model";
 import CredentialsModel from "../../models/credentials-model";

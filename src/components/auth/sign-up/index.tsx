@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
+import type { CredentialResponse } from "@react-oauth/google";
 import { useAppDispatch } from "../../../redux/store";
 import UserModel from "../../../models/user-model";
 import { googleSignInAction, signupAction } from "../../../redux/actions/auth-actions";

@@ -3,7 +3,6 @@ import reportWebVitals from './reportWebVitals';
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { Provider } from 'react-redux';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import store from './redux/store';
 import interceptorsService from './services/InterceptorsService';
 import en from './messages/en.json';
@@ -44,13 +43,11 @@ import("./App").then((RootApp) => {
 
   root.render(
     <React.StrictMode>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store}>
-            <App />
-          </Provider>
-        </QueryClientProvider>
-      </GoogleOAuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </QueryClientProvider>
     </React.StrictMode>
   );
 });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
 import { useAppSelector } from "../../redux/store";
@@ -6,12 +6,14 @@ import { useBanks } from "../../hooks/useBanks";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
-import DashboardFourth from "./DashboardFourth/index";
-import DashboardFifth from "./DashboardFifth/index";
 import { getAccountCreditCards } from "../../utils/bank-utils";
 import { getBanksTotal, getUserfName } from "../../utils/helpers";
-import { Button, DatePicker, Flex, Space, Typography } from "antd";
+import { Button, Card, Flex, Skeleton, Space, Typography } from "antd";
+import { LuChevronLeft, LuChevronRight, LuRotateCcw } from "react-icons/lu";
 import "./Dashboard.css";
+
+const DashboardFourth = lazy(() => import("./DashboardFourth/index"));
+const DashboardFifth = lazy(() => import("./DashboardFifth/index"));
 
 const getGreetingKey = (): string => {
   const h = dayjs().hour();
@@ -20,6 +22,12 @@ const getGreetingKey = (): string => {
   if (h >= 17 && h < 20) return 'dashboard.greeting.evening';
   return 'dashboard.greeting.night';
 };
+
+const DashboardCardFallback = () => (
+  <Card className="dashboard-lazy-card">
+    <Skeleton active paragraph={{ rows: 4 }} />
+  </Card>
+);
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -31,6 +39,23 @@ const Dashboard = () => {
   const banks = account?.banks || [];
   const latestConnection = banks.reduce((latest, bank) => Math.max(latest, bank?.lastConnection || 0), 0);
   const totalBalance = getBanksTotal(banks) || 0;
+  const selectedMonthLabel = monthToDisplay.format('MMM YYYY');
+  const isCurrentMonth = monthToDisplay.isSame(currentMonth, 'month');
+
+  const showPreviousMonth = () => {
+    setMonthToDisplay((month) => month.subtract(1, 'month'));
+  };
+
+  const showNextMonth = () => {
+    setMonthToDisplay((month) => {
+      const nextMonth = month.add(1, 'month');
+      return nextMonth.isAfter(currentMonth, 'month') ? currentMonth : nextMonth;
+    });
+  };
+
+  const resetMonth = () => {
+    setMonthToDisplay(currentMonth);
+  };
 
   return (
     <Flex vertical gap={20} className="page-container dashboard">
@@ -45,20 +70,29 @@ const Dashboard = () => {
           </div>
 
           <div className="page-toolbar">
-            <DatePicker
-              picker="month"
-              defaultPickerValue={currentMonth}
-              maxDate={dayjs()}
-              placeholder={dayjs().format('MMM YYYY')}
-              format="MMM YYYY"
-              allowClear={false}
-              showNow={true}
-              renderExtraFooter={() => (
-                <Button type="text" danger onClick={() => setMonthToDisplay(dayjs())}>{t('common.buttons.reset')}</Button>
-              )}
-              value={monthToDisplay}
-              onChange={setMonthToDisplay}
-            />
+            <div className="dashboard-month-control" aria-label={selectedMonthLabel}>
+              <Button
+                type="text"
+                aria-label="Previous month"
+                icon={<LuChevronLeft size={18} />}
+                onClick={showPreviousMonth}
+              />
+              <span className="dashboard-month-label">{selectedMonthLabel}</span>
+              <Button
+                type="text"
+                aria-label="Next month"
+                disabled={isCurrentMonth}
+                icon={<LuChevronRight size={18} />}
+                onClick={showNextMonth}
+              />
+              <Button
+                type="text"
+                aria-label={t('common.buttons.reset')}
+                disabled={isCurrentMonth}
+                icon={<LuRotateCcw size={17} />}
+                onClick={resetMonth}
+              />
+            </div>
           </div>
         </div>
 
@@ -98,8 +132,12 @@ const Dashboard = () => {
           monthToDisplay={monthToDisplay}
         />
         <DashboardThird creditCards={creditCards} />
-        <DashboardFourth user={user} />
-        <DashboardFifth user={user} />
+        <Suspense fallback={<DashboardCardFallback />}>
+          <DashboardFourth user={user} />
+        </Suspense>
+        <Suspense fallback={<DashboardCardFallback />}>
+          <DashboardFifth user={user} />
+        </Suspense>
       </Space>
     </Flex>
   );

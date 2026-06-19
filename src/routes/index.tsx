@@ -1,25 +1,41 @@
+import { lazy, Suspense } from "react";
+import type { ReactNode } from "react";
 import { Navigate, RouteObject, createBrowserRouter } from "react-router-dom";
-import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
-import DashboardView from "../layout";
-import AuthView from "../layout/AuthView";
-import SignIn from "../components/auth/sign-in";
-import SignUp from "../components/auth/sign-up";
-import Dashboard from "../components/dashboard";
-import Transactions from "../components/transactions";
-import CategoriesPage from "../components/categories";
-import Profile from "../components/profile";
-import PageNotFound from "../components/components/PageNotFound";
-import BankPage from "../components/bank-page";
-import LoansSavingsPage from "../components/loans-savings";
-import RecurringTransactions from "../components/recurring";
-import SavingsGoalsPage from "../components/savings-goals";
-import CashFlowPage from "../components/cash-flow";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
+
+const DashboardView = lazy(() => import("../layout"));
+const AuthRoot = lazy(() => import("../components/auth/AuthRoot"));
+const SignIn = lazy(() => import("../components/auth/sign-in"));
+const SignUp = lazy(() => import("../components/auth/sign-up"));
+const Dashboard = lazy(() => import("../components/dashboard"));
+const Transactions = lazy(() => import("../components/transactions"));
+const CategoriesPage = lazy(() => import("../components/categories"));
+const Profile = lazy(() => import("../components/profile"));
+const PageNotFound = lazy(() => import("../components/components/PageNotFound"));
+const BankPage = lazy(() => import("../components/bank-page"));
+const LoansSavingsPage = lazy(() => import("../components/loans-savings"));
+const RecurringTransactions = lazy(() => import("../components/recurring"));
+const SavingsGoalsPage = lazy(() => import("../components/savings-goals"));
+const CashFlowPage = lazy(() => import("../components/cash-flow"));
+
+const routeFallback = (
+  <div aria-busy="true" style={{ minHeight: 160 }}>
+    <Spin />
+  </div>
+);
+
+const withSuspense = (element: ReactNode) => (
+  <Suspense fallback={routeFallback}>
+    {element}
+  </Suspense>
+);
 
 const dashboardRoutes: RouteObject[] = [
   {
     path: "/",
-    element: <PrivateRoute element={<DashboardView />} />,
+    element: withSuspense(<PrivateRoute element={<DashboardView />} />),
     children: [
       {
         index: true,
@@ -27,43 +43,43 @@ const dashboardRoutes: RouteObject[] = [
       },
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: withSuspense(<Dashboard />),
       },
       {
         path: "transactions",
-        element: <Transactions />,
+        element: withSuspense(<Transactions />),
       },
       {
         path: "categories",
-        element: <CategoriesPage />,
+        element: withSuspense(<CategoriesPage />),
       },
       {
         path: "bank",
-        element: <BankPage />,
+        element: withSuspense(<BankPage />),
       },
       {
         path: "loans-savings",
-        element: <LoansSavingsPage />,
+        element: withSuspense(<LoansSavingsPage />),
       },
       {
         path: "recurring",
-        element: <RecurringTransactions />,
+        element: withSuspense(<RecurringTransactions />),
       },
       {
         path: "savings-goals",
-        element: <SavingsGoalsPage />,
+        element: withSuspense(<SavingsGoalsPage />),
       },
       {
         path: "cash-flow",
-        element: <CashFlowPage />,
+        element: withSuspense(<CashFlowPage />),
       },
       {
         path: "profile",
-        element: <Profile />,
+        element: withSuspense(<Profile />),
       },
       {
         path: "*",
-        element: <PageNotFound />,
+        element: withSuspense(<PageNotFound />),
       },
     ],
   }
@@ -71,7 +87,7 @@ const dashboardRoutes: RouteObject[] = [
 const authRoutes: RouteObject[] = [
   {
     path: "/auth",
-    element: <PublicRoute element={<AuthView />} />,
+    element: withSuspense(<AuthRoot />),
     children: [
       {
         index: true,
@@ -79,15 +95,15 @@ const authRoutes: RouteObject[] = [
       },
       {
         path: "sign-in",
-        element: <PublicRoute element={<SignIn />} />,
+        element: withSuspense(<SignIn />),
       },
       {
         path: "sign-up",
-        element: <PublicRoute element={<SignUp />} />,
+        element: withSuspense(<SignUp />),
       },
       {
         path: "*",
-        element: <PageNotFound />,
+        element: withSuspense(<PageNotFound />),
       },
     ],
   },
