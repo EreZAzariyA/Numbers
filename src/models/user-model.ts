@@ -29,6 +29,7 @@ class UserModel {
     'theme-color'?: string,
     payDay?: number,
   };
+  role?: 'admin' | 'user';
 
   constructor(user: UserModel) {
     this._id = user._id;
@@ -36,6 +37,7 @@ class UserModel {
     this.emails = user.emails;
     this.services = user.services;
     this.config = user.config;
+    this.role = user.role;
   }
 };
 

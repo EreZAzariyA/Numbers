@@ -8,6 +8,7 @@ import transactionsServices from "../../services/transactions";
 import { CashFlowProjectionResponse, ProjectedEvent } from "../../utils/types";
 import { useAppSelector } from "../../redux/store";
 import { asNumString } from "../../utils/helpers";
+import ComparisonSection from "./ComparisonSection";
 
 const RISK_COLOR: Record<string, "success" | "warning" | "error"> = {
   low: "success",
@@ -210,6 +211,8 @@ const CashFlowPage = () => {
               </Flex>
             )}
           </Card>
+
+          <ComparisonSection />
 
           {/* Missed events */}
           {missedEvents.length > 0 && (

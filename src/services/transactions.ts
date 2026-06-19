@@ -11,6 +11,43 @@ export type TransactionsResp = {
   total: number
 }
 
+export interface CategoryChange {
+  category: string;
+  current: number;
+  previous: number;
+  delta: number;
+  deltaPct: number | null;
+}
+
+export interface SpendingComparisonResponse {
+  current: { start: string; end: string; total: number };
+  previous: { start: string; end: string; total: number };
+  totalDelta: number;
+  totalDeltaPct: number | null;
+  topCategoryChanges: CategoryChange[];
+}
+
+export interface SubscriptionSummary {
+  patternId: string;
+  merchantKey: string;
+  name: string;
+  frequency: string;
+  currentAmount: number;
+  previousAmount: number | null;
+  priceChangePct: number | null;
+  monthlyEquivalent: number;
+  lastSeen: string;
+  nextExpected: string | null;
+  isStale: boolean;
+}
+
+export interface SubscriptionsResponse {
+  subscriptions: SubscriptionSummary[];
+  monthlyTotal: number;
+  priceIncreaseCount: number;
+  staleCount: number;
+}
+
 class TransactionsServices {
   fetchTransactions = async (
     user_id: string,
@@ -73,6 +110,18 @@ class TransactionsServices {
     const response = await axios.get<CashFlowProjectionResponse>(config.urls.cashFlow + user_id, {
       params: force ? { force: 'true' } : undefined,
     });
+    return response.data;
+  };
+
+  fetchSpendingComparison = async (user_id: string, force = false): Promise<SpendingComparisonResponse> => {
+    const response = await axios.get<SpendingComparisonResponse>(`${config.urls.cashFlow}${user_id}/comparison`, {
+      params: force ? { force: 'true' } : undefined,
+    });
+    return response.data;
+  };
+
+  fetchSubscriptions = async (user_id: string): Promise<SubscriptionsResponse> => {
+    const response = await axios.get<SubscriptionsResponse>(`${config.urls.subscriptions}${user_id}/subscriptions`);
     return response.data;
   };
 }

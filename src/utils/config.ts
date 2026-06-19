@@ -35,7 +35,14 @@ abstract class Config {
     },
     agentChat: "",
     agentHistory: "",
-    agentActions: ""
+    agentActions: "",
+    admin: {
+      users: "",
+      reindexAll: "",
+      reindexUser: "",
+    },
+    notifications: "",
+    subscriptions: ""
   };
 
   public constructor(baseUrl: string) {
@@ -75,7 +82,14 @@ abstract class Config {
       },
       agentChat: baseUrl + "agent/chat",
       agentHistory: baseUrl + "agent/history",
-      agentActions: baseUrl + "agent/actions"
+      agentActions: baseUrl + "agent/actions",
+      admin: {
+        users: baseUrl + "admin/users",
+        reindexAll: baseUrl + "admin/reindex",
+        reindexUser: baseUrl + "admin/reindex",
+      },
+      notifications: baseUrl + "notifications/",
+      subscriptions: baseUrl + "recurring/"
     }
   };
 };

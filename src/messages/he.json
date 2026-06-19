@@ -129,6 +129,31 @@
       "outlookCopy": "השתמש בדף הזה כדי להפריד בין מה שכבר קרה לבין מה שעדיין צפוי, ואז להחליט אם שארית החודש דורשת התערבות."
     }
   },
+  "notifications": {
+    "title": "התראות",
+    "empty": "אין התראות חדשות",
+    "markAllRead": "סמן הכל כנקרא"
+  },
+  "subscriptions": {
+    "title": "מנויים",
+    "service": "שירות",
+    "amount": "סכום",
+    "frequency": "תדירות",
+    "monthlyEquivalent": "חודשי",
+    "lastCharge": "חיוב אחרון",
+    "status": "סטטוס",
+    "active": "פעיל",
+    "stale": "אין חיוב לאחרונה",
+    "monthlyTotal": "סך חודשי",
+    "count": "מנויים",
+    "priceIncreases": "עליות מחיר",
+    "staleCount": "לא בשימוש"
+  },
+  "comparison": {
+    "title": "החודש מול הקודם",
+    "vsLastMonth": "מול {{amount}} בחודש שעבר",
+    "topChanges": "השינויים הגדולים בקטגוריות"
+  },
   "totals": {
     "spent": "סה\"כ הוצאות",
     "income": "סה\"כ הכנסות"

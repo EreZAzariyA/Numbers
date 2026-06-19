@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import type { ReactNode } from "react";
 import { Navigate, RouteObject, createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
 import { Spin } from "antd";
 
 const DashboardView = lazy(() => import("../layout"));
@@ -20,6 +21,7 @@ const SavingsGoalsPage = lazy(() => import("../components/savings-goals"));
 const CashFlowPage = lazy(() => import("../components/cash-flow"));
 const SettingsPage = lazy(() => import("../components/settings"));
 const ApiKeysSection = lazy(() => import("../components/settings/ApiKeysSection"));
+const AdminDashboard = lazy(() => import("../components/admin"));
 
 const routeFallback = (
   <div aria-busy="true" style={{ minHeight: 160 }}>
@@ -95,6 +97,10 @@ const dashboardRoutes: RouteObject[] = [
             element: withSuspense(<ApiKeysSection />),
           },
         ],
+      },
+      {
+        path: "admin",
+        element: withSuspense(<AdminRoute element={<AdminDashboard />} />),
       },
       {
         path: "*",

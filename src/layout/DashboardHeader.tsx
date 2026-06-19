@@ -15,6 +15,7 @@ import { Languages } from "../utils/enums";
 import { LanguageType } from "../utils/types";
 import { AiProvider } from "../models/ai-settings";
 import DarkModeButton from "../components/components/Darkmode-button";
+import NotificationBell from "../components/notifications/NotificationBell";
 import Logo from "../components/components/logo/logo";
 import { App, Button, Divider, Dropdown, Flex, Layout, MenuProps, Select, Space, Typography } from "antd";
 import CloseOutlined from "@ant-design/icons/CloseOutlined";
@@ -164,6 +165,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
               <span>{lang?.toUpperCase()}</span>
             </Button>
           </Dropdown>
+          <NotificationBell />
           <DarkModeButton />
         </Space>
       </Flex>

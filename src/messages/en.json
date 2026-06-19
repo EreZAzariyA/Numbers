@@ -130,6 +130,31 @@
       "outlookCopy": "Use this page to separate what has already happened from what is still expected, then decide whether the remaining month needs intervention."
     }
   },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "You're all caught up",
+    "markAllRead": "Mark all read"
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "service": "Service",
+    "amount": "Amount",
+    "frequency": "Frequency",
+    "monthlyEquivalent": "Monthly",
+    "lastCharge": "Last charge",
+    "status": "Status",
+    "active": "Active",
+    "stale": "No recent charge",
+    "monthlyTotal": "Monthly total",
+    "count": "Subscriptions",
+    "priceIncreases": "Price increases",
+    "staleCount": "Unused"
+  },
+  "comparison": {
+    "title": "This month vs last",
+    "vsLastMonth": "vs {{amount}} last month",
+    "topChanges": "Biggest category changes"
+  },
   "totals": {
     "spent": "Total Spent",
     "income": "Total Income"

@@ -14,6 +14,7 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { MainTransaction } from "../../services/transactions";
+import SubscriptionsPanel from "./SubscriptionsPanel";
 
 const { Title } = Typography;
 
@@ -216,6 +217,10 @@ const RecurringTransactions = () => {
             <span className="page-stat-caption">{t("recurring.summary.nextExpectedCaption")}</span>
           </div>
         </div>
+      </div>
+
+      <div className="page-shell">
+        <SubscriptionsPanel />
       </div>
 
       {data.length === 0 ? (
