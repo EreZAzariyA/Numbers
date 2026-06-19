@@ -1,12 +1,14 @@
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import { ReloadOutlined } from "@ant-design/icons";
+import { ReloadOutlined, WarningOutlined } from "@ant-design/icons";
 import { Badge, Button, Card, Col, Flex, Row, Skeleton, Tag, Typography } from "antd";
 import { LuArrowDownCircle, LuArrowUpCircle, LuCalendarClock } from "react-icons/lu";
 import transactionsServices from "../../services/transactions";
 import { CashFlowProjectionResponse, ProjectedEvent } from "../../utils/types";
 import { useAppSelector } from "../../redux/store";
 import { asNumString } from "../../utils/helpers";
+import ComparisonSection from "./ComparisonSection";
 
 const RISK_COLOR: Record<string, "success" | "warning" | "error"> = {
   low: "success",
@@ -55,17 +57,26 @@ const StatCard = ({ label, value, valueColor }: { label: string; value: string; 
 const CashFlowPage = () => {
   const { t } = useTranslation();
   const { user } = useAppSelector((state) => state.auth);
+  const forceRef = useRef(false);
 
   const { data, isLoading, isError, isFetching, refetch } = useQuery<CashFlowProjectionResponse>({
     queryKey: ["cashFlow", user?._id],
-    queryFn: () => transactionsServices.fetchCashFlowProjection(user._id),
+    queryFn: () => transactionsServices.fetchCashFlowProjection(user._id, forceRef.current),
     enabled: !!user?._id,
     staleTime: 1000 * 60 * 5,
   });
 
+  const handleRefresh = async () => {
+    forceRef.current = true;
+    await refetch();
+    forceRef.current = false;
+  };
+
   const netColor = data
     ? data.projectedMonthNet >= 0 ? "#10b981" : "#ef4444"
     : undefined;
+
+  const missedEvents = data?.missedEvents ?? [];
 
   return (
     <Flex vertical gap={20} className="page-container cash-flow">
@@ -83,7 +94,7 @@ const CashFlowPage = () => {
               type="default"
               icon={<ReloadOutlined />}
               loading={isFetching}
-              onClick={() => void refetch()}
+              onClick={() => void handleRefresh()}
             >
               {t("cashFlow.refreshBtn")}
             </Button>
@@ -200,6 +211,30 @@ const CashFlowPage = () => {
               </Flex>
             )}
           </Card>
+
+          <ComparisonSection />
+
+          {/* Missed events */}
+          {missedEvents.length > 0 && (
+            <Card
+              title={
+                <Flex align="center" gap={8}>
+                  <WarningOutlined style={{ color: "#f59e0b" }} />
+                  {t("cashFlow.missedEvents")}
+                  <Badge count={missedEvents.length} color="#f59e0b" />
+                </Flex>
+              }
+            >
+              <Typography.Text type="secondary" style={{ display: "block", marginBottom: 12, fontSize: 13 }}>
+                {t("cashFlow.missedCaption")}
+              </Typography.Text>
+              <Flex vertical>
+                {missedEvents.map((event, i) => (
+                  <EventRow key={`missed-${event.description}-${event.expectedDate}-${i}`} event={event} />
+                ))}
+              </Flex>
+            </Card>
+          )}
         </>
       )}
     </Flex>

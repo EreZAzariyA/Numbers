@@ -14,9 +14,10 @@ import { CiCircleList, CiBank } from "react-icons/ci";
 import { BsReceipt, BsGraphUpArrow } from "react-icons/bs";
 import { FaAddressCard } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
-import { VscAccount } from "react-icons/vsc";
+import { VscAccount, VscShield } from "react-icons/vsc";
 import { TbRepeat, TbPigMoney, TbCashBanknote } from "react-icons/tb";
 import { useIdleMonitor } from '../hooks/useIdleMonitor';
+import ChatPanel from '../components/chat';
 
 const { Sider, Content } = Layout;
 
@@ -54,7 +55,8 @@ const DashboardView = () => {
     recurring: t('menu.recurring'),
     'savings-goals': t('menu.savingsGoals'),
     'cash-flow': t('menu.cashFlow'),
-    profile: t('menu.account.1'),
+    settings: t('menu.settings'),
+    admin: 'Admin',
   };
 
   const currentPageLabel = currentPageLabelMap[current] || t('menu.dashboard');
@@ -64,8 +66,8 @@ const DashboardView = () => {
 
   const accountItems = user ? [
     getMenuItem(
-      <Link to='/profile'>{t('menu.account.1')}</Link>,
-      'profile',
+      <Link to='/settings/profile'>{t('menu.account.1')}</Link>,
+      'settings',
       <AiOutlineProfile size={Sizes.SUB_MENU_ICON} />,
       null, style
     ),
@@ -139,6 +141,14 @@ const DashboardView = () => {
       <TbCashBanknote size={Sizes.MENU_ICON} />,
       null, style
     ),
+    ...(user?.role === 'admin' ? [
+      getMenuItem(
+        <Link to='/admin'>Admin</Link>,
+        'admin',
+        <VscShield size={Sizes.MENU_ICON} />,
+        null, style
+      )
+    ] : []),
     getMenuItem(
       t('menu.account.0'),
       'account',
@@ -197,6 +207,7 @@ const DashboardView = () => {
           <Outlet />
         </Content>
       </Layout>
+      <ChatPanel />
     </Layout>
   );
 };

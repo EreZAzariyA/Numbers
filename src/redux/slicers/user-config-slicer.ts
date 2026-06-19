@@ -1,7 +1,7 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import { LanguageType, ThemeColorType } from "../../utils/types";
 import { Languages, ThemeColors } from "../../utils/enums";
-import { changeLanguageAction, changeThemeAction } from "../actions/user-config-actions";
+import { changeLanguageAction, changePayDayAction, changeThemeAction } from "../actions/user-config-actions";
 import i18next from "i18next";
 
 interface UserConfigState {
@@ -12,6 +12,11 @@ interface UserConfigState {
   };
   themeColor: {
     theme: ThemeColorType;
+    loading: boolean;
+    error: SerializedError | null;
+  };
+  payDay: {
+    value: number | null;
     loading: boolean;
     error: SerializedError | null;
   };
@@ -27,6 +32,11 @@ const initialState: UserConfigState = {
   },
   themeColor: {
     theme: defaultThemeColor,
+    loading: false,
+    error: null,
+  },
+  payDay: {
+    value: null,
     loading: false,
     error: null,
   },
@@ -83,6 +93,19 @@ const extraReducers = (builder: ActionReducerMapBuilder<UserConfigState>) => {
       lang: action.payload
     }
   }));
+
+  builder.addCase(changePayDayAction.pending, (state) => ({
+    ...state,
+    payDay: { ...state.payDay, loading: true, error: null }
+  }))
+  .addCase(changePayDayAction.rejected, (state, action) => ({
+    ...state,
+    payDay: { ...state.payDay, loading: false, error: action.error }
+  }))
+  .addCase(changePayDayAction.fulfilled, (state, action) => ({
+    ...state,
+    payDay: { loading: false, error: null, value: action.payload }
+  }));
 };
 
 const userConfigSlicer = createSlice({
@@ -110,6 +133,9 @@ const userConfigSlicer = createSlice({
         }
       }
     },
+    setPayDay(state, action) {
+      return { ...state, payDay: { ...state.payDay, value: action.payload ?? null } };
+    },
     removeUserConfig(state) {
       localStorage.removeItem('language');
       localStorage.removeItem('theme-color');
@@ -122,12 +148,17 @@ const userConfigSlicer = createSlice({
         themeColor: {
           ...state.themeColor,
           theme: ThemeColors.LIGHT
-        }
+        },
+        payDay: {
+          value: null,
+          loading: false,
+          error: null,
+        },
       }
     }
   },
   extraReducers
 });
 
-export const { removeUserConfig, setUserTheme, setUserLang } = userConfigSlicer.actions;
+export const { removeUserConfig, setUserTheme, setUserLang, setPayDay } = userConfigSlicer.actions;
 export default userConfigSlicer.reducer;

@@ -98,7 +98,7 @@
     "subtitle": "Understand where the month is heading before expected income and recurring expenses land.",
     "title": "Cash Flow Projection",
     "error": "Failed to load cash flow data",
-    "refreshBtn": "Refresh response",
+    "refreshBtn": "Refresh Projection",
     "incomeToDate": "Income this month",
     "expensesToDate": "Expenses this month",
     "projectedNet": "Projected net",
@@ -110,6 +110,8 @@
     "upcomingEvents": "Expected This Month",
     "noEvents": "No expected recurring items this month",
     "alreadyRecorded": "already recorded",
+    "missedEvents": "Missed This Cycle",
+    "missedCaption": "These recurring items were expected but haven't appeared yet. They're excluded from the projection.",
     "risk": {
       "low": "Low Risk",
       "medium": "Medium Risk",
@@ -128,6 +130,31 @@
       "outlookCopy": "Use this page to separate what has already happened from what is still expected, then decide whether the remaining month needs intervention."
     }
   },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "You're all caught up",
+    "markAllRead": "Mark all read"
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "service": "Service",
+    "amount": "Amount",
+    "frequency": "Frequency",
+    "monthlyEquivalent": "Monthly",
+    "lastCharge": "Last charge",
+    "status": "Status",
+    "active": "Active",
+    "stale": "No recent charge",
+    "monthlyTotal": "Monthly total",
+    "count": "Subscriptions",
+    "priceIncreases": "Price increases",
+    "staleCount": "Unused"
+  },
+  "comparison": {
+    "title": "This month vs last",
+    "vsLastMonth": "vs {{amount}} last month",
+    "topChanges": "Biggest category changes"
+  },
   "totals": {
     "spent": "Total Spent",
     "income": "Total Income"
@@ -138,7 +165,15 @@
     "title": "Account Information",
     "sections": {
       "personal": "Personal Details",
-      "financials": "Financials"
+      "financials": "Financials",
+      "payCycle": "Pay Cycle"
+    },
+    "payCycle": {
+      "label": "Pay day (day of month)",
+      "description": "Set the day you get paid each month. The agent will use this to calculate your monthly cycle instead of the calendar month.",
+      "save": "Save",
+      "saved": "Pay day saved.",
+      "error": "Failed to save pay day."
     },
     "summary": {
       "connectedBanks": "Connected Banks",
@@ -605,6 +640,94 @@
       "mainAccount": "Main Account",
       "isMainTitle": "Main Bank Account",
       "cardProviderTitle": "Credit Card Provider"
+    }
+  },
+  "chat": {
+    "title": "Finance Assistant",
+    "subtitle": "Ask questions, review actions, and keep the financial picture clear without leaving the workspace.",
+    "status": "Workspace Assistant",
+    "placeholder": "Ask about your spending...",
+    "send": "Send",
+    "empty": "Ask me anything about your finances.",
+    "emptyTitle": "Your conversation starts here",
+    "emptyBody": "Ask about spending, balances, cash flow, or the next action you want to take.",
+    "loadingHistory": "Loading conversation…",
+    "loadingReply": "Thinking through your finances…",
+    "error": "Something went wrong. Please try again.",
+    "stop": "Stop generating",
+    "clearHistory": "Clear chat history",
+    "pendingAction": {
+      "title": "Pending action",
+      "expires": "Expires {{time}}",
+      "expiredNotice": "This action has expired.",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "dismiss": "Dismiss",
+      "expired": "This action is no longer available. Ask me again to redo it."
+    }
+  },
+  "settings": {
+    "kicker": "Workspace Controls",
+    "title": "Settings",
+    "subtitle": "Keep profile details, AI provider behavior, and key-based access in one place so the workspace stays predictable.",
+    "sections": {
+      "profile": "Profile",
+      "apiKeys": "API Keys"
+    },
+    "summary": {
+      "connectedBanks": "Connected Banks",
+      "connectedBanksCaption": "Institutions currently feeding balances and transactions into the workspace.",
+      "activeProvider": "Active AI Provider",
+      "activeProviderCaption": "The provider currently used for chat and AI-generated insights.",
+      "language": "Language",
+      "languageCaption": "The current app language saved for this account.",
+      "totalBalance": "Total Balance",
+      "totalBalanceCaption": "Combined balance from every synced institution."
+    },
+    "providers": {
+      "ollama": "Ollama",
+      "gemini": "Gemini",
+      "claude": "Claude"
+    },
+    "aiSelectorLabel": "AI Model",
+    "aiSelectorUpdated": "{{provider}} is now the active AI provider",
+    "aiSelectorError": "Could not update the AI provider",
+    "aiHealth": {
+      "ok": "Connected — key verified",
+      "error": "Not responding — check the API key",
+      "unknown": "Not configured"
+    },
+    "apiKeys": {
+      "title": "API Keys",
+      "subtitle": "Manage user-level provider access for hosted models while keeping Ollama as a local runtime option.",
+      "securityTitle": "How secrets are handled",
+      "securityCopy": "Keys are stored on the server in encrypted form and only masked status is returned to the app.",
+      "available": "Available",
+      "notAvailable": "Not available",
+      "savedMask": "Saved user key: {{masked}}",
+      "missing": "No user key is saved for this provider yet.",
+      "modelLabel": "Configured model: {{model}}",
+      "inputPlaceholder": "Enter a {{provider}} API key",
+      "saveAction": "Save key",
+      "replaceAction": "Replace key",
+      "clearAction": "Clear key",
+      "saveSuccess": "{{provider}} key saved",
+      "saveError": "Could not save the API key",
+      "clearSuccess": "{{provider}} key removed",
+      "clearError": "Could not clear the API key",
+      "ollamaReady": "Ollama is available from the server runtime and does not require a per-user key.",
+      "ollamaMissing": "Ollama is not configured on the server right now.",
+      "ollamaHint": "To enable Ollama, configure the backend runtime with an Ollama model and base URL.",
+      "ollamaModelSelectLabel": "Select a model:",
+      "ollamaSelectPlaceholder": "Choose an installed Ollama model",
+      "ollamaModelSave": "Save model",
+      "ollamaModelSaveSuccess": "Ollama model updated",
+      "ollamaModelSaveError": "Could not update the Ollama model",
+      "ollamaModelsLoadError": "Could not load installed Ollama models. Make sure Ollama is running, then reload.",
+      "ollamaThinkingLabel": "Model thinking",
+      "ollamaThinkingHint": "Turn off for much faster replies. Recommended for reasoning models like Qwen3.",
+      "ollamaThinkingSaveSuccess": "Updated model thinking",
+      "ollamaThinkingSaveError": "Could not update model thinking"
     }
   }
 }

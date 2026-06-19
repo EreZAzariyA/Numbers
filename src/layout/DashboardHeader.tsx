@@ -6,13 +6,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { changeLanguageAction } from "../redux/actions/user-config-actions";
 import { logoutAction } from "../redux/actions/auth-actions";
+import { useAiSettings } from "../hooks/useAiSettings";
+import { useAiHealth } from "../hooks/useAiHealth";
+import AiHealthDot from "../components/components/ai-health-dot";
 import { MenuItem } from "../utils/antd";
 import { useResize } from "../utils/helpers";
 import { Languages } from "../utils/enums";
 import { LanguageType } from "../utils/types";
+import { AiProvider } from "../models/ai-settings";
 import DarkModeButton from "../components/components/Darkmode-button";
+import NotificationBell from "../components/notifications/NotificationBell";
 import Logo from "../components/components/logo/logo";
-import { App, Button, Divider, Dropdown, Flex, Layout, MenuProps, Space, Typography } from "antd";
+import { App, Button, Divider, Dropdown, Flex, Layout, MenuProps, Select, Space, Typography } from "antd";
 import CloseOutlined from "@ant-design/icons/CloseOutlined";
 import GlobalOutlined from "@ant-design/icons/GlobalOutlined";
 import MenuOutlined from "@ant-design/icons/MenuOutlined";
@@ -38,6 +43,8 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
   const { pathname } = useLocation();
   const { user } = useAppSelector((state) => state.auth);
   const { lang, loading } = useAppSelector((state) => state.config.language);
+  const { data: aiSettings, updateProvider, isLoading: aiSettingsLoading, isUpdatingProvider } = useAiSettings();
+  const { health: aiHealth } = useAiHealth();
   const [current, setCurrent] = useState<string>('1');
   const [isOpen, setIsOpen] = useState(false);
   const { isMobile, isPhone } = useResize();
@@ -72,6 +79,15 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
       i18n.changeLanguage(language);
     } catch (err: any) {
       message.error(err.message);
+    }
+  };
+
+  const handleChangeProvider = async (provider: AiProvider): Promise<void> => {
+    try {
+      await updateProvider(provider);
+      message.success(t('settings.aiSelectorUpdated', { provider: t(`settings.providers.${provider}`) }));
+    } catch (err: any) {
+      message.error(err?.response?.data || err?.message || t('settings.aiSelectorError'));
     }
   };
 
@@ -116,6 +132,27 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
           )}
         </Flex>
         <Space align="center" className="header-right" split={<Divider type="vertical" />}>
+          <Select
+            size="small"
+            value={aiSettings?.provider}
+            loading={aiSettingsLoading || isUpdatingProvider}
+            className="header-model-select"
+            placeholder={t('settings.aiSelectorLabel')}
+            popupMatchSelectWidth={false}
+            onChange={(value) => handleChangeProvider(value as AiProvider)}
+            optionLabelProp="label"
+            options={(['ollama', 'gemini', 'claude'] as AiProvider[]).map((provider) => ({
+              label: (
+                <Space size={6} align="center">
+                  <AiHealthDot status={aiHealth?.[provider]?.status} error={aiHealth?.[provider]?.error} />
+                  {t(`settings.providers.${provider}`)}
+                </Space>
+              ),
+              value: provider,
+              disabled: !aiSettings?.providers?.[provider]?.available
+                || aiHealth?.[provider]?.status === 'error',
+            }))}
+          />
           <Dropdown
             menu={{
               items: langs,
@@ -128,6 +165,7 @@ const DashboardHeader = (props: DashboardHeaderProps) => {
               <span>{lang?.toUpperCase()}</span>
             </Button>
           </Dropdown>
+          <NotificationBell />
           <DarkModeButton />
         </Space>
       </Flex>

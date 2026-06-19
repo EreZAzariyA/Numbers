@@ -1,14 +1,21 @@
-import { Card, Col, Divider, Flex, Form, Input, InputNumber, Row, Typography } from "antd";
-import { useAppSelector } from "../../redux/store";
+import { useState } from "react";
+import { App, Button, Card, Col, Divider, Flex, Form, Input, InputNumber, Row, Typography } from "antd";
+import { useAppSelector, useAppDispatch } from "../../redux/store";
 import { useBanks } from "../../hooks/useBanks";
 import { useTranslation } from "react-i18next";
 import { asNumString, getBanksTotal } from "../../utils/helpers";
+import { changePayDayAction } from "../../redux/actions/user-config-actions";
 import "./profile.css";
 
 const Profile = () => {
   const { t } = useTranslation();
+  const { message } = App.useApp();
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const { lang } = useAppSelector((state) => state.config.language);
+  const savedPayDay = useAppSelector((state) => state.config.payDay.value);
+  const payDayLoading = useAppSelector((state) => state.config.payDay.loading);
+  const [payDayInput, setPayDayInput] = useState<number | null>(savedPayDay);
   const { data: banksAccount } = useBanks();
   const banks = banksAccount?.banks;
 
@@ -17,6 +24,16 @@ const Profile = () => {
   const lastName  = user?.profile?.last_name  ?? '';
   const initials  = `${firstName?.[0] ?? ''}${lastName?.[0] ?? ''}`.toUpperCase() || '?';
   const fullName  = [firstName, lastName].filter(Boolean).join(' ') || 'User';
+
+  const handleSavePayDay = async () => {
+    if (!payDayInput || !user?._id) return;
+    try {
+      await dispatch(changePayDayAction({ user_id: user._id, payDay: payDayInput })).unwrap();
+      message.success(t('profile.payCycle.saved'));
+    } catch {
+      message.error(t('profile.payCycle.error'));
+    }
+  };
 
   const initialValues = {
     ...user,
@@ -59,6 +76,7 @@ const Profile = () => {
 
         {/* ── Left: Avatar card ── */}
         <Col xs={24} md={8} lg={7}>
+
           <Card className="profile-avatar-card">
             <Flex vertical align="center" gap={14}>
               <div className="profile-avatar">
@@ -115,6 +133,37 @@ const Profile = () => {
                   <Form.Item label={t('profile.fields.currency')} name="currency">
                     <Input disabled />
                   </Form.Item>
+                </Col>
+              </Row>
+
+              <Divider style={{ margin: '8px 0 20px' }} />
+
+              <div className="profile-section-label">{t('profile.sections.payCycle')}</div>
+              <Typography.Text type="secondary" style={{ display: 'block', marginBottom: 16, fontSize: 13 }}>
+                {t('profile.payCycle.description')}
+              </Typography.Text>
+              <Row gutter={[16, 0]} align="middle">
+                <Col span={12}>
+                  <Form.Item label={t('profile.payCycle.label')}>
+                    <InputNumber
+                      min={1}
+                      max={28}
+                      value={payDayInput}
+                      onChange={(val) => setPayDayInput(val)}
+                      style={{ width: '100%' }}
+                      placeholder="e.g. 15"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12} style={{ paddingTop: 4 }}>
+                  <Button
+                    type="primary"
+                    loading={payDayLoading}
+                    disabled={!payDayInput}
+                    onClick={handleSavePayDay}
+                  >
+                    {t('profile.payCycle.save')}
+                  </Button>
                 </Col>
               </Row>
 

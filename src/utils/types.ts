@@ -195,6 +195,7 @@ export interface ProjectedEvent {
   expectedDate: string;
   type: 'income' | 'expense';
   alreadyReceived: boolean;
+  status?: 'pending' | 'realized' | 'missed';
 }
 
 export interface CashFlowProjectionResponse {
@@ -202,11 +203,17 @@ export interface CashFlowProjectionResponse {
   expensesToDate: number;
   netToDate: number;
   expectedEvents: ProjectedEvent[];
+  missedEvents: ProjectedEvent[];
   projectedMonthNet: number;
   projectedEndBalance: number | null;
   currentBalance: number | null;
   riskLevel: 'low' | 'medium' | 'high';
   daysRemaining: number;
+  settlement: {
+    bankPending: number;
+    cardPending: number;
+    cardSettlementByDate: Record<string, number>;
+  };
 }
 
 export interface SavingsGoalModel {
