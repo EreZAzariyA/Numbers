@@ -108,7 +108,7 @@ const ApiKeysSection = () => {
         </Card>
       );
     })
-  ), [clearKey, data?.providers, drafts, isClearingKey, isSavingKey, message, saveKey, t]);
+  ), [aiHealth, clearKey, data?.providers, drafts, isClearingKey, isSavingKey, message, saveKey, t]);
 
   const canSelectOllamaModel = !!ollama?.available && ollamaModels.length > 0;
 
