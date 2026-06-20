@@ -13,13 +13,14 @@ class SocketService {
   connect(nextToken?: string | null): void {
     const token = nextToken || store.getState().auth.token;
     if (!token) return;
-    if (this.socket && this.authToken === token) return;
+    if (this.socket?.connected && this.authToken === token) return;
 
     this.disconnect();
     this.authToken = token;
 
     this.socket = io(SOCKET_URL, {
       auth: { token },
+      transports: ['websocket'],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
