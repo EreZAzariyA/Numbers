@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, Typography, Tag, Button, Skeleton, Empty, Space } from 'antd';
+import { Card, Typography, Tag, Button, Skeleton, Empty, Space, message } from 'antd';
 import agentInsightsService, { DigestResponse } from '../../services/agent-insights';
 import UserModel from '../../models/user-model';
 
@@ -25,7 +25,7 @@ const REFETCH_DELAY_MS = 3000;
 const AgentInsightsCard: React.FC<AgentInsightsCardProps> = ({ user }) => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery<DigestResponse>({
+  const { data, isLoading, isError } = useQuery<DigestResponse>({
     queryKey: ['agent-insights-digest', user?._id],
     queryFn: () => agentInsightsService.getDigest(user._id),
     enabled: !!user?._id,
@@ -36,8 +36,11 @@ const AgentInsightsCard: React.FC<AgentInsightsCardProps> = ({ user }) => {
     mutationFn: () => agentInsightsService.triggerAnalysis(user._id),
     onSuccess: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['agent-insights-digest', user?._id] });
+        queryClient.invalidateQueries({ queryKey: ['agent-insights-digest', user._id] });
       }, REFETCH_DELAY_MS);
+    },
+    onError: () => {
+      message.error('Failed to trigger analysis. Please try again.');
     },
   });
 
@@ -68,6 +71,8 @@ const AgentInsightsCard: React.FC<AgentInsightsCardProps> = ({ user }) => {
     >
       {isLoading ? (
         <Skeleton active paragraph={{ rows: 3 }} />
+      ) : isError ? (
+        <Typography.Text type="danger">Failed to load insights. Please try again later.</Typography.Text>
       ) : !hasContent ? (
         <Empty description="No insights yet — analysis runs each morning." />
       ) : (
@@ -76,7 +81,7 @@ const AgentInsightsCard: React.FC<AgentInsightsCardProps> = ({ user }) => {
             <Typography.Paragraph>{data.aiSummary}</Typography.Paragraph>
           )}
           {sortedFindings.map((finding, i) => (
-            <div key={i}>
+            <div key={`${finding.severity}-${finding.title}`}>
               <Tag color={SEVERITY_COLOR[finding.severity]}>
                 {finding.severity.toUpperCase()}
               </Tag>
