@@ -36,6 +36,8 @@ abstract class Config {
     agentChat: "",
     agentHistory: "",
     agentActions: "",
+    agentInsightsDigest: "",
+    agentInsightsTrigger: "",
     admin: {
       users: "",
       reindexAll: "",
@@ -83,6 +85,8 @@ abstract class Config {
       agentChat: baseUrl + "agent/chat",
       agentHistory: baseUrl + "agent/history",
       agentActions: baseUrl + "agent/actions",
+      agentInsightsDigest: baseUrl + "agent-insights/",
+      agentInsightsTrigger: baseUrl + "agent-insights/",
       admin: {
         users: baseUrl + "admin/users",
         reindexAll: baseUrl + "admin/reindex",

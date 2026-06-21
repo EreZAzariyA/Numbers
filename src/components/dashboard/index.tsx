@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import dayjs, { Dayjs } from "dayjs";
 import { useAppSelector } from "../../redux/store";
 import { useBanks } from "../../hooks/useBanks";
+import AgentInsightsCard from "./AgentInsightsCard";
 import DashboardFirst from "./DashboardFirst";
 import DashboardSecond from "./DashboardSecond";
 import DashboardThird from "./DashboardThird";
@@ -121,6 +122,7 @@ const Dashboard = () => {
       </div>
 
       <Space direction="vertical" size={"large"} className="w-100">
+        <AgentInsightsCard user={user} />
         <DashboardFirst
           user={user}
           account={account}
