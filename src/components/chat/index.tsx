@@ -307,6 +307,13 @@ const ChatPanel: React.FC = () => {
   const currentProgressLabel = liveProgress[liveProgress.length - 1]?.label ?? t("chat.loadingReply");
   const progressDetails = liveProgress.filter((item) => !HIDDEN_PROGRESS_DETAIL_STEPS.has(item.step));
 
+  const getProgressStepType = (step: string): "thinking" | "tool" | "analyzing" | "finalizing" => {
+    if (step.startsWith("tool:")) return "tool";
+    if (step === "analyzing-results") return "analyzing";
+    if (step === "finalizing-response" || step === "staging-action") return "finalizing";
+    return "thinking";
+  };
+
   return (
     <>
       <div className={launcherClassName}>
@@ -495,10 +502,14 @@ const ChatPanel: React.FC = () => {
                       <span className="chat-panel__elapsed">{elapsed}s</span>
                     )}
                   </div>
-                  {progressDetails.length > 1 && (
+                  {progressDetails.length >= 1 && (
                     <div className="chat-panel__live-progress-list">
                       {progressDetails.map((item) => (
-                        <div key={item.id} className="chat-panel__live-progress-item">
+                        <div
+                          key={item.id}
+                          className="chat-panel__live-progress-item"
+                          data-step-type={getProgressStepType(item.step)}
+                        >
                           <span className="chat-panel__live-progress-dot" aria-hidden="true" />
                           <span>{item.label}</span>
                         </div>

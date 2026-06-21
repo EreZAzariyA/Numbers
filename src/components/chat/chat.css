@@ -526,6 +526,36 @@
   flex-shrink: 0;
 }
 
+.chat-panel__live-progress-item[data-step-type="thinking"] .chat-panel__live-progress-dot {
+  background: #818cf8;
+  box-shadow: 0 0 0 5px rgba(129, 140, 248, 0.12);
+}
+
+.chat-panel__live-progress-item[data-step-type="tool"] .chat-panel__live-progress-dot {
+  background: var(--color-primary);
+  box-shadow: 0 0 0 5px rgba(13, 148, 136, 0.12);
+}
+
+.chat-panel__live-progress-item[data-step-type="analyzing"] .chat-panel__live-progress-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.12);
+}
+
+.chat-panel__live-progress-item[data-step-type="finalizing"] .chat-panel__live-progress-dot {
+  background: #64748b;
+  box-shadow: 0 0 0 5px rgba(100, 116, 139, 0.1);
+}
+
+.dark-theme .chat-panel__live-progress-item[data-step-type="thinking"] .chat-panel__live-progress-dot {
+  background: #a5b4fc;
+  box-shadow: 0 0 0 5px rgba(165, 180, 252, 0.1);
+}
+
+.dark-theme .chat-panel__live-progress-item[data-step-type="analyzing"] .chat-panel__live-progress-dot {
+  background: #fbbf24;
+  box-shadow: 0 0 0 5px rgba(251, 191, 36, 0.1);
+}
+
 .chat-panel__empty-state {
   gap: 12px;
   min-height: 220px;
