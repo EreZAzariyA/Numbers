@@ -4,7 +4,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import UserModel from "../../models/user-model";
 import CredentialsModel from "../../models/credentials-model";
 import config from "../../utils/config";
-import { RootState } from "../store";
 
 export enum AuthActions {
   SIGN_UP = "auth/sign-up",
@@ -16,7 +15,6 @@ export enum AuthActions {
 
 interface AuthTokens {
   token: string;
-  refreshToken: string;
 }
 
 export const signupAction = createAsyncThunk<AuthTokens, UserModel>(
@@ -51,22 +49,22 @@ export const googleSignInAction = createAsyncThunk<AuthTokens, CredentialRespons
   async (tokenResponse, thunkApi) => {
     try {
       const response = await axios.post<AuthTokens>(config.urls.auth.googleSignIn, tokenResponse);
-      const { token, refreshToken } = response.data;
+      const { token } = response.data;
       if (!token) return thunkApi.rejectWithValue('No token received');
-      return { token, refreshToken };
+      return { token };
     } catch (err: any) {
       return thunkApi.rejectWithValue(err?.response?.data || err.message);
     }
   }
 );
 
+// The refresh token is an HttpOnly cookie sent automatically by the browser, so
+// there is nothing to read from state or include in the request body.
 export const refreshTokenAction = createAsyncThunk<AuthTokens>(
   AuthActions.REFRESH,
   async (_, thunkApi) => {
     try {
-      const { refreshToken } = (thunkApi.getState() as RootState).auth;
-      if (!refreshToken) return thunkApi.rejectWithValue('No refresh token');
-      const response = await axios.post<AuthTokens>(config.urls.auth.refresh, { refreshToken });
+      const response = await axios.post<AuthTokens>(config.urls.auth.refresh);
       return response.data;
     } catch (err: any) {
       return thunkApi.rejectWithValue(err);
@@ -78,8 +76,7 @@ export const logoutAction = createAsyncThunk<void>(
   AuthActions.LOGOUT,
   async (_, thunkApi) => {
     try {
-      const { refreshToken } = (thunkApi.getState() as RootState).auth;
-      await axios.post<void>(config.urls.auth.logout, { refreshToken });
+      await axios.post<void>(config.urls.auth.logout);
     } catch (err: any) {
       thunkApi.rejectWithValue(err);
     }

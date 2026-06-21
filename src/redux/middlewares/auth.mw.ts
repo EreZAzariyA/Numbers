@@ -13,22 +13,17 @@ const authMiddleWare: Middleware = (store) => (next) => async (action: any) => {
     case signinAction.fulfilled.type:
     case signupAction.fulfilled.type:
     case googleSignInAction.fulfilled.type:
-      localStorage.setItem('token', action.payload.token);
-      localStorage.setItem('refreshToken', action.payload.refreshToken);
+    case refreshTokenAction.fulfilled.type: {
+      // Access token is held in Redux memory only; the refresh token is an
+      // HttpOnly cookie. Nothing auth-related is persisted to localStorage.
       const user = jwtDecode(action.payload.token) as UserModel;
       dispatch(setUserTheme(user.config["theme-color"]));
       dispatch(setUserLang(user.config.lang));
       dispatch(setPayDay(user.config.payDay ?? null));
-    break;
-
-    case refreshTokenAction.fulfilled.type:
-      localStorage.setItem('token', action.payload.token);
-      localStorage.setItem('refreshToken', action.payload.refreshToken);
-    break;
+      break;
+    }
 
     case logoutAction.fulfilled.type:
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
       queryClient.removeQueries({ queryKey: [BANKS_QUERY_KEY] });
       dispatch(removeUserConfig());
     break;

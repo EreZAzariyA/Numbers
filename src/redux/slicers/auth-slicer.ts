@@ -5,21 +5,19 @@ import { googleSignInAction, logoutAction, refreshTokenAction, signinAction, sig
 
 export interface AuthState {
   token: string | null;
-  refreshToken: string | null;
   user: UserModel | null;
   loading: boolean;
+  // True until the startup session-restore (silent refresh) has resolved, so
+  // routes can wait instead of redirecting to sign-in on a hard refresh.
+  initializing: boolean;
   error: SerializedError | null;
 };
 
-const token = localStorage.getItem('token') || null;
-const refreshToken = localStorage.getItem('refreshToken') || null;
-const user = !!token ? jwtDecode(token) as UserModel : null;
-
 const initialState: AuthState = {
-  token,
-  refreshToken,
-  user,
+  token: null,
+  user: null,
   loading: false,
+  initializing: true,
   error: null,
 };
 
@@ -35,15 +33,13 @@ const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     loading: false,
     error: action.error
   }))
-  .addCase(signinAction.fulfilled, (_, action) => {
-    return {
-      loading: false,
-      error: null,
-      token: action.payload.token,
-      refreshToken: action.payload.refreshToken,
-      user: jwtDecode(action.payload.token)
-    }
-  });
+  .addCase(signinAction.fulfilled, (state, action) => ({
+    ...state,
+    loading: false,
+    error: null,
+    token: action.payload.token,
+    user: jwtDecode(action.payload.token),
+  }));
 
   // Sign-Up
   builder.addCase(signupAction.pending, (state) => ({
@@ -56,11 +52,11 @@ const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     loading: false,
     error: action.error
   }))
-  .addCase(signupAction.fulfilled, (_, action) => ({
+  .addCase(signupAction.fulfilled, (state, action) => ({
+    ...state,
     loading: false,
     error: null,
     token: action.payload.token,
-    refreshToken: action.payload.refreshToken,
     user: jwtDecode(action.payload.token),
   }));
 
@@ -75,29 +71,27 @@ const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     loading: false,
     error: action.error
   }))
-  .addCase(googleSignInAction.fulfilled, (_, action) => {
-    return {
-      loading: false,
-      error: null,
-      token: action.payload.token,
-      refreshToken: action.payload.refreshToken,
-      user: jwtDecode(action.payload.token),
-    }
-  });
-
-  // Refresh Token
-  builder.addCase(refreshTokenAction.pending, (state) => ({
+  .addCase(googleSignInAction.fulfilled, (state, action) => ({
     ...state,
+    loading: false,
+    error: null,
+    token: action.payload.token,
+    user: jwtDecode(action.payload.token),
+  }));
+
+  // Refresh Token (also used for startup session restore)
+  builder.addCase(refreshTokenAction.fulfilled, (state, action) => ({
+    ...state,
+    initializing: false,
+    token: action.payload.token,
+    user: jwtDecode(action.payload.token),
   }))
   .addCase(refreshTokenAction.rejected, (state, action) => ({
     ...state,
-    error: action.error
-  }))
-  .addCase(refreshTokenAction.fulfilled, (state, action) => ({
-    ...state,
-    token: action.payload.token,
-    refreshToken: action.payload.refreshToken,
-    user: jwtDecode(action.payload.token),
+    initializing: false,
+    token: null,
+    user: null,
+    error: action.error,
   }));
 
   // Logout
@@ -116,7 +110,6 @@ const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     loading: false,
     error: null,
     token: null,
-    refreshToken: null,
     user: null
   }));
 };
