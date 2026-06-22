@@ -16,7 +16,7 @@ const NotificationBell = () => {
   const { notifications, unreadCount, markRead, markAllRead } = useNotifications();
 
   const dropdownContent = (
-    <div className="notification-dropdown" style={{ width: 340, maxHeight: 420, overflowY: "auto" }}>
+    <div className="notification-dropdown" style={{ width: 340, maxHeight: 420, overflowY: "auto", background: "#fff", borderRadius: 8, boxShadow: "0 6px 16px rgba(0,0,0,0.12)" }}>
       <Flex justify="space-between" align="center" style={{ padding: "8px 12px" }}>
         <Typography.Text strong>{t("notifications.title")}</Typography.Text>
         {unreadCount > 0 && (
