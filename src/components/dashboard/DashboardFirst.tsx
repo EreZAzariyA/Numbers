@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
-import CurrencyList from 'currency-list'
 import transactionsServices, { TransactionsResp } from "../../services/transactions";
 import UserModel from "../../models/user-model";
 import { MainBanksAccount } from "../../models/bank-model";
@@ -31,7 +30,10 @@ const DashboardFirst = (props: DashboardFirstProps) => {
 
   const banks = props.account?.banks || [];
   const bankAccount = banks.find((b) => b.isMainAccount) ?? banks?.[0];
-  const currency = CurrencyList.get(bankAccount?.extraInfo?.accountCurrencyCode || "ILS");
+  const currencyCode = bankAccount?.extraInfo?.accountCurrencyCode || "ILS";
+  const currencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode, minimumFractionDigits: 0 })
+    .formatToParts(0)
+    .find((p) => p.type === 'currency')?.value ?? currencyCode;
 
   const query = queryFiltering({ status: TransactionStatuses.completed, month: props.monthToDisplay });
   const monthKey = props.monthToDisplay.format('YYYY-MM');
@@ -66,11 +68,11 @@ const DashboardFirst = (props: DashboardFirstProps) => {
               <span className="balance-kpi-label">{t('dashboard.first.1')}</span>
               <Typography.Title level={2} className="balance-kpi-value">
                 {props.loading ? <Skeleton paragraph={{ rows: 0 }} active /> : (
-                  <><span className="balance-kpi-currency">{currency.symbol}</span>{asNumString(totalBanksBalance)}</>
+                  <><span className="balance-kpi-currency">{currencySymbol}</span>{asNumString(totalBanksBalance)}</>
                 )}
               </Typography.Title>
             </Flex>
-            <CreditCardsAndSavings currency={currency.symbol} account={props.account} />
+            <CreditCardsAndSavings currency={currencySymbol} account={props.account} />
           </Card>
         </Col>
 
